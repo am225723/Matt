@@ -143,10 +143,11 @@ Hole focus: "${metaPrompt}"
 Matthew's current text: "${userText}"
 
 TASK:
-- Ask ONE short, highly targeted follow-up question (max 18 words).
-- Must directly support NOT drinking (intention, ally, pause routine).
-- Speak directly to him ("you"). End with a single '?'.
-Return ONLY the question.
+Provide a brief, supportive insight, suggestion, or question to help Matthew strengthen his plan.
+- Be creative and avoid repeating previous suggestions.
+- If you ask a question, end with a single '?'.
+- Keep your response to 1-2 sentences.
+Return ONLY the response.
   `.trim();
 
   return generateYardageBookContent(prompt);
