@@ -1,19 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Sparkles, ArrowLeft, ArrowRight, Printer } from 'lucide-react';
 import GeminiResponseDisplay, { handlePrintToPDF } from "@/components/GeminiResponseDisplay";
 import ConversationThread from "@/components/ConversationThread";
 import {
-  reframeExcuse,
   createActionPlan,
   suggestMantra,
   simulateTomorrow,
   highlightTriggers,
   summarizeYardageBook,
   continueConversation,
-  enhanceHoleWithFollowup, // ✨ new hole-aware enhancer
-} from '@/utils/gemini';
+  enhanceHoleWithFollowup,
+  initializeGemini as initializeYardageBook,
+} from '@/prompts/yardageBook';
+import { reframeExcuse, initializeGemini as initializeExcuseReframe } from '@/prompts/excuseReframe';
+import { toast } from '@/components/ui/use-toast';
 
 const holes = [
   { title: "Hole 1 – Tee Off with Intention", prompt: "Imagine you're stepping up to the first tee. What's your clear goal for the day at the Ryder Cup?" },
@@ -29,6 +31,18 @@ const holes = [
 
 const YardageBook = ({ onBack }) => {
   const [holeIndex, setHoleIndex] = useState(0);
+  const [isInitialized, setIsInitialized] = useState(false);
+
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (apiKey) {
+      initializeYardageBook(apiKey);
+      initializeExcuseReframe(apiKey);
+      setIsInitialized(true);
+    } else {
+      toast({ title: "API Key Missing", description: "Gemini API key is not configured.", variant: "destructive" });
+    }
+  }, []);
 
   // Use Array.from to avoid shared reference bugs
   const [responses, setResponses] = useState(Array.from({ length: holes.length }, () => ''));
@@ -82,6 +96,10 @@ const YardageBook = ({ onBack }) => {
   };
 
   const handleGenerateSummary = async () => {
+    if (!isInitialized) {
+      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setSummary('');
     try {
@@ -127,6 +145,10 @@ const YardageBook = ({ onBack }) => {
   };
 
   const handleFollowUpSubmit = async (answer, threadIndex) => {
+    if (!isInitialized) {
+      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
+      return;
+    }
     if (!answer) return;
     setLoading(true);
 
@@ -171,6 +193,10 @@ const YardageBook = ({ onBack }) => {
 
   // ✨ Hole-aware enhancement for Holes 1–3: ask a short, targeted question
   const handleAIEnhance = async () => {
+    if (!isInitialized) {
+      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setInsight('');
     try {
@@ -190,6 +216,10 @@ const YardageBook = ({ onBack }) => {
   };
 
   const handleReframe = async () => {
+    if (!isInitialized) {
+      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setReframed('');
     setPlan('');
@@ -208,6 +238,10 @@ const YardageBook = ({ onBack }) => {
   };
 
   const handleForecast = async () => {
+    if (!isInitialized) {
+      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setForecast('');
     try {
@@ -220,6 +254,10 @@ const YardageBook = ({ onBack }) => {
   };
 
   const handleTriggers = async () => {
+    if (!isInitialized) {
+      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setTriggers('');
     try {
@@ -232,6 +270,10 @@ const YardageBook = ({ onBack }) => {
   };
 
   const handleMantra = async () => {
+    if (!isInitialized) {
+      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
+      return;
+    }
     setLoading(true);
     setMantra('');
     try {
