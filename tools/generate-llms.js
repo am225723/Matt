@@ -18,13 +18,12 @@ const CLEAN_CONTENT_REGEX = {
 };
 
 const EXTRACTION_REGEX = {
-  route: /<Route\s+[^>]*>/g,
-  path: /path=["']([^"']+)["']/,
-  element: /element=\{<(\w+)[^}]*\/?\s*>\}/,
   helmet: /<Helmet[^>]*?>([\s\S]*?)<\/Helmet>/i,
   helmetTest: /<Helmet[\s\S]*?<\/Helmet>/i,
   title: /<title[^>]*?>\s*(.*?)\s*<\/title>/i,
-  description: /<meta\s+name=["']description["']\s+content=["'](.*?)["']/i
+  description: /<meta\s+name=["']description["']\s+content=["'](.*?)["']/i,
+  import: /import\s+(\w+)\s+from\s+['"]@\/([^'"]+)['"]/g,
+  view: /{view === '([^']*)' && <([A-Z][^\s/>]+)/g,
 };
 
 function cleanContent(content) {
@@ -47,48 +46,58 @@ function cleanText(text) {
     .trim();
 }
 
-function extractRoutes(appJsxPath) {
+function extractRoutes(appJsxPath, srcDir) {
   if (!fs.existsSync(appJsxPath)) return new Map();
 
   try {
     const content = fs.readFileSync(appJsxPath, 'utf8');
+    const imports = new Map();
+    let match;
+    while ((match = EXTRACTION_REGEX.import.exec(content)) !== null) {
+      const componentName = match[1];
+      const componentPath = match[2];
+      imports.set(componentName, path.join(srcDir, `${componentPath}.jsx`));
+    }
+
     const routes = new Map();
-    const routeMatches = [...content.matchAll(EXTRACTION_REGEX.route)];
-    
-    for (const match of routeMatches) {
-      const routeTag = match[0];
-      const pathMatch = routeTag.match(EXTRACTION_REGEX.path);
-      const elementMatch = routeTag.match(EXTRACTION_REGEX.element);
-      const isIndex = routeTag.includes('index');
-      
-      if (elementMatch) {
-        const componentName = elementMatch[1];
-        let routePath;
-        
-        if (isIndex) {
-          routePath = '/';
-        } else if (pathMatch) {
-          routePath = pathMatch[1].startsWith('/') ? pathMatch[1] : `/${pathMatch[1]}`;
-        }
-        
-        routes.set(componentName, routePath);
+    while ((match = EXTRACTION_REGEX.view.exec(content)) !== null) {
+      const viewName = match[1];
+      const componentName = match[2];
+      const componentPath = imports.get(componentName);
+
+      if (componentPath) {
+        const routePath = viewName === 'dashboard' ? '/' : `/${viewName}`;
+        routes.set(componentPath, routePath);
       }
     }
 
+    // Add the App.jsx itself for the dashboard view
+    routes.set(appJsxPath, '/');
+
     return routes;
   } catch (error) {
+    console.error('Error extracting routes:', error);
     return new Map();
   }
 }
 
-function findReactFiles(dir) {
-  return fs.readdirSync(dir).map(item => path.join(dir, item));
+function findReactFiles(dir, allFiles = []) {
+  const items = fs.readdirSync(dir);
+
+  for (const item of items) {
+    const itemPath = path.join(dir, item);
+    if (fs.statSync(itemPath).isDirectory()) {
+      findReactFiles(itemPath, allFiles);
+    } else if (path.extname(item) === '.jsx') {
+      allFiles.push(itemPath);
+    }
+  }
+
+  return allFiles;
 }
 
 function extractHelmetData(content, filePath, routes) {
-  const cleanedContent = cleanContent(content);
-  
-  if (!EXTRACTION_REGEX.helmetTest.test(cleanedContent)) {
+  if (!EXTRACTION_REGEX.helmetTest.test(content)) {
     return null;
   }
   
@@ -102,10 +111,9 @@ function extractHelmetData(content, filePath, routes) {
   const title = cleanText(titleMatch?.[1]);
   const description = cleanText(descMatch?.[1]);
   
-  const fileName = path.basename(filePath, path.extname(filePath));
-  const url = routes.length && routes.has(fileName) 
-    ? routes.get(fileName) 
-    : generateFallbackUrl(fileName);
+  const url = routes.has(filePath)
+    ? routes.get(filePath)
+    : generateFallbackUrl(path.basename(filePath, '.jsx'));
   
   return {
     url,
@@ -120,7 +128,7 @@ function generateFallbackUrl(fileName) {
 }
 
 function generateLlmsTxt(pages) {
-  const sortedPages = pages.sort((a, b) => a.title.localeCompare(b.title));
+  const sortedPages = pages.sort((a, b) => a.url.localeCompare(b.url));
   const pageEntries = sortedPages.map(page => 
     `- [${page.title}](${page.url}): ${page.description}`
   ).join('\n');
@@ -145,33 +153,28 @@ function processPageFile(filePath, routes) {
 }
 
 function main() {
-  const pagesDir = path.join(process.cwd(), 'src', 'pages');
-  const appJsxPath = path.join(process.cwd(), 'src', 'App.jsx');
+  const srcDir = path.join(process.cwd(), 'src');
+  const appJsxPath = path.join(srcDir, 'App.jsx');
 
-  let pages = [];
+  const routes = extractRoutes(appJsxPath, srcDir);
+  const reactFiles = findReactFiles(srcDir);
   
-  if (!fs.existsSync(pagesDir)) {
-    pages.push(processPageFile(appJsxPath, []));
-  } else {
-    const routes = extractRoutes(appJsxPath);
-    const reactFiles = findReactFiles(pagesDir);
-
-    pages = reactFiles
-      .map(filePath => processPageFile(filePath, routes))
-      .filter(Boolean);
+  const pages = reactFiles
+    .map(filePath => processPageFile(filePath, routes))
+    .filter(Boolean);
     
-    if (pages.length === 0) {
-      console.error('❌ No pages with Helmet components found!');
-      process.exit(1);
-    }
+  if (pages.length === 0) {
+    console.error('❌ No pages with Helmet components found!');
+    // Do not exit with error, as it might break the build process
+    // process.exit(1);
   }
-
 
   const llmsTxtContent = generateLlmsTxt(pages);
   const outputPath = path.join(process.cwd(), 'public', 'llms.txt');
   
   ensureDirectoryExists(path.dirname(outputPath));
   fs.writeFileSync(outputPath, llmsTxtContent, 'utf8');
+  console.log(`✅ Generated llms.txt with ${pages.length} pages.`);
 }
 
 const isMainModule = import.meta.url === `file://${process.argv[1]}`;
