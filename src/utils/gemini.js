@@ -27,8 +27,21 @@ Priorities: clear intention, pre-commitment, coping plans, trigger awareness, su
 Never moralize. Avoid medical claims. Keep outputs concise and directly usable.
 `.trim();
 
-const generateContent = async (userPrompt) => {
-  const prompt = `${SYSTEM_CONTEXT}\n\n${userPrompt}`;
+const EXCUSE_REFRAME_SYSTEM_CONTEXT = `
+You are a master problem-solver. When presented with an excuse, your goal is to understand the underlying issue and provide a realistic, actionable solution that prevents the excuse from being used. Your tone is direct, insightful, and highly practical.
+`.trim();
+
+const YARDAGE_BOOK_SYSTEM_CONTEXT = `
+You are a world-class mental coach and harm-reduction specialist.
+Primary objective: Help Matthew avoid drinking alcohol (or at minimum, significantly reduce it) at a social/golf event (Ryder Cup day).
+You understand his previous drinking habits, the temptation of peer pressure, and how much he cares about what other people think.
+Tone: warm, respectful, non-judgmental, practical. Evidence-informed behavior design.
+Priorities: clear intention, pre-commitment, coping plans, trigger awareness, supportive accountability, self-compassion after slips.
+Never moralize. Avoid medical claims. Keep outputs concise and directly usable.
+`.trim();
+
+const generateContent = async (userPrompt, systemContext) => {
+  const prompt = `${systemContext}\n\n${userPrompt}`;
   try {
     const model = getModel();
     const result = await model.generateContent(prompt);
@@ -53,7 +66,7 @@ Reframe it with warmth and harm-reduction focus to help him not drink (or drink 
 - Keep it concise (≤ 90 words)
 - End with a supportive statement (no questions)
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, EXCUSE_REFRAME_SYSTEM_CONTEXT);
 };
 
 export const createActionPlan = (excuse) => {
@@ -65,7 +78,7 @@ Create a concrete 3-step, harm-reduction action plan to help him avoid alcohol a
 - Steps must be simple, doable on-course
 - Speak directly to him ("you")
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const simulateTomorrow = (reflection) => {
@@ -76,7 +89,7 @@ In 3–4 sentences, help him vividly imagine waking up tomorrow proud because he
 - Emphasize feelings, consequences avoided, identity wins, and next-step momentum
 - Speak directly to him ("you")
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const highlightTriggers = (response) => {
@@ -88,7 +101,7 @@ Provide proactive alternatives and boundary lines to prevent drinking.
 - Keep it practical and compassionate
 - Speak directly to him ("you")
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const suggestMantra = (pledge) => {
@@ -100,7 +113,7 @@ Craft ONE short mantra (max 10 words) that reinforces his intention NOT to drink
 - Speak directly to him ("you")
 Return just the mantra.
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const deepenIntention = (goal) => {
@@ -113,7 +126,7 @@ If useful, ask ONE precise clarifying question to strengthen commitment (≤ 18 
 - Speak directly to him ("you")
 If you ask a question, end with a single '?'.
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const suggestCheckInPartner = (text) => {
@@ -126,7 +139,7 @@ Explain briefly how/when to check in (before first trigger, mid-event, after).
 - Speak directly to him ("you")
 If a question is needed, end with ONE '?'.
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const suggestPauseAction = (response) => {
@@ -139,7 +152,7 @@ Include when to use it and a tiny script if needed.
 - Speak directly to him ("you")
 If a question is needed, end with ONE '?'.
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const summarizeYardageBook = (responses) => {
@@ -153,7 +166,7 @@ Write a warm, motivational summary as his caddie with a harm-reduction focus (pr
 - Speak directly to him ("you")
 - 140–220 words
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 export const continueConversation = (originalContext, aiQuestion, userResponse) => {
@@ -167,7 +180,7 @@ Now provide ONE concise, encouraging response that moves him closer to NOT drink
 - Do NOT ask another question
 - Speak directly to him ("you")
   `.trim();
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 /* =========================
@@ -199,7 +212,7 @@ TASK:
 Return ONLY the question.
   `.trim();
 
-  return generateContent(prompt);
+  return generateContent(prompt, YARDAGE_BOOK_SYSTEM_CONTEXT);
 };
 
 // Public entry used by YardageBook "Enhance with AI"
