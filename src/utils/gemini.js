@@ -206,3 +206,30 @@ Return ONLY the question.
 export const enhanceHoleWithFollowup = (holeIndex, userText) => {
   return buildHoleAwareFollowup({ holeIndex, userText });
 };
+
+export const suggestNextScenario = async (completedScenarios, allScenarios) => {
+  const completedLabels = completedScenarios.map(s => s.label).join(', ');
+  const availableLabels = allScenarios.filter(s => !completedScenarios.find(cs => cs.key === s.key)).map(s => s.label).join(', ');
+
+  const prompt = `
+You are a proactive and encouraging mental coach.
+Matthew has already completed playbooks for the following scenarios: ${completedLabels}.
+The available scenarios he has not yet completed are: ${availableLabels}.
+
+Based on his completed work, suggest ONE new scenario from the available list that would be a good next step for him.
+Provide a brief, one-sentence reason for your suggestion.
+
+Return a JSON object with two keys: "scenario" (the key of the suggested scenario, e.g., "networking") and "reason" (your explanation).
+Example: {"scenario": "networking", "reason": "Since you've built confidence in presenting, networking is a great next step to apply those skills."}
+  `.trim();
+
+  const result = await generateContent(prompt);
+  try {
+    // The Gemini API might return the JSON wrapped in markdown backticks.
+    const cleanResult = result.replace(/```json/g, '').replace(/```/g, '').trim();
+    return JSON.parse(cleanResult);
+  } catch (error) {
+    console.error("Error parsing AI suggestion:", error);
+    return null;
+  }
+};

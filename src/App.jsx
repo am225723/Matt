@@ -2,11 +2,16 @@ import React, { useState, useEffect } from 'react';
 import ExcuseReframe from '@/ExcuseReframe';
 import YardageBook from '@/YardageBook';
 import ResiliencePlaybook from '@/components/ResiliencePlaybook';
+import PlaybookLibrary from '@/components/PlaybookLibrary';
+import Achievements from '@/components/Achievements';
+import AISuggestion from '@/components/AISuggestion';
+import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
+import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy } from 'lucide-react';
 
 const DashboardTile = ({
   title,
@@ -37,7 +42,7 @@ const DashboardTile = ({
   </motion.div>
 );
 
-const Dashboard = ({ onSelect }) => (
+const Dashboard = ({ onSelect, onSelectScenario }) => (
   <div
     className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-white"
     style={{
@@ -85,10 +90,28 @@ const Dashboard = ({ onSelect }) => (
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
         <DashboardTile
           title="Resilience Playbook"
-          description="Build a step-by-step strategy for challenging situations."
+          description="Build a new step-by-step strategy for challenging situations."
           icon={<BookOpen className="w-6 h-6 text-white" />}
           onClick={() => onSelect('playbook')}
           className="bg-blue-500/30"
+        />
+      </motion.div>
+      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+        <DashboardTile
+          title="Playbook Library"
+          description="Review and manage your saved resilience playbooks."
+          icon={<Library className="w-6 h-6 text-white" />}
+          onClick={() => onSelect('library')}
+          className="bg-yellow-500/30"
+        />
+      </motion.div>
+      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+        <DashboardTile
+          title="Achievements"
+          description="Track your progress and view your earned badges."
+          icon={<Trophy className="w-6 h-6 text-white" />}
+          onClick={() => onSelect('achievements')}
+          className="bg-red-500/30"
         />
       </motion.div>
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
@@ -110,23 +133,59 @@ const Dashboard = ({ onSelect }) => (
         />
       </motion.div>
     </motion.div>
+
+    <motion.div
+      className="relative z-10 w-full max-w-6xl mt-8"
+      initial={{ opacity: 0, y: 50 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.8 }}
+    >
+      <AISuggestion onSelectScenario={onSelectScenario} />
+    </motion.div>
   </div>
 );
 
 const App = () => {
   const [view, setView] = useState('dashboard');
+  const [loadedPlan, setLoadedPlan] = useState(null);
 
   useEffect(() => {
-    const apiKey = "AIzaSyAv_eLmRbO-WcwodzlOkgzgTGz07BAfCJM";
-    initializeGemini(apiKey);
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    if (!apiKey) {
+      console.error("VITE_GEMINI_API_KEY is not set. Please add it to your .env file.");
+      alert("Gemini API key is not set. Please add it to your .env file.");
+    } else {
+      initializeGemini(apiKey);
+    }
+    updateStreak();
   }, []);
+
+  const handleSelectPlan = (planId) => {
+    const plan = getPlanFromLibrary(planId);
+    if (plan) {
+      setLoadedPlan(plan);
+      setView('playbook');
+    }
+  };
+
+  const handleSelectScenario = (scenario) => {
+    setLoadedPlan({ scenario, answers: {} });
+    setView('playbook');
+  };
+
+  const handleBackToDashboard = () => {
+    setLoadedPlan(null);
+    setView('dashboard');
+  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      {view === 'dashboard' && <Dashboard onSelect={setView} />}
-      {view === 'reframe' && <ExcuseReframe onNext={() => setView('dashboard')} />}
-      {view === 'yardage' && <YardageBook onBack={() => setView('dashboard')} />}
-      {view === 'playbook' && <ResiliencePlaybook />}
+      {view === 'dashboard' && <Dashboard onSelect={setView} onSelectScenario={handleSelectScenario} />}
+      {view === 'reframe' && <ExcuseReframe onNext={handleBackToDashboard} />}
+      {view === 'yardage' && <YardageBook onBack={handleBackToDashboard} />}
+      {view === 'playbook' && <ResiliencePlaybook plan={loadedPlan} onBack={handleBackToDashboard} />}
+      {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
+      {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );

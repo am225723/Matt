@@ -6,6 +6,8 @@ import { Slider } from "@/components/ui/slider";
 
 import { SCENARIOS, pickBg, labelFor, helperText, aiHelpers, ACCOUNTABILIBUDDY_NAME, ACCOUNTABILIBUDDY_PHONE, LEFT_DOCK_SCENARIOS } from "@/utils/scenarioHelpers";
 import { normalizePhone, buildSmsHref, copyToClipboard, getShareUrl, exportPdf, dec } from "@/utils/helpers";
+import { savePlanToLibrary } from "@/utils/planLibraryStorage";
+import { awardBadge } from "@/utils/gamificationStorage";
 
 import { ScenarioSelection } from './steps/ScenarioSelection';
 import { WhyMap } from './steps/WhyMap';
@@ -14,7 +16,7 @@ import { PracticeRound } from './steps/PracticeRound';
 import { ConfidenceBuilder } from './steps/ConfidenceBuilder';
 import { Debrief } from './steps/Debrief';
 
-export default function ResiliencePlaybook() {
+export default function ResiliencePlaybook({ plan, onBack }) {
   const [scenario, setScenario] = useState("custom");
   const [step, setStep] = useState(1);
   const total = 6;
@@ -36,6 +38,18 @@ export default function ResiliencePlaybook() {
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
   }, []);
+
+  useEffect(() => {
+    if (plan) {
+      setScenario(plan.scenario);
+      setAnswers(plan.answers);
+      setStep(2); // Start at the WhyMap step
+      toast({
+        title: "Plan Loaded",
+        description: "A resilience plan has been loaded from your library.",
+      });
+    }
+  }, [plan]);
 
   const bgUrl = useMemo(() => pickBg(scenario), [scenario]);
   const progressPct = ((step - 1) / (total - 1)) * 100;
@@ -109,39 +123,29 @@ export default function ResiliencePlaybook() {
     }
   };
 
-  const savePlan = () => {
+  const handleSaveToLibrary = () => {
+    const name = prompt("Enter a name for your plan:", `Plan for ${labelFor(scenario)}`);
+    if (!name) return;
+
     const payload = {
+      name,
       scenario,
-      createdAt: new Date().toISOString(),
-      goal: answers.goal || "",
-      limit: answers.limit || "",
-      anchor: answers.anchor || "",
-      line: answers.line || "",
-      ally: answers.ally || "",
-      allyPhone: answers.allyPhone || "",
-      why: {
-        feel: answers.feel || "",
-        think: answers.think || "",
-        desire: answers.desire || "",
-      },
-      debrief: { proud: answers.proud || "", tweak: answers.tweak || "" },
-      mantra: answers.mantra || "",
+      answers,
     };
-    localStorage.setItem("resiliencePlan", JSON.stringify(payload));
-    const blob = new Blob([JSON.stringify(payload, null, 2)], {
-      type: "application/json",
-    });
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "resilience-plan.json";
-    document.body.appendChild(a);
-    a.click();
-    a.remove();
+    savePlanToLibrary(payload);
     setHasSaved(true);
     toast({
-      title: "Plan Saved & Downloaded!",
-      description: "Your resilience plan is ready as a JSON file.",
+      title: "Plan Saved to Library!",
+      description: "Your resilience plan has been saved to your library.",
     });
+
+    const badgeKey = `badge_${scenario}`;
+    if (awardBadge(badgeKey)) {
+      toast({
+        title: "New Badge Unlocked!",
+        description: `You've earned the "${labelFor(scenario)} Navigator" badge!`,
+      });
+    }
   };
 
   const shareLink = () => {
@@ -270,7 +274,7 @@ export default function ResiliencePlaybook() {
             answers={answers}
             setAnswers={setAnswers}
             setStep={setStep}
-            onSave={savePlan}
+            onSave={handleSaveToLibrary}
             onShare={shareLink}
             onExportPdf={() => exportPdf(bgUrl, scenario, answers, labelFor)}
           />
@@ -323,6 +327,9 @@ export default function ResiliencePlaybook() {
         };
         return (
           <div style={panelStyle} className="relative z-10 rounded-2xl p-4 shadow-2xl">
+            <div className="flex justify-between items-center mb-4">
+              <Button variant="outline" onClick={onBack}>Back to Dashboard</Button>
+            </div>
             <div className="grid grid-cols-[auto_1fr_auto] gap-4 items-center mb-4 flex-wrap">
               <div className="text-sm font-medium text-black opacity-85">
                 Step {step} of {total}
