@@ -1,4 +1,5 @@
 import { initializeGemini, generateContent } from '../utils/gemini';
+import { reframeExcuse } from './excuseReframe';
 
 export { initializeGemini };
 
@@ -184,4 +185,84 @@ export const suggestNextScenario = async (completedScenarios, allScenarios) => {
     console.error("Error parsing AI suggestion:", error);
     return null;
   }
+};
+
+// Function to enhance all holes with AI insights
+export const enhanceAllHoles = async (responses) => {
+  const enhancedInsights = [];
+  
+  // Process each hole response
+  for (let i = 0; i < responses.length; i++) {
+    const userText = responses[i] || '';
+    
+    try {
+      let insight;
+      
+      // For holes 1-3, use the existing hole-aware enhancement
+      if (i <= 2) {
+        insight = await enhanceHoleWithFollowup(i, userText);
+      } else {
+        // For other holes, create hole-specific enhancements
+        switch (i) {
+          case 3: // Hole 4 - The Excuse Trap
+            const reframe = await reframeExcuse(userText);
+            const plan = await createActionPlan(userText);
+            insight = `${reframe}\n\n${plan}`;
+            break;
+          case 4: // Hole 5 - Power Phrase
+            insight = await suggestPowerPhrase(userText);
+            break;
+          case 5: // Hole 6 - Read the Green
+            insight = await simulateTomorrow(userText);
+            break;
+          case 6: // Hole 7 - Mulligan Mindset
+            insight = await highlightTriggers(userText);
+            break;
+          case 7: // Hole 8 - Club Swap
+            insight = await suggestAlternatives(userText);
+            break;
+          case 8: // Hole 9 - Victory Putt
+            insight = await suggestMantra(userText);
+            break;
+          default:
+            insight = "No specific enhancement available for this hole.";
+        }
+      }
+      
+      enhancedInsights.push(insight);
+    } catch (error) {
+      console.error(`Error enhancing hole ${i + 1}:`, error);
+      enhancedInsights.push("AI could not enhance this hole.");
+    }
+  }
+  
+  return enhancedInsights;
+};
+
+// New function for Hole 5 - Power Phrase
+export const suggestPowerPhrase = (response) => {
+  const prompt = `
+  Matthew wrote: "${response}".
+
+  Create a confident, memorable power phrase he can use to decline alcohol.
+  - Make it natural, not awkward
+  - Keep it brief (under 10 words)
+  - Make it authentic to his personality
+  - Speak directly to him ("you")
+  `.trim();
+  return generateYardageBookContent(prompt);
+};
+
+// New function for Hole 8 - Club Swap
+export const suggestAlternatives = (response) => {
+  const prompt = `
+  Matthew wrote about non-alcoholic alternatives: "${response}".
+
+  Expand on his ideas with 2-3 specific, appealing non-alcoholic options.
+  - Be specific (brands, recipes, or presentation ideas)
+  - Make them feel special and festive
+  - Explain why these are great alternatives
+  - Speak directly to him ("you")
+  `.trim();
+  return generateYardageBookContent(prompt);
 };
