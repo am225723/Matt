@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Sparkles } from 'lucide-react';
-import { suggestNextScenario } from '@/utils/gemini';
+import { suggestNextScenario } from '@/prompts/yardageBook';
 import { loadGamificationData } from '@/utils/gamificationStorage';
 import { ALL_BADGES } from '@/data/badges';
 import { SCENARIOS, labelFor } from '@/utils/scenarioHelpers';

@@ -15,6 +15,7 @@ import {
   initializeGemini as initializeYardageBook,
 } from '@/prompts/yardageBook';
 import { reframeExcuse, initializeGemini as initializeExcuseReframe } from '@/prompts/excuseReframe';
+import { addLogEntry } from '@/utils/excuseLogStorage';
 import { toast } from '@/components/ui/use-toast';
 
 const holes = [
@@ -109,6 +110,13 @@ const YardageBook = ({ onBack }) => {
       setSummary('AI could not generate a summary.');
     }
     setLoading(false);
+  };
+
+  const handleSaveToLogbook = () => {
+    if (responses[holeIndex] && reframed) {
+      addLogEntry(responses[holeIndex], reframed);
+      toast({ title: "Excuse Saved", description: "Your excuse and its reframe have been saved to your logbook." });
+    }
   };
 
   // Create a new thread when response ends with '?' (conversation starter). Optionally mark as "insight thread".
@@ -346,7 +354,14 @@ const YardageBook = ({ onBack }) => {
           <Button onClick={handleReframe} className="w-full flex items-center justify-center" disabled={loading}>
             <Sparkles className="mr-2 h-4 w-4" /> {loading ? 'Working with your mental caddie...' : 'AI Reframe + Plan'}
           </Button>
-          {reframed && <GeminiResponseDisplay title="🏌️ Reframed Excuse" responseText={reframed} />}
+          {reframed && (
+            <>
+              <GeminiResponseDisplay title="🏌️ Reframed Excuse" responseText={reframed} />
+              <Button onClick={handleSaveToLogbook} className="w-full mt-2">
+                Save to Logbook
+              </Button>
+            </>
+          )}
           {plan && <GeminiResponseDisplay title="📝 Game Plan" responseText={plan} />}
         </div>
       )}

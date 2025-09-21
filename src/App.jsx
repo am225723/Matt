@@ -4,6 +4,7 @@ import YardageBook from '@/YardageBook';
 import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
+import ExcuseLogbook from '@/components/ExcuseLogbook';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
@@ -132,6 +133,15 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           className="bg-green-500/30"
         />
       </motion.div>
+      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+        <DashboardTile
+          title="Excuse Logbook"
+          description="Review your saved excuses and their reframed solutions."
+          icon={<BookOpen className="w-6 h-6 text-white" />}
+          onClick={() => onSelect('logbook')}
+          className="bg-indigo-500/30"
+        />
+      </motion.div>
     </motion.div>
 
     <motion.div
@@ -186,6 +196,7 @@ const App = () => {
       {view === 'playbook' && <ResiliencePlaybook plan={loadedPlan} onBack={handleBackToDashboard} />}
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
+      {view === 'logbook' && <ExcuseLogbook onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
