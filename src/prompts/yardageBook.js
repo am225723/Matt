@@ -1,5 +1,4 @@
 import { initializeGemini, generateContent } from '../utils/gemini';
-import { reframeExcuse } from './excuseReframe';
 
 export { initializeGemini };
 
@@ -187,6 +186,21 @@ export const suggestNextScenario = async (completedScenarios, allScenarios) => {
   }
 };
 
+// Yardage Book-specific function for reframing excuses (Hole 4)
+export const yardageBookReframeExcuse = (excuse) => {
+  const prompt = `
+  Matthew's excuse about drinking: "${excuse}".
+
+  Analyze this excuse and reframe it into a more empowering perspective.
+  - Identify the underlying concern or fear
+  - Provide a supportive, non-judgmental reframing
+  - Focus specifically on alcohol-related challenges at social events
+  - Maintain the warm, supportive caddie tone
+  - Speak directly to him ("you")
+  `.trim();
+  return generateYardageBookContent(prompt);
+};
+
 // Function to enhance all holes with AI insights
 export const enhanceAllHoles = async (responses) => {
   const enhancedInsights = [];
@@ -205,7 +219,7 @@ export const enhanceAllHoles = async (responses) => {
         // For other holes, create hole-specific enhancements
         switch (i) {
           case 3: // Hole 4 - The Excuse Trap
-            const reframe = await reframeExcuse(userText);
+            const reframe = await yardageBookReframeExcuse(userText);
             const plan = await createActionPlan(userText);
             insight = `${reframe}\n\n${plan}`;
             break;
