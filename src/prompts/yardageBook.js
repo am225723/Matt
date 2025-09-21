@@ -136,18 +136,16 @@ export const buildHoleAwareFollowup = async ({ holeIndex, userText }) => {
   const metaPrompt = hole?.prompt || "Improve your response to prevent drinking.";
 
   const prompt = `
-You are an empathetic and supportive caddie helping Matthew prepare for a Ryder Cup social event. Your goal is to help him think more deeply about his plan to avoid alcohol.
+You're helping Matthew improve his answer so he avoids alcohol at the event.
 
 Hole: "${metaTitle}"
-The hole's main question is: "${metaPrompt}"
-Matthew's current answer is: "${userText}"
+Hole focus: "${metaPrompt}"
+Matthew's current text: "${userText}"
 
 TASK:
-Your task is to ask Matthew ONE follow-up question to help him expand on his answer.
-- The question must be directly related to the hole's main question.
-- It should be conversational and encouraging.
-- The goal is to help him provide a more detailed and thoughtful response.
-- End with a single '?'.
+- Ask ONE short, highly targeted follow-up question (max 18 words).
+- Must directly support NOT drinking (intention, ally, pause routine).
+- Speak directly to him ("you"). End with a single '?'.
 Return ONLY the question.
   `.trim();
 
