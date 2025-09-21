@@ -13,9 +13,9 @@ import {
   continueConversation,
   enhanceHoleWithFollowup,
   enhanceAllHoles,
+  yardageBookReframeExcuse,
   initializeGemini as initializeYardageBook,
 } from '@/prompts/yardageBook';
-import { reframeExcuse, initializeGemini as initializeExcuseReframe } from '@/prompts/excuseReframe';
 import { toast } from '@/components/ui/use-toast';
 
 const holes = [
@@ -38,7 +38,6 @@ const YardageBook = ({ onBack }) => {
     const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     if (apiKey) {
       initializeYardageBook(apiKey);
-      initializeExcuseReframe(apiKey);
       setIsInitialized(true);
     } else {
       toast({ title: "API Key Missing", description: "Gemini API key is not configured.", variant: "destructive" });
@@ -263,7 +262,7 @@ const YardageBook = ({ onBack }) => {
     setReframed('');
     setPlan('');
     try {
-      const reframe = await reframeExcuse(responses[holeIndex]);
+      const reframe = await yardageBookReframeExcuse(responses[holeIndex]);
       processAIResponse(setReframed, reframe);
       if (!String(reframe || '').trim().endsWith('?')) {
         const followUp = await createActionPlan(responses[holeIndex]);
