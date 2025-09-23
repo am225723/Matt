@@ -5,6 +5,7 @@ import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import HealthDashboard from '@/components/HealthDashboard';
+import AnxietyTracker from '@/components/AnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
@@ -12,7 +13,7 @@ import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, HeartPulse } from 'lucide-react';
 
 const DashboardTile = ({
   title,
@@ -136,10 +137,19 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
         <DashboardTile
           title="Health Dashboard"
-          description="Connect your wearables to track your health data."
+          description="Manually track your health data like sleep and weight."
           icon={<Heart className="w-6 h-6 text-white" />}
           onClick={() => onSelect('health')}
           className="bg-pink-500/30"
+        />
+      </motion.div>
+      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+        <DashboardTile
+          title="Anxiety Tracker"
+          description="Log your feelings and identify anxiety patterns."
+          icon={<HeartPulse className="w-6 h-6 text-white" />}
+          onClick={() => onSelect('anxiety')}
+          className="bg-indigo-500/30"
         />
       </motion.div>
     </motion.div>
@@ -197,6 +207,7 @@ const App = () => {
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
+      {view === 'anxiety' && <AnxietyTracker onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
