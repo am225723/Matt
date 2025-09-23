@@ -187,70 +187,80 @@ export const suggestNextScenario = async (completedScenarios, allScenarios) => {
 };
 
 // Yardage Book-specific function for reframing excuses (Hole 4)
-export const yardageBookReframeExcuse = (excuse) => {
-  const prompt = `
-  Matthew's excuse about drinking: "${excuse}".
+export const yardageBookReframeExcuse = async (excuse) => {
+  try {
+    const prompt = `
+    Matthew's excuse about drinking: "${excuse}".
 
-  Analyze this excuse and reframe it into a more empowering perspective.
-  - Identify the underlying concern or fear
-  - Provide a supportive, non-judgmental reframing
-  - Focus specifically on alcohol-related challenges at social events
-  - Maintain the warm, supportive caddie tone
-  - Speak directly to him ("you")
-  `.trim();
-  return generateYardageBookContent(prompt);
+    Analyze this excuse and reframe it into a more empowering perspective.
+    - Identify the underlying concern or fear
+    - Provide a supportive, non-judgmental reframing
+    - Focus specifically on alcohol-related challenges at social events
+    - Maintain the warm, supportive caddie tone
+    - Speak directly to him ("you")
+    `.trim();
+    return await generateYardageBookContent(prompt);
+  } catch (error) {
+    console.error("Error in yardageBookReframeExcuse:", error);
+    throw new Error("Failed to reframe excuse. Please try again.");
+  }
 };
 
 // Function to enhance all holes with AI insights
 export const enhanceAllHoles = async (responses) => {
-  const enhancedInsights = [];
-  
-  // Process each hole response
-  for (let i = 0; i < responses.length; i++) {
-    const userText = responses[i] || '';
+  try {
+    const enhancedInsights = [];
     
-    try {
-      let insight;
+    // Process each hole response
+    for (let i = 0; i < responses.length; i++) {
+      const userText = responses[i] || '';
       
-      // For holes 1-3, use the existing hole-aware enhancement
-      if (i <= 2) {
-        insight = await enhanceHoleWithFollowup(i, userText);
-      } else {
-        // For other holes, create hole-specific enhancements
-        switch (i) {
-          case 3: // Hole 4 - The Excuse Trap
-            const reframe = await yardageBookReframeExcuse(userText);
-            const plan = await createActionPlan(userText);
-            insight = `${reframe}\n\n${plan}`;
-            break;
-          case 4: // Hole 5 - Power Phrase
-            insight = await suggestPowerPhrase(userText);
-            break;
-          case 5: // Hole 6 - Read the Green
-            insight = await simulateTomorrow(userText);
-            break;
-          case 6: // Hole 7 - Mulligan Mindset
-            insight = await highlightTriggers(userText);
-            break;
-          case 7: // Hole 8 - Club Swap
-            insight = await suggestAlternatives(userText);
-            break;
-          case 8: // Hole 9 - Victory Putt
-            insight = await suggestMantra(userText);
-            break;
-          default:
-            insight = "No specific enhancement available for this hole.";
+      try {
+        let insight;
+        
+        // For holes 1-3, use the existing hole-aware enhancement
+        if (i <= 2) {
+          insight = await enhanceHoleWithFollowup(i, userText);
+        } else {
+          // For other holes, create hole-specific enhancements
+          switch (i) {
+            case 3: // Hole 4 - The Excuse Trap
+              const reframe = await yardageBookReframeExcuse(userText);
+              const plan = await createActionPlan(userText);
+              insight = `${reframe}\n\n${plan}`;
+              break;
+            case 4: // Hole 5 - Power Phrase
+              insight = await suggestPowerPhrase(userText);
+              break;
+            case 5: // Hole 6 - Read the Green
+              insight = await simulateTomorrow(userText);
+              break;
+            case 6: // Hole 7 - Mulligan Mindset
+              insight = await highlightTriggers(userText);
+              break;
+            case 7: // Hole 8 - Club Swap
+              insight = await suggestAlternatives(userText);
+              break;
+            case 8: // Hole 9 - Victory Putt
+              insight = await suggestMantra(userText);
+              break;
+            default:
+              insight = "No specific enhancement available for this hole.";
+          }
         }
+        
+        enhancedInsights.push(insight);
+      } catch (error) {
+        console.error(`Error enhancing hole ${i + 1}:`, error);
+        enhancedInsights.push("AI could not enhance this hole.");
       }
-      
-      enhancedInsights.push(insight);
-    } catch (error) {
-      console.error(`Error enhancing hole ${i + 1}:`, error);
-      enhancedInsights.push("AI could not enhance this hole.");
     }
+    
+    return enhancedInsights;
+  } catch (error) {
+    console.error("Error in enhanceAllHoles:", error);
+    throw new Error("Failed to enhance all holes. Please try again.");
   }
-  
-  return enhancedInsights;
 };
 
 // New function for Hole 5 - Power Phrase

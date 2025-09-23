@@ -8,70 +8,89 @@ const handleCopy = (text) => {
 };
 
 export const handlePrintToPDF = (responses, summary) => {
-	const content = `
-      <div style="font-family:sans-serif; padding:20px;">
-        <h2>🏌️‍♂️ Ryder Cup Yardage Book</h2>
-        ${responses
-			.map(
-				(res, i) =>
-					`<h3>Hole ${i + 1}</h3><p>${res || "No response."}</p><hr/>`
-			)
-			.join("")}
-        ${summary ? `<h2>🧠 AI Summary</h2><p>${summary}</p>` : ""}
-      </div>
-    `;
-	const element = document.createElement("div");
-	element.innerHTML = content;
-	html2pdf()
-		.set({
-			margin: 0.5,
-			filename: "ryder-cup-yardage-book.pdf",
-			html2canvas: { scale: 2 },
-			jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-		})
-		.from(element)
-		.save();
+	try {
+		// Ensure responses is an array and handle edge cases
+		const safeResponses = Array.isArray(responses) ? responses : [];
+		const safeSummary = summary || "";
+		
+		const content = `
+	      <div style="font-family:sans-serif; padding:20px;">
+	        <h2>🏌️ Ryder Cup Yardage Book</h2>
+	        ${safeResponses
+				.map(
+					(res, i) =>
+						`<h3>Hole ${i + 1}</h3><p>${res || "No response."}</p><hr/>`
+				)
+				.join("")}
+	        ${safeSummary ? `<h2>🧠 AI Summary</h2><p>${safeSummary}</p>` : ""}
+	      </div>
+	    `;
+		const element = document.createElement("div");
+		element.innerHTML = content;
+		html2pdf()
+			.set({
+				margin: 0.5,
+				filename: "ryder-cup-yardage-book.pdf",
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+			})
+			.from(element)
+			.save();
+	} catch (error) {
+		console.error("Error generating PDF:", error);
+		// In a real implementation, we would show a user-friendly error message
+	}
 };
 
 export const handleEnhancedPrintToPDF = (responses, insights, summary) => {
-	const content = `
-      <div style="font-family:sans-serif; padding:20px;">
-        <h2>🏌️‍♂️ Enhanced Ryder Cup Yardage Book</h2>
-        ${responses
-			.map(
-				(res, i) => `
-                <div style="margin-bottom: 20px; page-break-inside: avoid;">
-                  <h3>Hole ${i + 1}</h3>
-                  <p>${res || "No response."}</p>
-                  ${insights && insights[i] ? 
-                    `<div style="background-color: #f5f5f5; padding: 10px; border-left: 4px solid #4a90e2; margin-top: 10px;">
-                      <h4 style="color: #4a90e2; margin-top: 0;">🧠 AI Caddie's Insight</h4>
-                      <p>${insights[i]}</p>
-                    </div>` : 
-                    ''}
-                </div>
-                <hr/>
-              `
-			)
-			.join("")}
-        ${summary ? `
-          <div style="page-break-before: always;">
-            <h2>⭐ Your Final Yardage Book Summary</h2>
-            <p>${summary}</p>
-          </div>` : ""}
-      </div>
-    `;
-	const element = document.createElement("div");
-	element.innerHTML = content;
-	html2pdf()
-		.set({
-			margin: 0.5,
-			filename: "enhanced-ryder-cup-yardage-book.pdf",
-			html2canvas: { scale: 2 },
-			jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
-		})
-		.from(element)
-		.save();
+	try {
+		// Ensure responses is an array and handle edge cases
+		const safeResponses = Array.isArray(responses) ? responses : [];
+		const safeInsights = Array.isArray(insights) ? insights : [];
+		const safeSummary = summary || "";
+		
+		const content = `
+	      <div style="font-family:sans-serif; padding:20px;">
+	        <h2>🏌️ Enhanced Ryder Cup Yardage Book</h2>
+	        ${safeResponses
+				.map(
+					(res, i) => `
+	                <div style="margin-bottom: 20px; page-break-inside: avoid;">
+	                  <h3>Hole ${i + 1}</h3>
+	                  <p>${res || "No response."}</p>
+	                  ${safeInsights && safeInsights[i] ? 
+	                    `<div style="background-color: #f5f5f5; padding: 10px; border-left: 4px solid #4a90e2; margin-top: 10px;">
+	                      <h4 style="color: #4a90e2; margin-top: 0;">🧠 AI Caddie's Insight</h4>
+	                      <p>${safeInsights[i]}</p>
+	                    </div>` : 
+	                    ''}
+	                </div>
+	                <hr/>
+	              `
+				)
+				.join("")}
+	        ${safeSummary ? `
+	          <div style="page-break-before: always;">
+	            <h2>⭐ Your Final Yardage Book Summary</h2>
+	            <p>${safeSummary}</p>
+	          </div>` : ""}
+	      </div>
+	    `;
+		const element = document.createElement("div");
+		element.innerHTML = content;
+		html2pdf()
+			.set({
+				margin: 0.5,
+				filename: "enhanced-ryder-cup-yardage-book.pdf",
+				html2canvas: { scale: 2 },
+				jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
+			})
+			.from(element)
+			.save();
+	} catch (error) {
+		console.error("Error generating enhanced PDF:", error);
+		// In a real implementation, we would show a user-friendly error message
+	}
 };
 
 const InsightCard = ({ title, text, icon, index, children }) => {
