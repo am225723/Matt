@@ -6,13 +6,14 @@ import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import HealthDashboard from '@/components/HealthDashboard';
 import AISuggestion from '@/components/AISuggestion';
+import AdminDashboard from '@/AdminDashboard';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, Shield } from 'lucide-react';
 
 const DashboardTile = ({
   title,
@@ -142,6 +143,15 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           className="bg-pink-500/30"
         />
       </motion.div>
+      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+        <DashboardTile
+          title="Admin Dashboard"
+          description="Access advanced settings, analytics, and user management."
+          icon={<Shield className="w-6 h-6 text-white" />}
+          onClick={() => onSelect('admin')}
+          className="bg-indigo-500/30"
+        />
+      </motion.div>
     </motion.div>
 
     <motion.div
@@ -197,6 +207,7 @@ const App = () => {
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
+      {view === 'admin' && <AdminDashboard onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
