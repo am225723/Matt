@@ -42,7 +42,7 @@ export const handlePrintToPDF = (responses, summary) => {
 	}
 };
 
-export const handleEnhancedPrintToPDF = (responses, insights, summary) => {
+export const handleEnhancedPrintToPDF = (holes, responses, insights, summary) => {
 	try {
 		// Ensure responses is an array and handle edge cases
 		const safeResponses = Array.isArray(responses) ? responses : [];
@@ -50,29 +50,45 @@ export const handleEnhancedPrintToPDF = (responses, insights, summary) => {
 		const safeSummary = summary || "";
 		
 		const content = `
-	      <div style="font-family:sans-serif; padding:20px;">
-	        <h2>🏌️ Enhanced Ryder Cup Yardage Book</h2>
-	        ${safeResponses
+	      <div style="font-family: Arial, sans-serif; padding: 25px; color: #333;">
+	        <style>
+	          @import url('https://fonts.googleapis.com/css2?family=Merriweather:wght@400;700&family=Roboto:wght@400;500&display=swap');
+	          body { font-family: 'Roboto', sans-serif; }
+	          h1, h2, h3, h4 { font-family: 'Merriweather', serif; }
+	          h2 { color: #1a73e8; }
+	          h3 { color: #34a853; border-bottom: 2px solid #eee; padding-bottom: 5px; }
+	          .hole-container { page-break-inside: avoid; margin-bottom: 25px; border: 1px solid #ddd; border-radius: 8px; padding: 15px; background-color: #f9f9f9; }
+	          .prompt { font-style: italic; color: #5f6368; margin-bottom: 10px; }
+	          .response { background-color: #fff; padding: 10px; border-radius: 4px; border: 1px solid #e0e0e0; }
+	          .insight { background-color: #e8f0fe; padding: 15px; border-left: 4px solid #1a73e8; margin-top: 15px; border-radius: 4px; }
+	          .insight h4 { color: #1967d2; margin-top: 0; margin-bottom: 5px; }
+	          hr { border: 0; border-top: 1px solid #eee; margin: 20px 0; }
+	        </style>
+	        <h2 style="text-align: center; border-bottom: 2px solid #1a73e8; padding-bottom: 10px;">🏌️ Enhanced Ryder Cup Yardage Book</h2>
+	        ${holes
 				.map(
-					(res, i) => `
-	                <div style="margin-bottom: 20px; page-break-inside: avoid;">
-	                  <h3>Hole ${i + 1}</h3>
-	                  <p>${res || "No response."}</p>
+					(hole, i) => `
+	                <div class="hole-container">
+	                  <h3>${hole.title}</h3>
+	                  <p class="prompt">"${hole.prompt}"</p>
+	                  <div class="response">
+	                    <strong>Your Answer:</strong>
+	                    <p>${safeResponses[i] || "No response."}</p>
+	                  </div>
 	                  ${safeInsights && safeInsights[i] ? 
-	                    `<div style="background-color: #f5f5f5; padding: 10px; border-left: 4px solid #4a90e2; margin-top: 10px;">
-	                      <h4 style="color: #4a90e2; margin-top: 0;">🧠 AI Caddie's Insight</h4>
-	                      <p>${safeInsights[i]}</p>
+	                    `<div class="insight">
+	                      <h4>🧠 AI Caddie's Insight</h4>
+	                      <p>${safeInsights[i].replace(/\n/g, '<br>')}</p>
 	                    </div>` : 
 	                    ''}
 	                </div>
-	                <hr/>
 	              `
 				)
 				.join("")}
 	        ${safeSummary ? `
 	          <div style="page-break-before: always;">
-	            <h2>⭐ Your Final Yardage Book Summary</h2>
-	            <p>${safeSummary}</p>
+	            <h2 style="color: #34a853;">⭐ Your Final Yardage Book Summary</h2>
+	            <p>${safeSummary.replace(/\n/g, '<br>')}</p>
 	          </div>` : ""}
 	      </div>
 	    `;
@@ -82,7 +98,7 @@ export const handleEnhancedPrintToPDF = (responses, insights, summary) => {
 			.set({
 				margin: 0.5,
 				filename: "enhanced-ryder-cup-yardage-book.pdf",
-				html2canvas: { scale: 2 },
+				html2canvas: { scale: 2, useCORS: true },
 				jsPDF: { unit: "in", format: "letter", orientation: "portrait" },
 			})
 			.from(element)

@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
-import { Sparkles, ArrowLeft, ArrowRight, Printer, Zap } from 'lucide-react';
+import { Sparkles, ArrowLeft, ArrowRight, Printer, Zap, MessageSquare } from 'lucide-react';
 import GeminiResponseDisplay, { handlePrintToPDF, handleEnhancedPrintToPDF } from "@/components/GeminiResponseDisplay";
 import ConversationThread from "@/components/ConversationThread";
+import { composeSMS } from '@/utils/sms';
 import {
   createActionPlan,
   suggestMantra,
@@ -46,6 +47,7 @@ const YardageBook = ({ onBack }) => {
 
   // Use Array.from to avoid shared reference bugs
   const [responses, setResponses] = useState(Array.from({ length: holes.length }, () => ''));
+  const [accountabilityBuddy, setAccountabilityBuddy] = useState({ name: '', phone: '' });
   const [conversations, setConversations] = useState(Array.from({ length: holes.length }, () => [])); // per-hole list of threads; each thread is an array of {type,text}
   const [activeThreadIndexByHole, setActiveThreadIndexByHole] = useState(Array.from({ length: holes.length }, () => null));
 
@@ -137,7 +139,7 @@ const YardageBook = ({ onBack }) => {
       }
       
       // Generate enhanced PDF with the actual summary value
-      handleEnhancedPrintToPDF(responses, insights, currentSummary || '');
+      handleEnhancedPrintToPDF(holes, responses, insights, currentSummary || '');
       toast({ title: "Success!", description: "Enhanced yardage book PDF has been generated." });
     } catch (error) {
       console.error("Error enhancing holes:", error);
@@ -344,6 +346,28 @@ const YardageBook = ({ onBack }) => {
         rows={4}
       />
 
+      {holeIndex === 1 && (
+        <div className="space-y-3 mt-4">
+          <h4 className="text-lg font-semibold">Accountability Buddy Details</h4>
+          <div className="grid grid-cols-2 gap-4">
+            <input
+              type="text"
+              placeholder="Buddy's Name"
+              value={accountabilityBuddy.name}
+              onChange={(e) => setAccountabilityBuddy({ ...accountabilityBuddy, name: e.target.value })}
+              className="p-2 border rounded"
+            />
+            <input
+              type="tel"
+              placeholder="Buddy's Phone (optional)"
+              value={accountabilityBuddy.phone}
+              onChange={(e) => setAccountabilityBuddy({ ...accountabilityBuddy, phone: e.target.value })}
+              className="p-2 border rounded"
+            />
+          </div>
+        </div>
+      )}
+
       {/* 💡 Holes 1–3: AI Insight card WITH embedded conversation box if a follow-up question was asked */}
       {(holeIndex === 0 || holeIndex === 1 || holeIndex === 2) && (
         <div className="space-y-3">
@@ -460,6 +484,14 @@ const YardageBook = ({ onBack }) => {
           >
             <Zap className="w-4 h-4 mr-2" /> 
             {enhancingAll ? 'Enhancing All Holes...' : 'Enhance All Holes & Generate PDF'}
+          </Button>
+          <Button
+            onClick={() => composeSMS('Ryder Cup Yardage Book', { ally: accountabilityBuddy.name, allyPhone: accountabilityBuddy.phone, responses: responses, summary: summary }, 'Here is my completed Yardage Book. Thanks for being my caddie!', () => 'Ryder Cup Yardage Book')}
+            className="w-full mt-2 mb-2 bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center"
+            disabled={!accountabilityBuddy.name}
+          >
+            <MessageSquare className="w-4 h-4 mr-2" />
+            Text Your Accountability Buddy
           </Button>
           <Button onClick={onBack} className="w-full bg-green-600 hover:bg-green-700 text-white">
             🏁 Finish Round & Go to Dashboard
