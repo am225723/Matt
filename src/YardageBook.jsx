@@ -76,6 +76,8 @@ const YardageBook = ({ onBack }) => {
     setForecast('');
     setTriggers('');
     setInsight('');
+    setEnhancedInsights([]);
+    setEnhancingAll(false);
     setActiveThreadIndexByHole(prev => {
       const next = [...prev];
       next[holeIndex] = null;
@@ -128,13 +130,14 @@ const YardageBook = ({ onBack }) => {
       setEnhancedInsights(insights);
       
       // Generate summary if it doesn't exist
-      if (!summary) {
-        const fullSummary = await summarizeYardageBook(responses);
-        setSummary(fullSummary);
+      let currentSummary = summary;
+      if (!currentSummary) {
+        currentSummary = await summarizeYardageBook(responses);
+        setSummary(currentSummary);
       }
       
-      // Generate enhanced PDF
-      handleEnhancedPrintToPDF(responses, insights, summary || '');
+      // Generate enhanced PDF with the actual summary value
+      handleEnhancedPrintToPDF(responses, insights, currentSummary || '');
       toast({ title: "Success!", description: "Enhanced yardage book PDF has been generated." });
     } catch (error) {
       console.error("Error enhancing holes:", error);
