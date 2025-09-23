@@ -32,16 +32,24 @@ export const composeSMS = (scenario, answers, allyMsg, labelFor) => {
   }
   const phone = normalizePhone(answers.allyPhone);
   const url = getShareUrl(scenario, answers);
+
+  let customBody = '';
+  if (scenario === 'Ryder Cup Yardage Book') {
+    const holeSummary = answers.responses.map((r, i) => `Hole ${i+1}: ${r || 'Not answered'}`).join('\n');
+    customBody = `Here's my Yardage Book:\n\n${holeSummary}\n\nAI Summary:\n${answers.summary}\n\n`;
+  }
+
   const parts = [
     `Hey ${answers.ally || "friend"} — quick check-in for ${labelFor(scenario)}.`,
     answers.goal ? `Goal: ${answers.goal}` : "",
     answers.limit ? `Limit/Focus: ${answers.limit}` : "",
     answers.line ? `Line: "${answers.line}"` : "",
     allyMsg ? `Note: ${allyMsg}` : "",
+    customBody,
     `Plan: ${url}`,
     "If I waver, please back me up. ❤️"
   ].filter(Boolean);
-  const body = parts.join("\n");
+  const body = parts.join("\n\n");
   const isMobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
   if (!isMobile) {
     copyToClipboard(`${phone ? `To: ${phone}\n` : ""}${body}`).then(ok => toast(ok ? { title: "Copied to Clipboard", description: "Paste into your messaging app." } : { title: "Copy Failed", description: "Couldn’t copy—please paste manually.", variant: "destructive" }));
