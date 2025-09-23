@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard Redesign - Mockup</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <style>
+    /* Custom styles */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.5rem;
+    }
+    
+    .chart-placeholder {
+      background: linear-gradient(135deg, #e2e8f0 25%, #edf2f7 25%, #edf2f7 50%, #e2e8f0 50%, #e2e8f0 75%, #edf2f7 75%, #edf2f7 100%);
+      background-size: 20px 20px;
+    }
+    
+    .dark .chart-placeholder {
+      background: linear-gradient(135deg, #2d3748 25%, #1a202c 25%, #1a202c 50%, #2d3748 50%, #2d3748 75%, #1a202c 75%, #1a202c 100%);
+      background-size: 20px 20px;
+    }
+    
+    .dark {
+      background-color: #1a202c;
+      color: #f7fafc;
+    }
+    
+    .dark .bg-white {
+      background-color: #2d3748;
+    }
+    
+    .dark .bg-gray-100 {
+      background-color: #4a5568;
+    }
+    
+    .dark .text-gray-800 {
+      color: #e2e8f0;
+    }
+    
+    .dark .text-gray-600 {
+      color: #cbd5e0;
+    }
+    
+    .dark .border-gray-200 {
+      border-color: #4a5568;
+    }
+    
+    .dark .shadow {
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Animated elements */
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    
+    .animate-pulse {
+      animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body class="bg-gray-100 font-sans">
+  <div class="flex h-screen overflow-hidden">
+    <!-- Sidebar -->
+    <div class="hidden md:flex md:flex-shrink-0">
+      <div class="flex flex-col w-64 bg-white border-r border-gray-200 shadow">
+        <div class="flex items-center justify-between h-16 px-6 border-b border-gray-200">
+          <div class="flex items-center">
+            <div class="w-8 h-8 bg-blue-600 rounded-md flex items-center justify-center text-white font-bold">M</div>
+            <span class="ml-2 text-lg font-semibold">Admin Dashboard</span>
+          </div>
+          <button class="p-1 rounded-md hover:bg-gray-100">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M3 5a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 10a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM3 15a1 1 0 011-1h6a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd" />
+            </svg>
+          </button>
+        </div>
+        <div class="flex-1 overflow-y-auto">
+          <nav class="px-4 py-4 space-y-1">
+            <a href="#" class="flex items-center px-3 py-3 text-sm font-medium rounded-lg bg-blue-100 text-blue-700">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              Dashboard
+            </a>
+            <a href="#" class="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+              Analytics
+            </a>
+            <a href="#" class="flex items-center justify-between px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+                Users
+              </div>
+              <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full bg-gray-200 text-gray-700">12</span>
+            </a>
+            <a href="#" class="flex items-center justify-between px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+              <div class="flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                </svg>
+                Notifications
+              </div>
+              <span class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full bg-red-500 text-white">3</span>
+            </a>
+            <a href="#" class="flex items-center px-3 py-3 text-sm font-medium rounded-lg text-gray-700 hover:bg-gray-100">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              </svg>
+              Settings
+            </a>
+          </nav>
+          
+          <!-- Favorites Section -->
+          <div class="px-4 py-4 border-t border-gray-200">
+            <h3 class="text-xs uppercase font-semibold text-gray-500 tracking-wider mb-2">Favorites</h3>
+            <div class="space-y-1">
+              <a href="#" class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
+                Reports
+              </a>
+              <a href="#" class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                </svg>
+                Calendar
+              </a>
+              <a href="#" class="flex items-center px-3 py-2 text-sm rounded-md text-gray-700 hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
+                </svg>
+                Messages
+              </a>
+            </div>
+          </div>
+        </div>
+        <div class="p-4 border-t border-gray-200">
+          <button class="w-full flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+            Back to Dashboard
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="flex-1 flex flex-col overflow-hidden">
+      <!-- Top Navigation -->
+      <header class="bg-white border-b border-gray-200 shadow-sm">
+        <div class="flex items-center justify-between h-16 px-4 sm:px-6">
+          <div class="flex items-center">
+            <!-- Mobile menu button -->
+            <button class="md:hidden p-2 rounded-md text-gray-500 hover:text-gray-600 hover:bg-gray-100">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+              </svg>
+            </button>
+            
+            <!-- Search -->
+            <div class="hidden md:block ml-4">
+              <div class="relative w-64">
+                <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
+                </div>
+                <input type="search" class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-lg bg-gray-100 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm" placeholder="Search...">
+              </div>
+            </div>
+          </div>
+          
+          <div class="flex items-center space-x-4">
+            <!-- Help -->
+            <button class="p-2 rounded-full hover:bg-gray-100 text-gray-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </button>
+            
+            <!-- Notifications -->
+            <button class="p-2 rounded-full hover:bg-gray-100 text-gray-600 relative">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+              </svg>
+              <span class="absolute top-0 right-0 inline-flex items-center justify-center w-4 h-4 text-xs font-bold text-white bg-red-500 rounded-full">3</span>
+            </button>
+            
+            <!-- User Menu -->
+            <div class="relative">
+              <button class="flex items-center space-x-2 p-1 rounded-full hover:bg-gray-100">
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <div class="hidden md:block text-left">
+                  <p class="text-sm font-medium text-gray-800">Admin User</p>
+                  <p class="text-xs text-gray-500">admin@example.com</p>
+                </div>
+                <svg xmlns="http://www.w3.org/2000/svg" class="hidden md:block h-4 w-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </header>
+      
+      <!-- Main Content Area -->
+      <main class="flex-1 overflow-y-auto bg-gray-100 p-4 sm:p-6">
+        <!-- Page Header -->
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Dashboard Overview</h1>
+            <p class="text-gray-500">Welcome back, Admin User</p>
+          </div>
+          <div class="flex flex-wrap items-center gap-2">
+            <!-- Date Range Selector -->
+            <div class="bg-white rounded-md shadow-sm flex">
+              <button class="px-3 py-1 text-sm font-medium rounded-l-md bg-blue-600 text-white">7D</button>
+              <button class="px-3 py-1 text-sm font-medium border-x border-gray-200 text-gray-700 hover:bg-gray-50">30D</button>
+              <button class="px-3 py-1 text-sm font-medium rounded-r-md text-gray-700 hover:bg-gray-50">90D</button>
+            </div>
+            
+            <!-- Action Buttons -->
+            <button class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+              Refresh
+            </button>
+            <button class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z" />
+              </svg>
+              Filter
+            </button>
+            <button class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+              </svg>
+              Export
+            </button>
+          </div>
+        </div>
+        
+        <!-- Dashboard Tabs -->
+        <div class="border-b border-gray-200 mb-6">
+          <nav class="flex space-x-4">
+            <button class="py-2 px-1 inline-flex items-center border-b-2 border-blue-500 text-blue-600">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+              </svg>
+              Overview
+            </button>
+            <button class="py-2 px-1 inline-flex items-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+              </svg>
+              Performance
+            </button>
+            <button class="py-2 px-1 inline-flex items-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+              </svg>
+              Users
+            </button>
+            <button class="py-2 px-1 inline-flex items-center border-b-2 border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01" />
+              </svg>
+              System
+            </button>
+          </nav>
+        </div>
+        
+        <!-- Key Metrics -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-6">
+          <!-- Total Users Metric -->
+          <div class="bg-white overflow-hidden shadow rounded-lg border border-blue-200">
+            <div class="p-4 bg-blue-50">
+              <div class="flex items-center justify-between mb-2">
+                <div class="p-2 rounded-md bg-blue-500 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                  </svg>
+                </div>
+                <div class="px-2 py-1 rounded-full text-xs font-medium flex items-center bg-green-100 text-green-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                  </svg>
+                  +12%
+                </div>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-medium text-gray-500">Total Users</h3>
+                <p class="text-2xl font-bold text-blue-700">1,284</p>
+              </div>
+            </div>
+            <div class="p-3 bg-white text-xs text-gray-500 border-t border-gray-100">
+              <div class="flex items-center justify-between">
+                <span>Last 7 days</span>
+                <button class="h-6 w-6 p-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Active Sessions Metric -->
+          <div class="bg-white overflow-hidden shadow rounded-lg border border-green-200">
+            <div class="p-4 bg-green-50">
+              <div class="flex items-center justify-between mb-2">
+                <div class="p-2 rounded-md bg-green-500 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <div class="px-2 py-1 rounded-full text-xs font-medium flex items-center bg-green-100 text-green-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                  </svg>
+                  +5%
+                </div>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-medium text-gray-500">Active Sessions</h3>
+                <p class="text-2xl font-bold text-green-700">432</p>
+              </div>
+            </div>
+            <div class="p-3 bg-white text-xs text-gray-500 border-t border-gray-100">
+              <div class="flex items-center justify-between">
+                <span>Last 7 days</span>
+                <button class="h-6 w-6 p-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Session Duration Metric -->
+          <div class="bg-white overflow-hidden shadow rounded-lg border border-purple-200">
+            <div class="p-4 bg-purple-50">
+              <div class="flex items-center justify-between mb-2">
+                <div class="p-2 rounded-md bg-purple-500 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="px-2 py-1 rounded-full text-xs font-medium flex items-center bg-green-100 text-green-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 10l7-7m0 0l7 7m-7-7v18" />
+                  </svg>
+                  +18%
+                </div>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-medium text-gray-500">Avg. Session Duration</h3>
+                <p class="text-2xl font-bold text-purple-700">4m 32s</p>
+              </div>
+            </div>
+            <div class="p-3 bg-white text-xs text-gray-500 border-t border-gray-100">
+              <div class="flex items-center justify-between">
+                <span>Last 7 days</span>
+                <button class="h-6 w-6 p-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Conversion Rate Metric -->
+          <div class="bg-white overflow-hidden shadow rounded-lg border border-amber-200">
+            <div class="p-4 bg-amber-50">
+              <div class="flex items-center justify-between mb-2">
+                <div class="p-2 rounded-md bg-amber-500 text-white">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                  </svg>
+                </div>
+                <div class="px-2 py-1 rounded-full text-xs font-medium flex items-center bg-red-100 text-red-800">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3" />
+                  </svg>
+                  -2%
+                </div>
+              </div>
+              <div class="space-y-1">
+                <h3 class="text-sm font-medium text-gray-500">Conversion Rate</h3>
+                <p class="text-2xl font-bold text-amber-700">24%</p>
+              </div>
+            </div>
+            <div class="p-3 bg-white text-xs text-gray-500 border-t border-gray-100">
+              <div class="flex items-center justify-between">
+                <span>Last 7 days</span>
+                <button class="h-6 w-6 p-0">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Main Dashboard Content -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+          <!-- Performance Chart -->
+          <div class="bg-white overflow-hidden shadow rounded-lg lg:col-span-2">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex flex-row items-center justify-between">
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Performance Overview</h3>
+                <p class="text-sm text-gray-500">User engagement metrics for the past week</p>
+              </div>
+              <div class="flex items-center space-x-2">
+                <button class="inline-flex items-center px-2 py-1 text-sm text-gray-700 hover:bg-gray-100 rounded">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 3.055A9.001 9.001 0 1020.945 13H11V3.055z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.488 9H15V3.512A9.025 9.025 0 0120.488 9z" />
+                  </svg>
+                  Chart Type
+                </button>
+                <button class="p-1 rounded hover:bg-gray-100">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+            <div class="p-0">
+              <div class="p-6">
+                <div class="h-80 chart-placeholder rounded"></div>
+              </div>
+              <div class="border-t border-gray-200 bg-gray-50 p-4 flex justify-between items-center">
+                <div class="flex space-x-4">
+                  <div class="flex items-center">
+                    <div class="w-3 h-3 bg-blue-500 rounded-full mr-2"></div>
+                    <span class="text-xs text-gray-600">This Week</span>
+                  </div>
+                  <div class="flex items-center">
+                    <div class="w-3 h-3 bg-gray-300 rounded-full mr-2"></div>
+                    <span class="text-xs text-gray-600">Last Week</span>
+                  </div>
+                </div>
+                <button class="inline-flex items-center px-3 py-1 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                  Export
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Recent Activity -->
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex flex-row items-center justify-between">
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Recent Activity</h3>
+                <p class="text-sm text-gray-500">Latest actions and events</p>
+              </div>
+              <button class="p-1 rounded hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                </svg>
+              </button>
+            </div>
+            <div class="divide-y divide-gray-200">
+              <div class="flex items-start p-4 hover:bg-gray-50">
+                <div class="mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">New user registered</p>
+                  <div class="flex items-center text-xs text-gray-500 mt-1">
+                    <span>John Doe</span>
+                    <span class="mx-1">•</span>
+                    <span>1 hour ago</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-start p-4 hover:bg-gray-50">
+                <div class="mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">Content updated</p>
+                  <div class="flex items-center text-xs text-gray-500 mt-1">
+                    <span>Jane Smith</span>
+                    <span class="mx-1">•</span>
+                    <span>2 hours ago</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-start p-4 hover:bg-gray-50">
+                <div class="mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">System backup completed</p>
+                  <div class="flex items-center text-xs text-gray-500 mt-1">
+                    <span>System</span>
+                    <span class="mx-1">•</span>
+                    <span>3 hours ago</span>
+                  </div>
+                </div>
+              </div>
+              <div class="flex items-start p-4 hover:bg-gray-50">
+                <div class="mr-4">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                  </svg>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm font-medium text-gray-900">User logged in</p>
+                  <div class="flex items-center text-xs text-gray-500 mt-1">
+                    <span>Bob Johnson</span>
+                    <span class="mx-1">•</span>
+                    <span>4 hours ago</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="border-t border-gray-200 bg-gray-50 p-4 text-center">
+              <button class="text-sm text-gray-700 hover:text-gray-900 font-medium">
+                View All Activity
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- System Status & Quick Actions -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- System Status -->
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex flex-row items-center justify-between">
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">System Status</h3>
+                <p class="text-sm text-gray-500">Current system performance metrics</p>
+              </div>
+              <button class="p-1 rounded hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                </svg>
+              </button>
+            </div>
+            <div class="p-6 space-y-5">
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 3v2m6-2v2M9 19v2m6-2v2M5 9H3m2 6H3m18-6h-2m2 6h-2M7 19h10a2 2 0 002-2V7a2 2 0 00-2-2H7a2 2 0 00-2 2v10a2 2 0 002 2zM9 9h6v6H9V9z" />
+                    </svg>
+                    <span class="text-sm font-medium">CPU Usage</span>
+                  </div>
+                  <span class="text-sm font-medium">32%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                  <div class="bg-blue-500 h-2.5 rounded-full" style="width: 32%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                    </svg>
+                    <span class="text-sm font-medium">Memory Usage</span>
+                  </div>
+                  <span class="text-sm font-medium">64%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                  <div class="bg-purple-500 h-2.5 rounded-full" style="width: 64%"></div>
+                </div>
+              </div>
+              
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <div class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-500 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                    </svg>
+                    <span class="text-sm font-medium">Storage Usage</span>
+                  </div>
+                  <span class="text-sm font-medium">48%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5 overflow-hidden">
+                  <div class="bg-green-500 h-2.5 rounded-full" style="width: 48%"></div>
+                </div>
+              </div>
+              
+              <div class="pt-2 flex items-center justify-between">
+                <div>
+                  <p class="text-sm font-medium">System Uptime</p>
+                  <p class="text-sm text-gray-500">23d 4h 15m</p>
+                </div>
+                <div>
+                  <p class="text-sm font-medium">Last Restart</p>
+                  <p class="text-sm text-gray-500">Aug 30, 2025</p>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Quick Actions -->
+          <div class="bg-white overflow-hidden shadow rounded-lg">
+            <div class="bg-gray-50 px-4 py-3 border-b border-gray-200 flex flex-row items-center justify-between">
+              <div>
+                <h3 class="text-lg font-medium text-gray-900">Quick Actions</h3>
+                <p class="text-sm text-gray-500">Frequently used admin functions</p>
+              </div>
+              <button class="p-1 rounded hover:bg-gray-100">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z" />
+                </svg>
+              </button>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-2 gap-4">
+                <button class="h-auto py-4 flex flex-col items-center justify-center bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
+                  </svg>
+                  <span>Add New User</span>
+                </button>
+                <button class="h-auto py-4 flex flex-col items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                  <span>Generate Report</span>
+                </button>
+                <button class="h-auto py-4 flex flex-col items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                  </svg>
+                  <span>System Settings</span>
+                </button>
+                <button class="h-auto py-4 flex flex-col items-center justify-center bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 rounded-lg">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mb-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+                  </svg>
+                  <span>Clear Cache</span>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+  
+  <!-- Dark Mode Toggle (for demo purposes) -->
+  <button id="darkModeToggle" class="fixed bottom-4 right-4 p-2 bg-gray-800 text-white rounded-full shadow-lg">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+    </svg>
+  </button>
+  
+  <script>
+    // Simple dark mode toggle for demo purposes
+    document.getElementById('darkModeToggle').addEventListener('click', function() {
+      document.body.classList.toggle('dark');
+    });
+  </script>
+</body>
+</html>
