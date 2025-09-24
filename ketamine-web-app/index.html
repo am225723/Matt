@@ -314,6 +314,128 @@
       color: #999;
       padding: 2rem 0;
     }
+    
+    /* Notes Panel */
+    .notes-panel {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 380px;
+      height: 100vh;
+      background-color: var(--card-bg);
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .notes-panel.visible {
+      right: 0;
+    }
+
+    .notes-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .notes-header h3 {
+      margin: 0;
+      color: var(--primary-color);
+    }
+    
+    .notes-search {
+      padding: 1rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      gap: 0.5rem;
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    .notes-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .notes-footer {
+      padding: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .notes-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .note-item {
+      background-color: #f9f9f9;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      transition: var(--transition);
+    }
+
+    .note-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .note-item h4 {
+      color: var(--primary-dark);
+      margin-bottom: 0.5rem;
+      font-size: 1rem;
+    }
+
+    .note-item p {
+      margin: 0.5rem 0;
+      font-size: 0.9rem;
+    }
+
+    .note-item .note-date {
+      font-size: 0.8rem;
+      color: #666;
+      font-style: italic;
+      text-align: right;
+      margin-top: 0.5rem;
+    }
+
+    .note-item .note-followup {
+      margin-top: 0.5rem;
+      padding-left: 0.5rem;
+      border-left: 3px solid var(--primary-light);
+      font-style: italic;
+      color: var(--primary-dark);
+    }
+
+    .note-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+    
+    .search-results-message {
+      background-color: #e9f7fe;
+      padding: 0.75rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
 
     /* Loading Indicator */
     .loading-indicator {
@@ -521,6 +643,52 @@
       white-space: nowrap;
       border: 0;
     }
+    
+    /* Note Section Styles */
+    .note-section {
+      margin-top: 1rem;
+    }
+    
+    .note-preview {
+      background-color: #f9f9f9;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      padding: 1.5rem;
+      margin-top: 1rem;
+    }
+    
+    .note-content {
+      white-space: pre-wrap;
+      font-family: 'Poppins', sans-serif;
+      line-height: 1.6;
+    }
+    
+    .note-content h4 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+    
+    .note-content p {
+      margin-bottom: 1rem;
+    }
+    
+    .note-content .followup {
+      color: var(--primary-dark);
+      font-style: italic;
+      margin-top: 1rem;
+      border-left: 3px solid var(--primary-light);
+      padding-left: 1rem;
+    }
+    
+    .copy-success {
+      background-color: #d4edda;
+      color: #155724;
+      padding: 0.5rem;
+      border-radius: var(--border-radius);
+      margin-top: 1rem;
+      text-align: center;
+      display: none;
+    }
   </style>
 <script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
 </head>
@@ -534,6 +702,9 @@
       <div class="header-actions">
         <button id="history-btn" class="btn secondary-btn">
           <i class="fas fa-history"></i> Session History
+        </button>
+        <button id="notes-btn" class="btn secondary-btn">
+          <i class="fas fa-sticky-note"></i> View Notes
         </button>
       </div>
     </header>
@@ -590,6 +761,16 @@
         <button id="save-session-btn" class="btn secondary-btn" disabled>
           <i class="fas fa-save"></i> Save Session
         </button>
+        <button id="copy-note-btn" class="btn secondary-btn" disabled>
+          <i class="fas fa-copy"></i> Copy as Note
+        </button>
+      </section>
+      
+      <section class="note-section" style="display: none;">
+        <h3>Formatted Note</h3>
+        <div class="note-preview">
+          <div id="note-content" class="note-content"></div>
+        </div>
       </section>
     </main>
 
@@ -616,6 +797,38 @@
         </button>
         <button id="import-sessions-btn" class="btn secondary-btn">
           <i class="fas fa-upload"></i> Import Sessions
+        </button>
+      </div>
+    </div>
+    
+    <!-- Notes Panel -->
+    <div id="notes-panel" class="notes-panel">
+      <div class="notes-header">
+        <h3>Saved Notes</h3>
+        <button id="close-notes-btn" class="btn secondary-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="notes-search">
+        <input type="text" id="notes-search-input" placeholder="Search notes..." class="search-input">
+        <button id="notes-search-btn" class="btn secondary-btn">
+          <i class="fas fa-search"></i>
+        </button>
+      </div>
+      <div class="notes-content">
+        <div id="notes-list" class="notes-list">
+          <p class="empty-message">No saved notes found.</p>
+        </div>
+      </div>
+      <div class="notes-footer">
+        <button id="export-notes-btn" class="btn secondary-btn">
+          <i class="fas fa-download"></i> Export All Notes
+        </button>
+        <button id="import-notes-btn" class="btn secondary-btn">
+          <i class="fas fa-upload"></i> Import Notes
+        </button>
+        <button id="clear-notes-btn" class="btn secondary-btn">
+          <i class="fas fa-trash"></i> Clear All Notes
         </button>
       </div>
     </div>
@@ -690,6 +903,10 @@
       sessionHistory: {
         visible: false,
         sessions: []
+      },
+      notes: {
+        visible: false,
+        items: []
       }
     };
 
@@ -706,12 +923,30 @@
       // Load saved sessions
       loadSavedSessions();
       
+      // Load saved notes
+      state.notes.items = getAllNotes();
+      
+      // Update notes button to show count
+      updateNotesButtonCount();
+      
       // Show welcome message
       showWelcomeMessage();
 
       // Enable direct typing in the transcription area
       transcriptionText.readOnly = false;
       editTranscriptionBtn.disabled = false;
+    }
+    
+    // Update notes button to show count
+    function updateNotesButtonCount() {
+      const notesBtn = document.getElementById('notes-btn');
+      const noteCount = state.notes.items.length;
+      
+      if (noteCount > 0) {
+        notesBtn.innerHTML = `<i class="fas fa-sticky-note"></i> View Notes (${noteCount})`;
+      } else {
+        notesBtn.innerHTML = `<i class="fas fa-sticky-note"></i> View Notes`;
+      }
     }
 
     // Check if browser supports required APIs
@@ -747,6 +982,10 @@
       // Save Session Button
       saveSessionBtn.addEventListener('click', saveSession);
       
+      // Copy Note Button
+      const copyNoteBtn = document.getElementById('copy-note-btn');
+      copyNoteBtn.addEventListener('click', copyAsNote);
+      
       // History Button
       historyBtn.addEventListener('click', toggleSessionHistory);
       
@@ -758,6 +997,37 @@
       
       // Import Sessions Button
       importSessionsBtn.addEventListener('click', showImportDialog);
+      
+      // Notes Button
+      const notesBtn = document.getElementById('notes-btn');
+      notesBtn.addEventListener('click', toggleNotesPanel);
+      
+      // Close Notes Button
+      const closeNotesBtn = document.getElementById('close-notes-btn');
+      closeNotesBtn.addEventListener('click', hideNotesPanel);
+      
+      // Export Notes Button
+      const exportNotesBtn = document.getElementById('export-notes-btn');
+      exportNotesBtn.addEventListener('click', exportAllNotes);
+      
+      // Import Notes Button
+      const importNotesBtn = document.getElementById('import-notes-btn');
+      importNotesBtn.addEventListener('click', importNotes);
+      
+      // Clear Notes Button
+      const clearNotesBtn = document.getElementById('clear-notes-btn');
+      clearNotesBtn.addEventListener('click', clearAllNotes);
+      
+      // Notes Search
+      const notesSearchInput = document.getElementById('notes-search-input');
+      const notesSearchBtn = document.getElementById('notes-search-btn');
+      
+      notesSearchBtn.addEventListener('click', () => searchNotes(notesSearchInput.value));
+      notesSearchInput.addEventListener('keyup', (e) => {
+        if (e.key === 'Enter') {
+          searchNotes(notesSearchInput.value);
+        }
+      });
 
       // Enable AI follow-up and export when text is entered
       transcriptionText.addEventListener('input', function() {
@@ -766,10 +1036,12 @@
           aiFollowupBtn.disabled = false;
           exportPdfBtn.disabled = false;
           saveSessionBtn.disabled = false;
+          copyNoteBtn.disabled = false;
         } else {
           aiFollowupBtn.disabled = true;
           exportPdfBtn.disabled = true;
           saveSessionBtn.disabled = true;
+          copyNoteBtn.disabled = true;
         }
       });
     }
@@ -829,10 +1101,14 @@
       transcriptionText.value = '';
       followupText.textContent = 'AI follow-up question will appear here after generation...';
       
+      // Hide note section
+      document.querySelector('.note-section').style.display = 'none';
+      
       // Disable buttons that require a response
       aiFollowupBtn.disabled = true;
       exportPdfBtn.disabled = true;
       saveSessionBtn.disabled = true;
+      document.getElementById('copy-note-btn').disabled = true;
     }
 
     // Toggle recording on/off
@@ -1512,6 +1788,103 @@
         showErrorMessage('Could not export sessions. Please try again.');
       }
     }
+    
+    // Format and copy the current question and response as a note
+    function copyAsNote() {
+      // Get the current question and response
+      const question = state.currentQuestion;
+      const response = transcriptionText.value.trim();
+      const followup = state.followupQuestion;
+      
+      if (!question || !response) {
+        showErrorMessage('Please select a question and provide a response first.');
+        return;
+      }
+      
+      // Format the note
+      let noteContent = `<h4>Question:</h4>\n<p>${question}</p>\n\n<h4>Response:</h4>\n<p>${response}</p>`;
+      
+      // Add follow-up if available
+      if (followup) {
+        noteContent += `\n\n<div class="followup"><h4>Follow-up Question:</h4>\n<p>${followup}</p></div>`;
+      }
+      
+      // Add date
+      const date = new Date().toLocaleDateString();
+      const timestamp = new Date().toISOString();
+      noteContent += `\n\n<p><em>Date: ${date}</em></p>`;
+      
+      // Display the formatted note
+      const noteSection = document.querySelector('.note-section');
+      const noteContentEl = document.getElementById('note-content');
+      
+      noteContentEl.innerHTML = noteContent;
+      noteSection.style.display = 'block';
+      
+      // Create a note object
+      const noteObject = {
+        id: `note_${timestamp}`,
+        question: question,
+        response: response,
+        followup: followup || '',
+        timestamp: timestamp,
+        date: date
+      };
+      
+      // Save note to localStorage
+      saveNote(noteObject);
+      
+      // Copy to clipboard
+      const plainTextNote = `Question:\n${question}\n\nResponse:\n${response}${followup ? '\n\nFollow-up Question:\n' + followup : ''}\n\nDate: ${date}`;
+      
+      navigator.clipboard.writeText(plainTextNote)
+        .then(() => {
+          // Show success message
+          showToast('Note copied to clipboard and saved!', 'success');
+          
+          // Scroll to the note section
+          noteSection.scrollIntoView({ behavior: 'smooth' });
+        })
+        .catch(err => {
+          console.error('Could not copy text: ', err);
+          showToast('Note saved but clipboard copy failed. You can copy manually.', 'warning');
+        });
+    }
+    
+    // Save a note to localStorage
+    function saveNote(noteObject) {
+      try {
+        // Get existing notes or create new array
+        let notes = JSON.parse(localStorage.getItem('ketamine_notes')) || [];
+        
+        // Add new note
+        notes.push(noteObject);
+        
+        // Save back to localStorage
+        localStorage.setItem('ketamine_notes', JSON.stringify(notes));
+        
+        // Update state
+        state.notes.items = notes;
+        
+        // Update notes button count
+        updateNotesButtonCount();
+        
+        return true;
+      } catch (error) {
+        console.error('Error saving note:', error);
+        return false;
+      }
+    }
+    
+    // Get all saved notes
+    function getAllNotes() {
+      try {
+        return JSON.parse(localStorage.getItem('ketamine_notes')) || [];
+      } catch (error) {
+        console.error('Error getting notes:', error);
+        return [];
+      }
+    }
 
     // Show import dialog
     function showImportDialog() {
@@ -1562,6 +1935,330 @@
       
       // Trigger the file input
       fileInput.click();
+    }
+    
+    // Toggle notes panel visibility
+    function toggleNotesPanel() {
+      const notesPanel = document.getElementById('notes-panel');
+      
+      if (notesPanel.classList.contains('visible')) {
+        hideNotesPanel();
+      } else {
+        // Hide session history if visible
+        hideSessionHistory();
+        
+        // Show notes panel
+        notesPanel.classList.add('visible');
+        
+        // Load and display notes
+        loadAndDisplayNotes();
+      }
+    }
+    
+    // Hide notes panel
+    function hideNotesPanel() {
+      const notesPanel = document.getElementById('notes-panel');
+      notesPanel.classList.remove('visible');
+    }
+    
+    // Load and display notes
+    function loadAndDisplayNotes() {
+      // Clear search input
+      const searchInput = document.getElementById('notes-search-input');
+      if (searchInput) {
+        searchInput.value = '';
+      }
+      
+      // Get all notes and display them
+      const notes = getAllNotes();
+      displayNotes(notes);
+    }
+    
+    // Truncate text to a specific length
+    function truncateText(text, maxLength) {
+      if (!text) return '';
+      return text.length > maxLength ? text.substring(0, maxLength) + '...' : text;
+    }
+    
+    // Copy a note by ID
+    function copyNoteById(noteId) {
+      const notes = getAllNotes();
+      const note = notes.find(n => n.id === noteId);
+      
+      if (!note) {
+        showErrorMessage('Note not found.');
+        return;
+      }
+      
+      // Format the note for clipboard
+      const plainTextNote = `Question:\n${note.question}\n\nResponse:\n${note.response}${note.followup ? '\n\nFollow-up Question:\n' + note.followup : ''}\n\nDate: ${note.date}`;
+      
+      // Copy to clipboard
+      navigator.clipboard.writeText(plainTextNote)
+        .then(() => {
+          showToast('Note copied to clipboard!', 'success');
+        })
+        .catch(err => {
+          console.error('Could not copy text: ', err);
+          showErrorMessage('Failed to copy to clipboard. Please try again.');
+        });
+    }
+    
+    // Delete a note
+    function deleteNote(noteId) {
+      // Confirm deletion
+      if (!confirm('Are you sure you want to delete this note?')) {
+        return;
+      }
+      
+      try {
+        // Get existing notes
+        let notes = getAllNotes();
+        
+        // Filter out the note to delete
+        notes = notes.filter(note => note.id !== noteId);
+        
+        // Save back to localStorage
+        localStorage.setItem('ketamine_notes', JSON.stringify(notes));
+        
+        // Update state
+        state.notes.items = notes;
+        
+        // Update notes button count
+        updateNotesButtonCount();
+        
+        // Reload notes
+        loadAndDisplayNotes();
+        
+        // Show confirmation
+        showToast('Note deleted successfully', 'success');
+      } catch (error) {
+        console.error('Error deleting note:', error);
+        showErrorMessage('Could not delete note. Please try again.');
+      }
+    }
+    
+    // Export all notes
+    function exportAllNotes() {
+      try {
+        // Get all notes
+        const notes = getAllNotes();
+        
+        if (notes.length === 0) {
+          showErrorMessage('No notes to export.');
+          return;
+        }
+        
+        // Create JSON blob
+        const jsonBlob = new Blob([JSON.stringify(notes, null, 2)], { type: 'application/json' });
+        
+        // Create download link
+        const url = URL.createObjectURL(jsonBlob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `ketamine-notes-${new Date().toISOString().split('T')[0]}.json`;
+        
+        // Trigger download
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        
+        // Show confirmation
+        showToast('All notes exported successfully', 'success');
+      } catch (error) {
+        console.error('Error exporting notes:', error);
+        showErrorMessage('Could not export notes. Please try again.');
+      }
+    }
+    
+    // Clear all notes
+    function clearAllNotes() {
+      // Confirm deletion
+      if (!confirm('Are you sure you want to delete ALL notes? This cannot be undone.')) {
+        return;
+      }
+      
+      try {
+        // Clear notes from localStorage
+        localStorage.removeItem('ketamine_notes');
+        
+        // Update state
+        state.notes.items = [];
+        
+        // Update notes button count
+        updateNotesButtonCount();
+        
+        // Reload notes
+        loadAndDisplayNotes();
+        
+        // Show confirmation
+        showToast('All notes cleared successfully', 'success');
+      } catch (error) {
+        console.error('Error clearing notes:', error);
+        showErrorMessage('Could not clear notes. Please try again.');
+      }
+    }
+    
+    // Import notes from a JSON file
+    function importNotes() {
+      // Create a file input
+      const fileInput = document.createElement('input');
+      fileInput.type = 'file';
+      fileInput.accept = 'application/json';
+      
+      // Set up the change event
+      fileInput.addEventListener('change', (event) => {
+        const file = event.target.files[0];
+        if (!file) return;
+        
+        // Read the file
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            // Parse the JSON
+            const importedNotes = JSON.parse(e.target.result);
+            
+            if (!Array.isArray(importedNotes)) {
+              showErrorMessage('Invalid notes format. Expected an array of notes.');
+              return;
+            }
+            
+            // Get existing notes
+            let currentNotes = getAllNotes();
+            
+            // Add imported notes
+            const newNotes = [...currentNotes, ...importedNotes];
+            
+            // Save back to localStorage
+            localStorage.setItem('ketamine_notes', JSON.stringify(newNotes));
+            
+            // Update state
+            state.notes.items = newNotes;
+            
+            // Update notes button count
+            updateNotesButtonCount();
+            
+            // Reload notes
+            loadAndDisplayNotes();
+            
+            // Show confirmation
+            showToast(`Successfully imported ${importedNotes.length} note(s)`, 'success');
+          } catch (error) {
+            console.error('Error importing notes:', error);
+            showErrorMessage('Could not import notes. The file may be invalid or corrupted.');
+          }
+        };
+        
+        reader.readAsText(file);
+      });
+      
+      // Trigger the file input
+      fileInput.click();
+    }
+    
+    // Search notes
+    function searchNotes(query) {
+      if (!query || query.trim() === '') {
+        // If no query, show all notes
+        loadAndDisplayNotes();
+        return;
+      }
+      
+      // Get all notes
+      const allNotes = getAllNotes();
+      
+      // Convert query to lowercase for case-insensitive search
+      const lowerQuery = query.toLowerCase();
+      
+      // Filter notes that match the query
+      const filteredNotes = allNotes.filter(note => {
+        return (
+          note.question.toLowerCase().includes(lowerQuery) ||
+          note.response.toLowerCase().includes(lowerQuery) ||
+          (note.followup && note.followup.toLowerCase().includes(lowerQuery))
+        );
+      });
+      
+      // Display filtered notes
+      displayNotes(filteredNotes);
+      
+      // Show search results message
+      const notesList = document.getElementById('notes-list');
+      if (filteredNotes.length === 0) {
+        // If no results, show message
+        notesList.innerHTML = `<p class="empty-message">No notes found matching "${query}"</p>`;
+      } else {
+        // Show search results count at the top
+        const resultsMessage = document.createElement('div');
+        resultsMessage.className = 'search-results-message';
+        resultsMessage.innerHTML = `Found ${filteredNotes.length} note(s) matching "${query}" <button id="clear-search-btn" class="btn small-btn">Clear Search</button>`;
+        notesList.insertBefore(resultsMessage, notesList.firstChild);
+        
+        // Add event listener to clear search button
+        document.getElementById('clear-search-btn').addEventListener('click', () => {
+          document.getElementById('notes-search-input').value = '';
+          loadAndDisplayNotes();
+        });
+      }
+    }
+    
+    // Display notes (either all or filtered)
+    function displayNotes(notes) {
+      const notesList = document.getElementById('notes-list');
+      
+      // Clear the list
+      notesList.innerHTML = '';
+      
+      // Show empty message if no notes
+      if (notes.length === 0) {
+        notesList.innerHTML = '<p class="empty-message">No saved notes found.</p>';
+        return;
+      }
+      
+      // Sort notes by timestamp (newest first)
+      const sortedNotes = [...notes].sort((a, b) => {
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      });
+      
+      // Create a list item for each note
+      sortedNotes.forEach(note => {
+        const noteItem = document.createElement('div');
+        noteItem.className = 'note-item';
+        
+        let noteContent = `
+          <h4>${truncateText(note.question, 50)}</h4>
+          <p>${truncateText(note.response, 100)}</p>
+        `;
+        
+        if (note.followup) {
+          noteContent += `<div class="note-followup">${truncateText(note.followup, 80)}</div>`;
+        }
+        
+        noteContent += `<div class="note-date">${note.date}</div>`;
+        
+        noteContent += `
+          <div class="note-actions">
+            <button class="btn small-btn copy-note-btn" data-id="${note.id}">
+              <i class="fas fa-copy"></i> Copy
+            </button>
+            <button class="btn small-btn delete-note-btn" data-id="${note.id}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+        
+        noteItem.innerHTML = noteContent;
+        
+        // Add event listeners
+        const copyBtn = noteItem.querySelector('.copy-note-btn');
+        copyBtn.addEventListener('click', () => copyNoteById(note.id));
+        
+        const deleteBtn = noteItem.querySelector('.delete-note-btn');
+        deleteBtn.addEventListener('click', () => deleteNote(note.id));
+        
+        notesList.appendChild(noteItem);
+      });
     }
 
     // Start recording timer
