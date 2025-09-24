@@ -139,33 +139,28 @@ class AudioService {
   }
   
   /**
-   * Set up speech recognition for transcription
-   * @param {Function} onInterimResult - Callback for interim results
-   * @param {Function} onFinalResult - Callback for final results
+   * Set up speech recognition for real-time transcription.
+   * @param {Function} onUpdate - A single callback that receives the latest full transcript.
    */
-  setupTranscription(onInterimResult, onFinalResult) {
+  setupTranscription(onUpdate) {
     if (!this.recognition) {
       return false;
     }
     
-    let finalTranscript = '';
-    
     this.recognition.onresult = (event) => {
-      let interimTranscript = '';
-      
-      for (let i = event.resultIndex; i < event.results.length; ++i) {
+      let final_transcript = '';
+      let interim_transcript = '';
+
+      for (let i = 0; i < event.results.length; ++i) {
+        const transcript_piece = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-          if (onFinalResult) {
-            onFinalResult(finalTranscript);
-          }
+          final_transcript += transcript_piece;
         } else {
-          interimTranscript += event.results[i][0].transcript;
-          if (onInterimResult) {
-            onInterimResult(interimTranscript);
-          }
+          interim_transcript += transcript_piece;
         }
       }
+
+      onUpdate(final_transcript + interim_transcript);
     };
     
     this.recognition.onerror = (event) => {
@@ -176,19 +171,45 @@ class AudioService {
   }
   
   /**
-   * Transcribe audio using a server API
-   * @param {Blob} audioBlob - The audio blob to transcribe
-   * @returns {Promise} - Resolves with transcription text
+   * Transcribe audio using the OpenAI Whisper API.
+   * @param {Blob} audioBlob - The audio blob to transcribe.
+   * @returns {Promise<string>} - A promise that resolves with the transcription text.
    */
-  async transcribeAudio(audioBlob = null) {
-    // In a real application, this would send the audio to a server API
-    // For now, we'll return a placeholder message
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve("This is a placeholder for actual transcription. In a real application, the audio would be sent to a server for processing using a service like Google Speech-to-Text, Amazon Transcribe, or a similar API.");
-      }, 1500);
-    });
+  async transcribeAudio(audioBlob) {
+    // IMPORTANT: In a real-world application, you should NEVER expose your API key
+    // on the client side. This API call should be made from a secure backend server
+    // or a serverless function that holds the API key securely.
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    const apiEndpoint = 'https://api.openai.com/v1/audio/transcriptions';
+
+    if (!apiKey) {
+      throw new Error("OpenAI API key is not set in the .env file.");
+    }
+
+    const formData = new FormData();
+    formData.append('file', audioBlob, 'recording.webm');
+    formData.append('model', 'whisper-1');
+
+    try {
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`API request failed: ${errorData.error.message}`);
+      }
+
+      const data = await response.json();
+      return data.text;
+    } catch (error) {
+      console.error('Error transcribing audio with Whisper API:', error);
+      throw error;
+    }
   }
 }
 
