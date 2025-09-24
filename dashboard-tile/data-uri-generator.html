@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ketamine Question Bank - Data URI Generator</title>
+  <style>
+    :root {
+      --primary-color: #6a4c93;
+      --primary-light: #8a6db1;
+      --primary-dark: #4a2c73;
+      --secondary-color: #73c2fb;
+      --secondary-light: #93e2ff;
+      --secondary-dark: #53a2db;
+      --text-color: #333;
+      --light-text: #f8f9fa;
+      --background-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    h1, h2, h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: var(--light-text);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: bold;
+      transition: var(--transition);
+      margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .button:disabled {
+      background-color: #cccccc;
+      cursor: not-allowed;
+    }
+
+    .file-input {
+      margin-bottom: 1rem;
+    }
+
+    .progress-container {
+      width: 100%;
+      background-color: #f1f1f1;
+      border-radius: var(--border-radius);
+      margin: 1rem 0;
+      display: none;
+    }
+
+    .progress-bar {
+      height: 20px;
+      background-color: var(--primary-color);
+      border-radius: var(--border-radius);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    .result-container {
+      margin-top: 2rem;
+      display: none;
+    }
+
+    .result-box {
+      background-color: #f1f1f1;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 1rem;
+      word-break: break-all;
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    .bookmark-container {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #e9f7fe;
+      border-radius: var(--border-radius);
+      border-left: 4px solid var(--secondary-color);
+    }
+
+    .bookmark-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.5rem 1rem;
+      background-color: #f1f1f1;
+      border-radius: var(--border-radius);
+      color: var(--text-color);
+      text-decoration: none;
+      border: 1px solid #ddd;
+    }
+
+    .bookmark-link:hover {
+      background-color: #e1e1e1;
+    }
+
+    .instructions {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #fff3cd;
+      border-radius: var(--border-radius);
+      border-left: 4px solid #ffc107;
+    }
+
+    .instructions ol {
+      margin-left: 1.5rem;
+    }
+
+    .instructions li {
+      margin-bottom: 0.5rem;
+    }
+
+    .note {
+      font-style: italic;
+      color: #666;
+      margin-top: 0.5rem;
+    }
+
+    .error {
+      color: #dc3545;
+      margin-top: 0.5rem;
+      display: none;
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Ketamine Question Bank - Data URI Generator</h1>
+    
+    <div class="card">
+      <h2>Create a Dashboard Bookmark</h2>
+      <p>This tool will convert the Ketamine Question Bank HTML file into a data URI that you can bookmark. This allows you to add the application as a tile on your dashboard without hosting it on a server.</p>
+      
+      <div class="file-input">
+        <label for="html-file">Select the Ketamine Question Bank HTML file:</label><br>
+        <input type="file" id="html-file" accept=".html">
+        <div class="error" id="file-error">Please select a valid HTML file.</div>
+      </div>
+      
+      <div class="progress-container" id="progress-container">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+      
+      <button class="button" id="generate-button">Generate Data URI</button>
+      
+      <div class="result-container" id="result-container">
+        <h3>Your Data URI Bookmark</h3>
+        <p>Here's your data URI. You can drag the link below to your bookmarks bar or right-click and select "Bookmark This Link".</p>
+        
+        <div class="bookmark-container">
+          <p>Drag this link to your bookmarks bar:</p>
+          <a href="#" class="bookmark-link" id="bookmark-link">Ketamine Question Bank</a>
+        </div>
+        
+        <div class="instructions">
+          <h3>How to Use This Bookmark as a Dashboard Tile</h3>
+          <ol>
+            <li>Drag the link above to your bookmarks bar or right-click and select "Bookmark This Link"</li>
+            <li>For Windows: Right-click the bookmark and copy the URL</li>
+            <li>Create a new shortcut on your desktop (right-click > New > Shortcut)</li>
+            <li>Paste the data URI as the location</li>
+            <li>Name it "Ketamine Question Bank" and click Finish</li>
+            <li>Right-click the shortcut, select Properties, and click "Change Icon"</li>
+            <li>Choose an appropriate icon</li>
+            <li>Pin this shortcut to your Start Menu or Taskbar</li>
+          </ol>
+          <p class="note">Note: Some browsers limit the size of data URIs. If the application doesn't work as a bookmark, you may need to use one of the hosting options described in the dashboard tile example.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const fileInput = document.getElementById('html-file');
+      const generateButton = document.getElementById('generate-button');
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const resultContainer = document.getElementById('result-container');
+      const bookmarkLink = document.getElementById('bookmark-link');
+      const fileError = document.getElementById('file-error');
+      
+      generateButton.addEventListener('click', function() {
+        const file = fileInput.files[0];
+        
+        if (!file) {
+          fileError.style.display = 'block';
+          return;
+        }
+        
+        fileError.style.display = 'none';
+        progressContainer.style.display = 'block';
+        generateButton.disabled = true;
+        
+        const reader = new FileReader();
+        
+        reader.onprogress = function(event) {
+          if (event.lengthComputable) {
+            const percentComplete = (event.loaded / event.total) * 100;
+            progressBar.style.width = percentComplete + '%';
+          }
+        };
+        
+        reader.onload = function(event) {
+          const htmlContent = event.target.result;
+          
+          // Create data URI
+          const dataUri = 'data:text/html;charset=utf-8,' + encodeURIComponent(htmlContent);
+          
+          // Create bookmark URL (using javascript: protocol for better browser compatibility)
+          const bookmarkUrl = `javascript:(function(){window.open('${dataUri}','_blank');})();`;
+          
+          // Update bookmark link
+          bookmarkLink.href = bookmarkUrl;
+          
+          // Show result
+          progressBar.style.width = '100%';
+          setTimeout(function() {
+            resultContainer.style.display = 'block';
+            generateButton.disabled = false;
+          }, 500);
+        };
+        
+        reader.onerror = function() {
+          fileError.textContent = 'Error reading the file. Please try again.';
+          fileError.style.display = 'block';
+          progressContainer.style.display = 'none';
+          generateButton.disabled = false;
+        };
+        
+        reader.readAsText(file);
+      });
+    });
+  </script>
+</body>
+</html>

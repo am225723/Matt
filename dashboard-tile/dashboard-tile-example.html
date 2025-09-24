@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Tile Example</title>
+  <style>
+    :root {
+      --primary-color: #6a4c93;
+      --primary-light: #8a6db1;
+      --primary-dark: #4a2c73;
+      --secondary-color: #73c2fb;
+      --secondary-light: #93e2ff;
+      --secondary-dark: #53a2db;
+      --text-color: #333;
+      --light-text: #f8f9fa;
+      --background-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      margin-bottom: 1.5rem;
+      text-align: center;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .instructions {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .instructions h2 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .instructions p {
+      margin-bottom: 1rem;
+    }
+
+    .instructions ul, .instructions ol {
+      margin-left: 2rem;
+      margin-bottom: 1rem;
+    }
+
+    .instructions li {
+      margin-bottom: 0.5rem;
+    }
+
+    .instructions code {
+      background-color: #f1f1f1;
+      padding: 0.2rem 0.4rem;
+      border-radius: 4px;
+      font-family: monospace;
+    }
+
+    .code-block {
+      background-color: #f1f1f1;
+      padding: 1rem;
+      border-radius: var(--border-radius);
+      font-family: monospace;
+      overflow-x: auto;
+      margin-bottom: 1rem;
+      white-space: pre-wrap;
+    }
+
+    .dashboard-example {
+      background-color: #2c3e50;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      margin-bottom: 2rem;
+    }
+
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .dashboard-tile {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      overflow: hidden;
+      transition: var(--transition);
+      cursor: pointer;
+      position: relative;
+      height: 200px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .dashboard-tile:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .tile-header {
+      background-color: var(--primary-color);
+      color: var(--light-text);
+      padding: 1rem;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .tile-content {
+      padding: 1rem;
+      flex-grow: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+    }
+
+    .tile-icon {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: var(--primary-color);
+    }
+
+    .tile-description {
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .ketamine-tile {
+      background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+    }
+
+    .ketamine-tile .tile-header {
+      background-color: rgba(0, 0, 0, 0.2);
+    }
+
+    .ketamine-tile .tile-content {
+      color: var(--light-text);
+    }
+
+    .ketamine-tile .tile-icon {
+      color: var(--light-text);
+    }
+
+    .ketamine-tile .tile-description {
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    .button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: var(--light-text);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: bold;
+      transition: var(--transition);
+      margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .copy-button {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+
+    .copy-button:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    .note {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    .note strong {
+      color: #856404;
+    }
+
+    @media (max-width: 768px) {
+      .dashboard-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Creating a Clickable Dashboard Tile for Ketamine Question Bank</h1>
+    
+    <div class="instructions">
+      <h2>Dashboard Tile Example</h2>
+      <p>Below is an example of how a dashboard with a Ketamine Question Bank tile might look:</p>
+    </div>
+
+    <div class="dashboard-example">
+      <div class="dashboard-grid">
+        <div class="dashboard-tile" onclick="alert('This would open another application')">
+          <div class="tile-header">Email</div>
+          <div class="tile-content">
+            <div class="tile-icon"><i class="fas fa-envelope"></i></div>
+            <div class="tile-description">Check your emails</div>
+          </div>
+        </div>
+        
+        <div class="dashboard-tile" onclick="alert('This would open another application')">
+          <div class="tile-header">Calendar</div>
+          <div class="tile-content">
+            <div class="tile-icon"><i class="fas fa-calendar"></i></div>
+            <div class="tile-description">View your schedule</div>
+          </div>
+        </div>
+        
+        <div class="dashboard-tile ketamine-tile" id="ketamine-tile">
+          <div class="tile-header">Ketamine Question Bank</div>
+          <div class="tile-content">
+            <div class="tile-icon"><i class="fas fa-brain"></i></div>
+            <div class="tile-description">Reflect and record your thoughts</div>
+          </div>
+        </div>
+        
+        <div class="dashboard-tile" onclick="alert('This would open another application')">
+          <div class="tile-header">Tasks</div>
+          <div class="tile-content">
+            <div class="tile-icon"><i class="fas fa-tasks"></i></div>
+            <div class="tile-description">Manage your to-do list</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h2>How to Add This Tile to Your Dashboard</h2>
+      
+      <p>There are several ways to add a clickable tile to your dashboard, depending on what type of dashboard you're using:</p>
+      
+      <h3>Option 1: Bookmark Tile</h3>
+      <p>Create a bookmark tile that opens the Ketamine Question Bank:</p>
+      <ol>
+        <li>Host the Ketamine Question Bank on a web server or cloud storage service (like GitHub Pages, Netlify, or AWS S3)</li>
+        <li>Create a bookmark to that URL in your browser</li>
+        <li>For browsers or operating systems that support bookmark tiles (like Chrome OS or Windows Start Menu), pin this bookmark as a tile</li>
+      </ol>
+      
+      <h3>Option 2: HTML Dashboard</h3>
+      <p>If you have an HTML dashboard, add this code to create a tile:</p>
+      <div class="code-block" id="html-code">
+&lt;div class="dashboard-tile ketamine-tile" onclick="window.open('https://your-hosted-url.com/ketamine-question-bank.html', '_blank')"&gt;
+  &lt;div class="tile-header"&gt;Ketamine Question Bank&lt;/div&gt;
+  &lt;div class="tile-content"&gt;
+    &lt;div class="tile-icon"&gt;&lt;i class="fas fa-brain"&gt;&lt;/i&gt;&lt;/div&gt;
+    &lt;div class="tile-description"&gt;Reflect and record your thoughts&lt;/div&gt;
+  &lt;/div&gt;
+&lt;/div&gt;</div>
+      <button class="button copy-button" onclick="copyToClipboard('html-code')">Copy HTML Code</button>
+      
+      <h3>Option 3: Data URI Approach</h3>
+      <p>Create a bookmark that contains the entire application using a data URI:</p>
+      <ol>
+        <li>Convert the entire Ketamine Question Bank HTML file to a data URI</li>
+        <li>Create a bookmark with this data URI as the URL</li>
+        <li>Pin this bookmark to your dashboard or start menu</li>
+      </ol>
+      <p>Here's a sample bookmark URL (shortened for demonstration):</p>
+      <div class="code-block" id="data-uri-code">
+javascript:(function(){
+  window.open('data:text/html;charset=utf-8,' + encodeURIComponent('<!DOCTYPE html><html><head><title>Ketamine Question Bank</title><script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head><body><!-- Full application code would go here --></body></html>'), '_blank');
+})();</div>
+      <button class="button copy-button" onclick="copyToClipboard('data-uri-code')">Copy Data URI Code</button>
+      
+      <div class="note">
+        <strong>Note:</strong> The actual data URI would contain the entire Ketamine Question Bank HTML code, which is too large to show here. You can generate this by using an online tool to convert the HTML file to a data URI.
+      </div>
+      
+      <h3>Option 4: Web Application Shortcut</h3>
+      <p>Modern browsers allow you to create web application shortcuts:</p>
+      <ol>
+        <li>Host the Ketamine Question Bank on a web server</li>
+        <li>Open the page in Chrome or Edge</li>
+        <li>Click the three dots menu → More tools → Create shortcut</li>
+        <li>Check "Open as window" for a more app-like experience</li>
+        <li>The shortcut will appear on your desktop or start menu</li>
+      </ol>
+      
+      <h3>Option 5: iframe Integration</h3>
+      <p>If your dashboard supports iframe embedding, use this code:</p>
+      <div class="code-block" id="iframe-code">
+&lt;iframe src="https://your-hosted-url.com/ketamine-question-bank.html" 
+  title="Ketamine Question Bank" 
+  style="width: 100%; height: 600px; border: none; border-radius: 8px; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);"&gt;
+&lt;/iframe&gt;</div>
+      <button class="button copy-button" onclick="copyToClipboard('iframe-code')">Copy iframe Code</button>
+    </div>
+
+    <div class="instructions">
+      <h2>Hosting Options for the Ketamine Question Bank</h2>
+      <p>To make the application accessible via a URL (needed for options 1, 2, 4, and 5), you'll need to host it somewhere:</p>
+      
+      <h3>Free Hosting Options:</h3>
+      <ul>
+        <li><strong>GitHub Pages:</strong> If you have a GitHub account, you can host the HTML file for free</li>
+        <li><strong>Netlify:</strong> Offers free hosting for static sites with drag-and-drop deployment</li>
+        <li><strong>Vercel:</strong> Similar to Netlify, with free hosting for personal projects</li>
+        <li><strong>AWS S3:</strong> Low-cost storage that can host static websites (has a free tier)</li>
+        <li><strong>Google Drive:</strong> You can share HTML files publicly, though with some limitations</li>
+      </ul>
+      
+      <h3>Steps for GitHub Pages Hosting:</h3>
+      <ol>
+        <li>Create a GitHub repository (or use an existing one)</li>
+        <li>Upload the Ketamine Question Bank HTML file</li>
+        <li>Go to repository Settings → Pages</li>
+        <li>Select the branch to deploy (usually main) and save</li>
+        <li>Your site will be available at https://[username].github.io/[repository-name]/ketamine-question-bank.html</li>
+      </ol>
+      
+      <button class="button" id="demo-button">Try the Ketamine Question Bank Demo</button>
+    </div>
+  </div>
+
+  <script>
+    // Function to copy text to clipboard
+    function copyToClipboard(elementId) {
+      const element = document.getElementById(elementId);
+      const text = element.textContent;
+      
+      navigator.clipboard.writeText(text).then(() => {
+        alert('Code copied to clipboard!');
+      }).catch(err => {
+        console.error('Could not copy text: ', err);
+      });
+    }
+    
+    // Demo functionality
+    document.getElementById('ketamine-tile').addEventListener('click', function() {
+      window.open('../ketamine-web-app/index.html', '_blank');
+    });
+    
+    document.getElementById('demo-button').addEventListener('click', function() {
+      window.open('../ketamine-web-app/index.html', '_blank');
+    });
+  </script>
+</body>
+</html>

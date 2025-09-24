@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Windows Start Menu Tile Guide</title>
+  <style>
+    :root {
+      --primary-color: #6a4c93;
+      --primary-light: #8a6db1;
+      --primary-dark: #4a2c73;
+      --secondary-color: #73c2fb;
+      --secondary-light: #93e2ff;
+      --secondary-dark: #53a2db;
+      --text-color: #333;
+      --light-text: #f8f9fa;
+      --background-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+      padding: 2rem;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    h1, h2, h3 {
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    p {
+      margin-bottom: 1rem;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .steps {
+      margin-left: 2rem;
+      margin-bottom: 2rem;
+    }
+
+    .steps li {
+      margin-bottom: 1rem;
+    }
+
+    .note {
+      background-color: #fff3cd;
+      border-left: 4px solid #ffc107;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    .tip {
+      background-color: #d1ecf1;
+      border-left: 4px solid #17a2b8;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    .warning {
+      background-color: #f8d7da;
+      border-left: 4px solid #dc3545;
+      padding: 1rem;
+      margin-bottom: 1rem;
+      border-radius: 0 var(--border-radius) var(--border-radius) 0;
+    }
+
+    .image-container {
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .image-container img {
+      max-width: 100%;
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+    }
+
+    .caption {
+      font-style: italic;
+      color: #666;
+      text-align: center;
+      margin-top: 0.5rem;
+    }
+
+    .button {
+      display: inline-block;
+      background-color: var(--primary-color);
+      color: var(--light-text);
+      padding: 0.75rem 1.5rem;
+      border-radius: var(--border-radius);
+      text-decoration: none;
+      font-weight: bold;
+      transition: var(--transition);
+      margin-top: 1rem;
+      border: none;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .button:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .tile-example {
+      width: 150px;
+      height: 150px;
+      background-color: var(--primary-color);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin: 2rem auto;
+      border-radius: 4px;
+      box-shadow: var(--box-shadow);
+      position: relative;
+    }
+
+    .tile-icon {
+      font-size: 3rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .tile-text {
+      font-size: 0.9rem;
+      text-align: center;
+      padding: 0 10px;
+    }
+
+    .windows-start {
+      background-color: #0078d7;
+      padding: 2rem;
+      border-radius: var(--border-radius);
+      margin: 2rem 0;
+      color: white;
+    }
+
+    .windows-tiles {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+      gap: 10px;
+      margin-top: 1rem;
+    }
+
+    .windows-tile {
+      height: 120px;
+      background-color: #1e88e5;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+      font-weight: bold;
+    }
+
+    .windows-tile.ketamine {
+      background-color: var(--primary-color);
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+    }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Creating a Windows Start Menu Tile for Ketamine Question Bank</h1>
+    
+    <div class="card">
+      <h2>What You'll Create</h2>
+      <p>This guide will show you how to create a Windows Start Menu tile for the Ketamine Question Bank application. When clicked, this tile will open the application in your web browser.</p>
+      
+      <div class="windows-start">
+        <h3>Windows Start Menu Example</h3>
+        <div class="windows-tiles">
+          <div class="windows-tile">Mail</div>
+          <div class="windows-tile">Calendar</div>
+          <div class="windows-tile">Photos</div>
+          <div class="windows-tile ketamine">
+            <div class="tile-text">Ketamine Question Bank</div>
+          </div>
+          <div class="windows-tile">Weather</div>
+          <div class="windows-tile">News</div>
+        </div>
+      </div>
+      
+      <div class="tile-example">
+        <i class="fas fa-brain tile-icon"></i>
+        <div class="tile-text">Ketamine Question Bank</div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Method 1: Using a Web Shortcut</h2>
+      <p>This is the simplest method if you have the Ketamine Question Bank hosted online.</p>
+      
+      <h3>Steps:</h3>
+      <ol class="steps">
+        <li>Right-click on your desktop and select <strong>New > Shortcut</strong>.</li>
+        <li>In the location field, enter the URL where the Ketamine Question Bank is hosted (e.g., <code>https://example.com/ketamine-question-bank.html</code>).</li>
+        <li>Click <strong>Next</strong> and name your shortcut "Ketamine Question Bank".</li>
+        <li>Click <strong>Finish</strong> to create the shortcut.</li>
+        <li>Right-click on the new shortcut and select <strong>Properties</strong>.</li>
+        <li>Click the <strong>Change Icon</strong> button.</li>
+        <li>Browse to the location where you saved the Ketamine Question Bank icon and select it.</li>
+        <li>Click <strong>OK</strong> to save the changes.</li>
+        <li>Right-click on the shortcut and select <strong>Pin to Start</strong>.</li>
+      </ol>
+      
+      <div class="tip">
+        <strong>Tip:</strong> For the best experience, use Microsoft Edge or Google Chrome as they support creating app-like shortcuts. In Chrome, you can go to the website, click the three dots menu, select "More tools" > "Create shortcut", and check "Open as window".
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Method 2: Using a Data URI Shortcut</h2>
+      <p>If you don't want to host the application online, you can create a shortcut that contains the entire application.</p>
+      
+      <h3>Steps:</h3>
+      <ol class="steps">
+        <li>Use the Data URI Generator tool (data-uri-generator.html) to create a data URI for the Ketamine Question Bank.</li>
+        <li>Right-click on your desktop and select <strong>New > Shortcut</strong>.</li>
+        <li>In the location field, paste the JavaScript code generated by the Data URI Generator.</li>
+        <li>Click <strong>Next</strong> and name your shortcut "Ketamine Question Bank".</li>
+        <li>Click <strong>Finish</strong> to create the shortcut.</li>
+        <li>Right-click on the new shortcut and select <strong>Properties</strong>.</li>
+        <li>Click the <strong>Change Icon</strong> button.</li>
+        <li>Browse to the location where you saved the Ketamine Question Bank icon and select it.</li>
+        <li>Click <strong>OK</strong> to save the changes.</li>
+        <li>Right-click on the shortcut and select <strong>Pin to Start</strong>.</li>
+      </ol>
+      
+      <div class="warning">
+        <strong>Warning:</strong> Windows may show a security warning when you try to create a shortcut with a JavaScript URL. If this happens, you may need to use Method 1 or Method 3 instead.
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Method 3: Using a Local HTML File</h2>
+      <p>You can save the Ketamine Question Bank HTML file locally and create a shortcut to it.</p>
+      
+      <h3>Steps:</h3>
+      <ol class="steps">
+        <li>Save the Ketamine Question Bank HTML file to a location on your computer (e.g., <code>C:\Users\YourName\Documents\KetamineQuestionBank\index.html</code>).</li>
+        <li>Right-click on your desktop and select <strong>New > Shortcut</strong>.</li>
+        <li>In the location field, enter the path to your default browser followed by the path to the HTML file (e.g., <code>"C:\Program Files\Google\Chrome\Application\chrome.exe" "C:\Users\YourName\Documents\KetamineQuestionBank\index.html"</code>).</li>
+        <li>Click <strong>Next</strong> and name your shortcut "Ketamine Question Bank".</li>
+        <li>Click <strong>Finish</strong> to create the shortcut.</li>
+        <li>Right-click on the new shortcut and select <strong>Properties</strong>.</li>
+        <li>Click the <strong>Change Icon</strong> button.</li>
+        <li>Browse to the location where you saved the Ketamine Question Bank icon and select it.</li>
+        <li>Click <strong>OK</strong> to save the changes.</li>
+        <li>Right-click on the shortcut and select <strong>Pin to Start</strong>.</li>
+      </ol>
+      
+      <div class="tip">
+        <strong>Tip:</strong> To make this shortcut portable, you can create a batch file (.bat) that uses relative paths instead of absolute paths.
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Customizing Your Tile</h2>
+      <p>Windows 10 and 11 allow you to customize the appearance of your Start Menu tiles.</p>
+      
+      <h3>Changing Tile Size:</h3>
+      <ol class="steps">
+        <li>Right-click on the tile in the Start Menu.</li>
+        <li>Select <strong>Resize</strong>.</li>
+        <li>Choose from Small, Medium, Wide, or Large (options may vary depending on your Windows version).</li>
+      </ol>
+      
+      <h3>Changing Tile Color:</h3>
+      <p>The tile color is determined by your Windows accent color. To change it:</p>
+      <ol class="steps">
+        <li>Go to <strong>Settings > Personalization > Colors</strong>.</li>
+        <li>Choose a new accent color or toggle "Automatically pick an accent color from my background".</li>
+        <li>Make sure "Show accent color on Start, taskbar, and action center" is enabled.</li>
+      </ol>
+      
+      <div class="note">
+        <strong>Note:</strong> In Windows 11, the ability to customize tile colors is more limited compared to Windows 10.
+      </div>
+    </div>
+    
+    <div class="card">
+      <h2>Troubleshooting</h2>
+      
+      <h3>Icon Not Showing:</h3>
+      <p>If your custom icon isn't showing:</p>
+      <ul class="steps">
+        <li>Make sure you're using a compatible icon format (ICO, PNG, or SVG).</li>
+        <li>Try converting your icon to ICO format using an online converter.</li>
+        <li>Clear the icon cache by restarting Windows Explorer or your computer.</li>
+      </ul>
+      
+      <h3>Shortcut Not Working:</h3>
+      <p>If your shortcut doesn't open the application:</p>
+      <ul class="steps">
+        <li>Check that the file path or URL in the shortcut is correct.</li>
+        <li>Make sure your browser is installed in the default location if you're using Method 3.</li>
+        <li>Try running the shortcut as an administrator to see if there are permission issues.</li>
+      </ul>
+      
+      <h3>Can't Pin to Start:</h3>
+      <p>If you can't pin the shortcut to the Start Menu:</p>
+      <ul class="steps">
+        <li>Make sure you're using a local account or a Microsoft account with appropriate permissions.</li>
+        <li>Try creating the shortcut directly on the desktop first, then pinning it.</li>
+        <li>Check if your organization's group policy allows pinning items to the Start Menu.</li>
+      </ul>
+    </div>
+  </div>
+</body>
+</html>
