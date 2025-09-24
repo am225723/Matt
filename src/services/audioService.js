@@ -176,19 +176,45 @@ class AudioService {
   }
   
   /**
-   * Transcribe audio using a server API
-   * @param {Blob} audioBlob - The audio blob to transcribe
-   * @returns {Promise} - Resolves with transcription text
+   * Transcribe audio using the OpenAI Whisper API.
+   * @param {Blob} audioBlob - The audio blob to transcribe.
+   * @returns {Promise<string>} - A promise that resolves with the transcription text.
    */
-  async transcribeAudio(audioBlob = null) {
-    // In a real application, this would send the audio to a server API
-    // For now, we'll return a placeholder message
-    
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve("This is a placeholder for actual transcription. In a real application, the audio would be sent to a server for processing using a service like Google Speech-to-Text, Amazon Transcribe, or a similar API.");
-      }, 1500);
-    });
+  async transcribeAudio(audioBlob) {
+    // IMPORTANT: In a real-world application, you should NEVER expose your API key
+    // on the client side. This API call should be made from a secure backend server
+    // or a serverless function that holds the API key securely.
+    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
+    const apiEndpoint = 'https://api.openai.com/v1/audio/transcriptions';
+
+    if (!apiKey) {
+      throw new Error("OpenAI API key is not set in the .env file.");
+    }
+
+    const formData = new FormData();
+    formData.append('file', audioBlob, 'recording.webm');
+    formData.append('model', 'whisper-1');
+
+    try {
+      const response = await fetch(apiEndpoint, {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${apiKey}`,
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(`API request failed: ${errorData.error.message}`);
+      }
+
+      const data = await response.json();
+      return data.text;
+    } catch (error) {
+      console.error('Error transcribing audio with Whisper API:', error);
+      throw error;
+    }
   }
 }
 

@@ -3,8 +3,6 @@
  * Handles PDF generation and export functionality
  */
 
-import PdfTemplate from '../components/PdfTemplate.js';
-
 class PDFService {
   /**
    * Generate a PDF from session data
