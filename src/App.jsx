@@ -12,7 +12,8 @@ import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit } from 'lucide-react';
+import KetamineTherapy from '@/components/KetamineTherapy';
 
 const DashboardTile = ({
   title,
@@ -142,6 +143,15 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           className="bg-pink-500/30"
         />
       </motion.div>
+      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+        <DashboardTile
+          title="Ketamine Journal"
+          description="A space for reflection and guided self-exploration."
+          icon={<BrainCircuit className="w-6 h-6 text-white" />}
+          onClick={() => onSelect('ketamine')}
+          className="bg-indigo-500/30"
+        />
+      </motion.div>
     </motion.div>
 
     <motion.div
@@ -197,6 +207,7 @@ const App = () => {
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
+      {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
