@@ -69,14 +69,17 @@ const KetamineTherapy = ({ onBack }) => {
       setAudioURL(URL.createObjectURL(audioBlob));
       setIsRecording(false);
 
-      // If browser doesn't support live transcription, use the fallback Whisper API
+      // If the browser doesn't support live transcription, use the fallback Whisper API
       if (!audioService.current.isTranscriptionSupported()) {
-        setIsTranscribing(true);
+        setIsTranscribing(true); // Set transcribing state only when using the fallback
         try {
           const transcript = await audioService.current.transcribeAudio(audioBlob);
           setTranscription(transcript);
         } catch (error) {
           console.error("Transcription error:", error);
+          // Set a failure message in the text box for the user
+          setTranscription("Transcription failed. Please edit manually.");
+          // Show a more detailed toast notification
           toast({
             variant: "destructive",
             title: "Transcription Failed",
@@ -92,7 +95,7 @@ const KetamineTherapy = ({ onBack }) => {
         await audioService.current.startRecording();
         setIsRecording(true);
         setRecordingTime(0);
-        setTranscription('');
+        setTranscription(''); // Clear previous transcription
 
         // If live transcription is supported, set it up for real-time updates.
         if (audioService.current.isTranscriptionSupported()) {
