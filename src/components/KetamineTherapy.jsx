@@ -4,13 +4,15 @@ import { Textarea } from '@/components/ui/textarea';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Mic, Square, BrainCircuit, Download, Save, History, Edit, RotateCcw, Loader2, X, Trash2, BookOpen } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import questionBank from '../data/ketamineQuestionBank.js';
-import AudioService from '../services/audioService.js';
-import PDFService from '../services/pdfService.js';
-import AIService from '../services/aiService.js';
-import { getSessions, saveSession, deleteSession } from '../utils/ketamineSessionStorage.js';
+import { useToast } from "@/components/ui/use-toast"
+import questionBank from '@/data/ketamineQuestionBank.js';
+import AudioService from '@/services/audioService.js';
+import PDFService from '@/services/pdfService.js';
+import AIService from '@/services/aiService.js';
+import { getSessions, saveSession, deleteSession } from '@/utils/ketamineSessionStorage.js';
 
 const KetamineTherapy = ({ onBack }) => {
+  const { toast } = useToast();
   const [currentQuestion, setCurrentQuestion] = useState('Click "New Question" to begin.');
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
@@ -73,6 +75,11 @@ const KetamineTherapy = ({ onBack }) => {
         } catch (error) {
           console.error("Transcription error:", error);
           setTranscription("Transcription failed. Please edit manually.");
+          toast({
+            variant: "destructive",
+            title: "Transcription Failed",
+            description: error.message,
+          })
         } finally {
           setIsTranscribing(false);
         }
@@ -92,7 +99,11 @@ const KetamineTherapy = ({ onBack }) => {
         }
       } catch (error) {
         console.error("Could not start recording:", error);
-        alert("Could not access the microphone. Please ensure you have granted permission.");
+        toast({
+          variant: "destructive",
+          title: "Recording Error",
+          description: "Could not access the microphone. Please ensure you have granted permission.",
+        })
       }
     }
   };
@@ -106,6 +117,11 @@ const KetamineTherapy = ({ onBack }) => {
     } catch (error) {
       console.error("Failed to generate AI follow-up:", error);
       setFollowUpQuestion("Sorry, I couldn't generate a follow-up question at the moment.");
+      toast({
+        variant: "destructive",
+        title: "AI Follow-up Failed",
+        description: error.message,
+      })
     } finally {
       setIsGeneratingFollowUp(false);
     }
@@ -120,7 +136,11 @@ const KetamineTherapy = ({ onBack }) => {
       PDFService.savePDF(pdfBlob, `ketamine-reflection-${new Date().toISOString().slice(0, 10)}.pdf`);
     } catch (error) {
       console.error("Failed to export PDF:", error);
-      alert("Could not export PDF.");
+      toast({
+        variant: "destructive",
+        title: "PDF Export Failed",
+        description: "There was an error generating the PDF.",
+      })
     } finally {
       setIsExporting(false);
     }
@@ -132,7 +152,7 @@ const KetamineTherapy = ({ onBack }) => {
     const newSession = saveSession(sessionData);
     if (newSession) {
       setSessionHistory(prev => [newSession, ...prev]);
-      alert("Session saved!");
+      toast({ title: "Session Saved", description: "Your reflection has been saved." })
     }
   };
 

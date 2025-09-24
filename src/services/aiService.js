@@ -17,12 +17,7 @@ class AIService {
     const apiEndpoint = 'https://api.openai.com/v1/chat/completions';
 
     if (!apiKey) {
-      console.warn("OpenAI API key is not set in .env file. Using placeholder follow-up question.");
-      return new Promise(resolve => {
-        setTimeout(() => {
-          resolve("This is a placeholder follow-up because the OpenAI API key is not set in the .env file.");
-        }, 1000);
-      });
+      throw new Error("OpenAI API key is not set in the .env file.");
     }
 
     const systemPrompt = `

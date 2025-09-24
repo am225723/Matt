@@ -188,8 +188,7 @@ class AudioService {
     const apiEndpoint = 'https://api.openai.com/v1/audio/transcriptions';
 
     if (!apiKey) {
-        console.warn("OpenAI API key is not set in .env file. Using placeholder transcription.");
-        return Promise.resolve("This is a placeholder transcription because the OpenAI API key is not set in the .env file.");
+      throw new Error("OpenAI API key is not set in the .env file.");
     }
 
     const formData = new FormData();
