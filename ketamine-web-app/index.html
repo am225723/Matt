@@ -1190,7 +1190,36 @@
     }
 
     // Process the recorded audio
-    function processRecording() {
+    // Real-time transcription variables
+       let recognition = null;
+       let isTranscribing = false;
+       
+       // Initialize real-time transcription
+       function initRealTimeTranscription() {
+         const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+         
+         if (!SpeechRecognition) {
+           console.warn('Speech recognition not supported');
+           return;
+         }
+         
+         recognition = new SpeechRecognition();
+         recognition.continuous = true;
+         recognition.interimResults = true;
+         recognition.lang = 'en-US';
+         
+         recognition.onstart = () => {
+           isTranscribing = true;
+           transcriptionText.style.backgroundColor = '#e8f5e8';
+         };
+         
+         recognition.onresult = (event) => {
+           let finalTranscript = '';
+           let interimTranscript = '';
+           
+           for (let i = event.resultIndex; i
+
+       function processRecording() {
       // Create audio blob from chunks
       state.audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
       
@@ -1211,7 +1240,8 @@
       
       // Attempt transcription if supported
       if (window.SpeechRecognition || window.webkitSpeechRecognition) {
-        transcriptionText.value = "Transcription is not available in this web version. Please type your response manually.";
+        // Attempt transcription using Web Speech API
+           transcribeAudio();
       } else {
         transcriptionText.value = "Please type your response here.";
       }
@@ -1224,6 +1254,35 @@
     function focusTranscription() {
       transcriptionText.focus();
     }
+
+    // Real-time transcription variables
+    let recognition = null;
+    let isTranscribing = false;
+    
+    // Initialize real-time transcription
+    function initRealTimeTranscription() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+        console.warn('Speech recognition not supported');
+        return;
+      }
+      
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        isTranscribing = true;
+        transcriptionText.style.backgroundColor = '#e8f5e8';
+      };
+      
+      recognition.onresult = (event) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+        
+        for (let i = event.resultIndex; i
 
     // Generate AI follow-up question
     function generateAIFollowup() {

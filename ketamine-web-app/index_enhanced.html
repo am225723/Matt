@@ -1,0 +1,1320 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ketamine Therapy Question Bank - Enhanced</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+  <!-- PDF Generation Library -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    :root {
+      --primary-color: #6a4c93;
+      --primary-light: #8a6db1;
+      --primary-dark: #4a2c73;
+      --secondary-color: #73c2fb;
+      --secondary-light: #93e2ff;
+      --secondary-dark: #53a2db;
+      --text-color: #333;
+      --light-text: #f8f9fa;
+      --background-color: #f8f9fa;
+      --card-bg: #ffffff;
+      --border-radius: 8px;
+      --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      --transition: all 0.3s ease;
+      --success-color: #2ecc71;
+      --warning-color: #f39c12;
+      --error-color: #e74c3c;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
+    }
+
+    .app-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2rem;
+    }
+
+    .header-content {
+      text-align: left;
+    }
+
+    header h1 {
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .subtitle {
+      color: var(--text-color);
+      font-weight: 300;
+    }
+
+    .header-actions {
+      display: flex;
+      gap: 1rem;
+    }
+
+    section {
+      background-color: var(--card-bg);
+      border-radius: var(--border-radius);
+      box-shadow: var(--box-shadow);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .question-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #current-question {
+      text-align: center;
+      font-size: 1.4rem;
+      color: var(--primary-dark);
+      margin-bottom: 1rem;
+      min-height: 3.5rem;
+    }
+
+    .btn {
+      padding: 0.75rem 1.5rem;
+      border: none;
+      border-radius: var(--border-radius);
+      cursor: pointer;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: var(--transition);
+    }
+
+    .primary-btn {
+      background-color: var(--primary-color);
+      color: var(--light-text);
+    }
+
+    .primary-btn:hover {
+      background-color: var(--primary-dark);
+    }
+
+    .secondary-btn {
+      background-color: var(--secondary-color);
+      color: var(--text-color);
+    }
+
+    .secondary-btn:hover {
+      background-color: var(--secondary-dark);
+    }
+
+    .record-btn {
+      background-color: #e74c3c;
+      color: var(--light-text);
+    }
+
+    .record-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .record-btn.recording {
+      background-color: #2ecc71;
+    }
+
+    .record-btn.recording:hover {
+      background-color: #27ae60;
+    }
+
+    .ai-btn {
+      background-color: #3498db;
+      color: var(--light-text);
+    }
+
+    .ai-btn:hover {
+      background-color: #2980b9;
+    }
+
+    .controls {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .recording-indicator {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    #recording-status {
+      font-weight: 500;
+    }
+
+    #recording-status.active {
+      color: #e74c3c;
+    }
+
+    .audio-player {
+      width: 100%;
+      margin: 1rem 0;
+    }
+
+    audio {
+      width: 100%;
+    }
+
+    .transcription-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    #transcription-text {
+      width: 100%;
+      min-height: 150px;
+      padding: 1rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-family: 'Poppins', sans-serif;
+      resize: vertical;
+    }
+
+    .followup-container {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #f1f1f1;
+      border-radius: var(--border-radius);
+    }
+
+    .followup-container h3 {
+      margin-bottom: 0.5rem;
+      color: var(--primary-color);
+    }
+
+    .export-section {
+      display: flex;
+      justify-content: center;
+      gap: 1rem;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: 2rem;
+      color: #777;
+      font-size: 0.9rem;
+    }
+
+    /* Session History */
+    .session-history {
+      position: fixed;
+      top: 0;
+      right: -400px;
+      width: 380px;
+      height: 100vh;
+      background-color: var(--card-bg);
+      box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      transition: right 0.3s ease;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .session-history.visible {
+      right: 0;
+    }
+
+    .history-header {
+      padding: 1.5rem;
+      border-bottom: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .history-header h3 {
+      margin: 0;
+      color: var(--primary-color);
+    }
+
+    .history-content {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem;
+    }
+
+    .history-footer {
+      padding: 1rem;
+      border-top: 1px solid #eee;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .session-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .session-item {
+      background-color: #f9f9f9;
+      border-radius: var(--border-radius);
+      padding: 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: var(--transition);
+    }
+
+    .session-item:hover {
+      background-color: #f0f0f0;
+    }
+
+    .session-info h4 {
+      margin: 0 0 0.5rem 0;
+      color: var(--primary-dark);
+    }
+
+    .session-info p {
+      margin: 0;
+      font-size: 0.9rem;
+      color: #666;
+    }
+
+    .session-actions {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .small-btn {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+
+    .empty-message {
+      text-align: center;
+      color: #999;
+      padding: 2rem 0;
+    }
+
+    /* New Feature Styles */
+    .mood-tracker {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #f9f9f9;
+      border-radius: var(--border-radius);
+    }
+
+    .mood-options {
+      display: flex;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .mood-btn {
+      padding: 0.5rem;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mood-btn:hover, .mood-btn.selected {
+      transform: scale(1.2);
+      border-color: var(--primary-color);
+    }
+
+    .progress-section {
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #f9f9f9;
+      border-radius: var(--border-radius);
+    }
+
+    .progress-bar {
+      width: 100%;
+      height: 20px;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-top: 0.5rem;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background-color: var(--primary-color);
+      transition: width 0.3s ease;
+    }
+
+    .template-selector {
+      margin-bottom: 1rem;
+    }
+
+    .template-selector select {
+      padding: 0.5rem;
+      border: 1px solid #ddd;
+      border-radius: var(--border-radius);
+      font-family: 'Poppins', sans-serif;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 1rem;
+      }
+      
+      #current-question {
+        font-size: 1.2rem;
+      }
+      
+      .export-section {
+        flex-direction: column;
+        align-items: center;
+      }
+      
+      .btn {
+        width: 100%;
+        justify-content: center;
+      }
+
+      header {
+        flex-direction: column;
+        gap: 1rem;
+      }
+      
+      .header-content {
+        text-align: center;
+      }
+      
+      .header-actions {
+        width: 100%;
+        justify-content: center;
+      }
+
+      .session-history {
+        width: 100%;
+        right: -100%;
+      }
+      
+      .history-footer {
+        flex-direction: column;
+        gap: 0.5rem;
+      }
+      
+      .history-footer button {
+        width: 100%;
+      }
+      
+      .session-item {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .session-actions {
+        margin-top: 1rem;
+        width: 100%;
+        justify-content: flex-end;
+      }
+    }
+  </style>
+<script src="https://sites.super.myninja.ai/_assets/ninja-daytona-script.js"></script>
+</head>
+<body>
+  <div class="app-container">
+    <header>
+      <div class="header-content">
+        <h1>Ketamine Therapy Question Bank - Enhanced</h1>
+        <p class="subtitle">Record, transcribe, and track your therapeutic journey</p>
+      </div>
+      <div class="header-actions">
+        <button id="history-btn" class="btn secondary-btn">
+          <i class="fas fa-history"></i> Session History
+        </button>
+        <button id="notes-btn" class="btn secondary-btn">
+          <i class="fas fa-sticky-note"></i> View Notes
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="question-section">
+        <div class="question-container">
+          <div class="template-selector">
+            <label for="template-select">Choose session template:</label>
+            <select id="template-select">
+              <option value="default">Default Questions</option>
+              <option value="anxiety">Anxiety Focus</option>
+              <option value="depression">Depression Focus</option>
+              <option value="trauma">Trauma Processing</option>
+              <option value="integration">Integration Focus</option>
+            </select>
+          </div>
+          <h2 id="current-question">Click "New Question" to begin</h2>
+          <button id="new-question-btn" class="btn primary-btn">
+            <i class="fas fa-random"></i> New Question
+          </button>
+        </div>
+      </section>
+
+      <section class="recording-section">
+        <div class="controls">
+          <button id="record-btn" class="btn record-btn" disabled>
+            <i class="fas fa-microphone"></i> Start Recording
+          </button>
+          <div class="recording-indicator">
+            <span id="recording-status">Not Recording</span>
+            <span id="recording-time">00:00</span>
+          </div>
+        </div>
+        <div class="audio-player">
+          <audio id="audio-playback" controls></audio>
+        </div>
+      </section>
+
+      <section class="mood-tracker">
+        <h3>How are you feeling right now?</h3>
+        <div class="mood-options">
+          <button class="mood-btn" data-mood="1" title="Very Negative">😢</button>
+          <button class="mood-btn" data-mood="2" title="Negative">😔</button>
+          <button class="mood-btn" data-mood="3" title="Neutral">😐</button>
+          <button class="mood-btn" data-mood="4" title="Positive">😊</button>
+          <button class="mood-btn" data-mood="5" title="Very Positive">😄</button>
+        </div>
+      </section>
+
+      <section class="transcription-section">
+        <h3>Your Response</h3>
+        <div class="transcription-container">
+          <textarea id="transcription-text" placeholder="Your response will appear here after recording, or you can type directly..."></textarea>
+          <button id="edit-transcription-btn" class="btn secondary-btn">
+            <i class="fas fa-edit"></i> Edit Response
+          </button>
+        </div>
+      </section>
+
+      <section class="progress-section">
+        <h3>Session Progress</h3>
+        <p>Questions answered: <span id="questions-answered">0</span> / <span id="total-questions">5</span></p>
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: 0%"></div>
+        </div>
+      </section>
+
+      <section class="ai-followup-section">
+        <button id="ai-followup-btn" class="btn ai-btn" disabled>
+          <i class="fas fa-brain"></i> Generate AI Follow-up
+        </button>
+        <div class="followup-container">
+          <h3>AI Follow-up Question</h3>
+          <p id="followup-text">AI follow-up question will appear here after generation...</p>
+        </div>
+      </section>
+
+      <section class="export-section">
+        <button id="export-pdf-btn" class="btn primary-btn" disabled>
+          <i class="fas fa-file-pdf"></i> Export to PDF
+        </button>
+        <button id="save-session-btn" class="btn secondary-btn" disabled>
+          <i class="fas fa-save"></i> Save Session
+        </button>
+        <button id="copy-note-btn" class="btn secondary-btn" disabled>
+          <i class="fas fa-copy"></i> Copy as Note
+        </button>
+      </section>
+    </main>
+
+    <footer>
+      <p>Enhanced Ketamine Therapy Support Tool</p>
+    </footer>
+
+    <!-- Session History Panel -->
+    <div id="session-history" class="session-history">
+      <div class="history-header">
+        <h3>Session History</h3>
+        <button id="close-history-btn" class="btn secondary-btn">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="history-content">
+        <div id="session-list" class="session-list">
+          <p class="empty-message">No saved sessions found.</p>
+        </div>
+      </div>
+      <div class="history-footer">
+        <button id="export-all-btn" class="btn secondary-btn">
+          <i class="fas fa-download"></i> Export All Sessions
+        </button>
+        <button id="import-sessions-btn" class="btn secondary-btn">
+          <i class="fas fa-upload"></i> Import Sessions
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Enhanced Question Banks by Template
+    const questionTemplates = {
+      default: [
+        "What thoughts or worries come up for you in the mornings?",
+        "Are there specific situations or tasks you anticipate that might be contributing to your anxiety?",
+        "How does your body feel when you wake up?",
+        "Have you noticed any patterns or triggers that worsen your morning anxiety?",
+        "What activities or practices have helped you manage anxiety in the past?",
+        "If your anxiety had a voice, what would it be saying?",
+        "What's the very first thing you notice about your body when you wake up?",
+        "If your anxiety had a color, what would it be?",
+        "What does your anxiety feel like in your body?",
+        "If you could talk to your anxiety, what would you say?",
+        "What does your anxiety want you to know?",
+        "Is there a younger version of yourself that needs comfort or reassurance?",
+        "What would it feel like to let go of this anxiety, even for a moment?",
+        "If you could offer your anxiety some compassion, what would that look like?",
+        "Can you identify any positive intentions behind your anxiety?",
+        "Imagine your anxiety as a cloud passing through the sky. Can you observe it without judgment?",
+        "If you could create a safe space for yourself, where would it be?",
+        "What are you most afraid would happen if you weren't anxious?",
+        "If you could give your anxiety a name, what would it be?",
+        "What is your anxiety trying to protect you from?",
+        "When in your life did you first experience this feeling?",
+        "When you notice the anxiety rising, what thoughts are present in your mind?",
+        "What stories do you tell yourself about the anxiety and its causes?",
+        "If you were to write down every thought you're having right now, what would they be?"
+      ],
+      anxiety: [
+        "What physical sensations do you notice when anxiety first appears?",
+        "What specific thoughts trigger your anxiety most frequently?",
+        "How does anxiety affect your daily routines and habits?",
+        "What coping mechanisms have you developed for managing anxiety?",
+        "If anxiety were a character, how would you describe its personality?",
+        "What's the worst-case scenario your anxiety wants you to believe?",
+        "How has your relationship with anxiety changed over time?",
+        "What would life look like without this particular anxiety?",
+        "What does your body need when you're feeling anxious?",
+        "How do you know when anxiety is starting to take over?"
+      ],
+      depression: [
+        "What does the weight of depression feel like in your body?",
+        "What thoughts feel heaviest when you're experiencing depression?",
+        "How does depression affect your sense of time and energy?",
+        "What small moments of light or hope have you noticed recently?",
+        "What does your depression want you to believe about yourself?",
+        "How do you care for yourself when depression is present?",
+        "What would you say to a friend experiencing what you're feeling?",
+        "What activities or connections help you feel more alive?",
+        "How has depression shaped your understanding of yourself?",
+        "What would healing or recovery look like for you?"
+      ],
+      trauma: [
+        "What body sensations arise when you think about the traumatic experience?",
+        "What protective parts of yourself activate around trauma memories?",
+        "How does your nervous system respond to triggers or reminders?",
+        "What would you want your younger self to know about safety?",
+        "How has the trauma affected your ability to trust or connect?",
+        "What resources or strengths have helped you survive this far?",
+        "What does your body need to feel safe right now?",
+        "How do you know when you're in a trauma response versus present moment?",
+        "What boundaries or protections feel necessary for healing?",
+        "What would integration or resolution feel like for you?"
+      ],
+      integration: [
+        "What insights or realizations feel most important from your session?",
+        "How do you plan to integrate these experiences into daily life?",
+        "What support systems can help you process and integrate?",
+        "What practices or routines support your ongoing healing?",
+        "How will you know if you're successfully integrating these experiences?",
+        "What resistance or challenges do you anticipate in integration?",
+        "What self-care practices feel most important post-session?",
+        "How can you create space for continued reflection and processing?",
+        "What would successful integration look like in your daily life?",
+        "What ongoing support or resources do you need?"
+      ]
+    };
+
+    // DOM Elements
+    const currentQuestionEl = document.getElementById('current-question');
+    const newQuestionBtn = document.getElementById('new-question-btn');
+    const recordBtn = document.getElementById('record-btn');
+    const recordingStatus = document.getElementById('recording-status');
+    const recordingTime = document.getElementById('recording-time');
+    const audioPlayback = document.getElementById('audio-playback');
+    const transcriptionText = document.getElementById('transcription-text');
+    const editTranscriptionBtn = document.getElementById('edit-transcription-btn');
+    const aiFollowupBtn = document.getElementById('ai-followup-btn');
+    const followupText = document.getElementById('followup-text');
+    const exportPdfBtn = document.getElementById('export-pdf-btn');
+    const saveSessionBtn = document.getElementById('save-session-btn');
+    const historyBtn = document.getElementById('history-btn');
+    const sessionHistoryPanel = document.getElementById('session-history');
+    const closeHistoryBtn = document.getElementById('close-history-btn');
+    const sessionList = document.getElementById('session-list');
+    const exportAllBtn = document.getElementById('export-all-btn');
+    const importSessionsBtn = document.getElementById('import-sessions-btn');
+    const templateSelect = document.getElementById('template-select');
+    const questionsAnsweredEl = document.getElementById('questions-answered');
+    const totalQuestionsEl = document.getElementById('total-questions');
+    const progressFill = document.querySelector('.progress-fill');
+
+    // Application State
+    const state = {
+      currentQuestion: null,
+      currentTemplate: 'default',
+      recording: false,
+      mediaRecorder: null,
+      audioChunks: [],
+      audioBlob: null,
+      audioUrl: null,
+      transcription: '',
+      followupQuestion: '',
+      recordingStartTime: null,
+      recordingTimer: null,
+      sessionData: {
+        questions: [],
+        responses: [],
+        followups: [],
+        mood: null,
+        timestamp: null
+      },
+      sessionHistory: {
+        visible: false,
+        sessions: []
+      },
+      questionsAnswered: 0,
+      totalQuestions: 5
+    };
+
+    // Initialize the application
+    function init() {
+      checkBrowserCompatibility();
+      setupEventListeners();
+      loadSavedSessions();
+      updateProgress();
+      
+      // Initialize real-time transcription
+      initRealTimeTranscription();
+      
+      // Enable direct typing
+      transcriptionText.readOnly = false;
+      editTranscriptionBtn.disabled = false;
+      
+      showWelcomeMessage();
+    }
+
+    // Real-time transcription variables
+    let recognition = null;
+    let isTranscribing = false;
+
+    // Initialize real-time transcription
+    function initRealTimeTranscription() {
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      
+      if (!SpeechRecognition) {
+        console.warn('Speech recognition not supported');
+        return;
+      }
+      
+      recognition = new SpeechRecognition();
+      recognition.continuous = true;
+      recognition.interimResults = true;
+      recognition.lang = 'en-US';
+      
+      recognition.onstart = () => {
+        isTranscribing = true;
+        transcriptionText.style.backgroundColor = '#e8f5e8';
+      };
+      
+      recognition.onresult = (event) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+        
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+        
+        transcriptionText.value = finalTranscript || interimTranscript;
+        state.transcription = finalTranscript || interimTranscript;
+      };
+      
+      recognition.onerror = (event) => {
+        console.error('Speech recognition error:', event.error);
+        transcriptionText.style.backgroundColor = '';
+        transcriptionText.value = `Speech recognition failed: ${event.error}. Please type your response manually.`;
+        isTranscribing = false;
+      };
+      
+      recognition.onend = () => {
+        isTranscribing = false;
+        transcriptionText.style.backgroundColor = '';
+        if (state.transcription.trim()) {
+          recordingStatus.textContent = 'Transcription Complete';
+          aiFollowupBtn.disabled = false;
+          exportPdfBtn.disabled = false;
+          saveSessionBtn.disabled = false;
+        }
+      };
+    }
+
+    // Start real-time transcription
+    function startRealTimeTranscription() {
+      if (!recognition) {
+        initRealTimeTranscription();
+      }
+      
+      if (recognition && !isTranscribing) {
+        try {
+          recognition.start();
+          recordingStatus.textContent = 'Transcribing...';
+        } catch (error) {
+          console.error('Error starting transcription:', error);
+        }
+      }
+    }
+
+    // Stop real-time transcription
+    function stopRealTimeTranscription() {
+      if (recognition && isTranscribing) {
+        recognition.stop();
+      }
+    }
+
+    // Check browser compatibility
+    function checkBrowserCompatibility() {
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        recordBtn.disabled = true;
+        recordBtn.title = "Recording not supported in this browser";
+      }
+    }
+
+    // Set up event listeners
+    function setupEventListeners() {
+      newQuestionBtn.addEventListener('click', getRandomQuestion);
+      recordBtn.addEventListener('click', toggleRecording);
+      editTranscriptionBtn.addEventListener('click', focusTranscription);
+      aiFollowupBtn.addEventListener('click', generateAIFollowup);
+      exportPdfBtn.addEventListener('click', exportToPDF);
+      saveSessionBtn.addEventListener('click', saveSession);
+      historyBtn.addEventListener('click', toggleSessionHistory);
+      closeHistoryBtn.addEventListener('click', hideSessionHistory);
+      exportAllBtn.addEventListener('click', exportAllSessions);
+      importSessionsBtn.addEventListener('click', showImportDialog);
+      templateSelect.addEventListener('change', changeTemplate);
+      
+      // Mood tracking
+      document.querySelectorAll('.mood-btn').forEach(btn => {
+        btn.addEventListener('click', selectMood);
+      });
+      
+      transcriptionText.addEventListener('input', updateButtons);
+    }
+
+    // Update button states based on content
+    function updateButtons() {
+      state.transcription = transcriptionText.value;
+      const hasContent = state.transcription.trim().length > 0;
+      aiFollowupBtn.disabled = !hasContent;
+      exportPdfBtn.disabled = !hasContent;
+      saveSessionBtn.disabled = !hasContent;
+    }
+
+    // Show welcome message
+    function showWelcomeMessage() {
+      currentQuestionEl.innerHTML = `
+        <div class="welcome-message">
+          <h2>Welcome to Enhanced Ketamine Therapy Question Bank</h2>
+          <p>This enhanced version includes real-time transcription, mood tracking, and progress visualization.</p>
+          <p>Choose a template and click "New Question" to begin your therapeutic journey.</p>
+        </div>
+      `;
+    }
+
+    // Change question template
+    function changeTemplate() {
+      state.currentTemplate = templateSelect.value;
+      updateProgress();
+    }
+
+    // Get a random question from the current template
+    function getRandomQuestion() {
+      const questions = questionTemplates[state.currentTemplate];
+      const randomIndex = Math.floor(Math.random() * questions.length);
+      
+      state.currentQuestion = questions[randomIndex];
+      currentQuestionEl.textContent = state.currentQuestion;
+      
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        recordBtn.disabled = false;
+      }
+      
+      resetUI();
+      updateProgress();
+    }
+
+    // Select mood
+    function selectMood(event) {
+      document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+      event.target.classList.add('selected');
+      state.sessionData.mood = parseInt(event.target.dataset.mood);
+    }
+
+    // Update progress
+    function updateProgress() {
+      questionsAnsweredEl.textContent = state.questionsAnswered;
+      totalQuestionsEl.textContent = state.totalQuestions;
+      
+      const progress = (state.questionsAnswered / state.totalQuestions) * 100;
+      progressFill.style.width = `${progress}%`;
+    }
+
+    // Reset the UI for a new question
+    function resetUI() {
+      state.recording = false;
+      state.audioChunks = [];
+      state.audioBlob = null;
+      state.audioUrl = null;
+      state.followupQuestion = '';
+      
+      recordBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Recording';
+      recordBtn.classList.remove('recording');
+      recordingStatus.textContent = 'Not Recording';
+      recordingTime.textContent = '00:00';
+      audioPlayback.src = '';
+      audioPlayback.style.display = 'none';
+      
+      transcriptionText.value = '';
+      followupText.textContent = 'AI follow-up question will appear here after generation...';
+      
+      document.querySelectorAll('.mood-btn').forEach(btn => btn.classList.remove('selected'));
+      state.sessionData.mood = null;
+      
+      aiFollowupBtn.disabled = true;
+      exportPdfBtn.disabled = true;
+      saveSessionBtn.disabled = true;
+    }
+
+    // Toggle recording on/off
+    async function toggleRecording() {
+      if (!state.recording) {
+        await startRecording();
+      } else {
+        stopRecording();
+      }
+    }
+
+    // Start audio recording
+    async function startRecording() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        
+        state.mediaRecorder = new MediaRecorder(stream);
+        
+        state.mediaRecorder.ondataavailable = (event) => {
+          if (event.data.size > 0) {
+            state.audioChunks.push(event.data);
+          }
+        };
+        
+        state.mediaRecorder.onstop = processRecording;
+        
+        state.mediaRecorder.start();
+        state.recording = true;
+        
+        recordBtn.innerHTML = '<i class="fas fa-stop"></i> Stop Recording';
+        recordBtn.classList.add('recording');
+        recordingStatus.textContent = 'Recording...';
+        recordingStatus.classList.add('active');
+        
+        startRecordingTimer();
+        
+      } catch (error) {
+        console.error('Error starting recording:', error);
+        showErrorMessage('Could not access microphone. Please ensure you have granted permission.');
+      }
+    }
+
+    // Stop audio recording
+    function stopRecording() {
+      if (state.mediaRecorder && state.recording) {
+        state.mediaRecorder.stop();
+        state.recording = false;
+        
+        state.mediaRecorder.stream.getTracks().forEach(track => track.stop());
+        stopRecordingTimer();
+        
+        recordBtn.innerHTML = '<i class="fas fa-microphone"></i> Start Recording';
+        recordBtn.classList.remove('recording');
+        recordingStatus.textContent = 'Processing...';
+        
+        const pulseElement = recordingStatus.querySelector('.recording-pulse');
+        if (pulseElement) {
+          recordingStatus.removeChild(pulseElement);
+        }
+      }
+    }
+
+    // Process the recorded audio
+    function processRecording() {
+      state.audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
+      state.audioUrl = URL.createObjectURL(state.audioBlob);
+      
+      audioPlayback.src = state.audioUrl;
+      audioPlayback.style.display = 'block';
+      
+      recordingStatus.textContent = 'Processing transcription...';
+      
+      // Use real-time transcription
+      startRealTimeTranscription();
+      
+      aiFollowupBtn.disabled = false;
+      exportPdfBtn.disabled = false;
+      saveSessionBtn.disabled = false;
+      
+      focusTranscription();
+    }
+
+    // Generate AI follow-up question
+    function generateAIFollowup() {
+      aiFollowupBtn.disabled = true;
+      followupText.innerHTML = 'Generating follow-up question... <div class="ai-thinking"><span></span><span></span><span></span></div>';
+      
+      setTimeout(() => {
+        const followups = {
+          anxiety: "How does exploring this anxiety make you feel about your ability to cope?",
+          depression: "What small step could you take today that might bring a moment of relief?",
+          trauma: "What does your body need right now to feel safer in this moment?",
+          integration: "How can you bring this insight into your daily life this week?"
+        };
+        
+        const template = state.currentTemplate;
+        state.followupQuestion = followups[template] || "How does exploring this question make you feel about your journey?";
+        followupText.textContent = state.followupQuestion;
+        aiFollowupBtn.disabled = false;
+      }, 1500);
+    }
+
+    // Export responses to PDF
+    function exportToPDF() {
+      saveCurrentData();
+      
+      try {
+        if (typeof window.jspdf === 'undefined') {
+          exportAsText();
+          return;
+        }
+        
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF({
+          orientation: 'portrait',
+          unit: 'mm',
+          format: 'a4'
+        });
+        
+        doc.setFontSize(22);
+        doc.setTextColor(106, 76, 147);
+        doc.text('Ketamine Therapy Reflection', 105, 20, { align: 'center' });
+        
+        const today = new Date();
+        doc.setFontSize(12);
+        doc.setTextColor(51, 51, 51);
+        doc.text(`Date: ${today.toLocaleDateString()}`, 105, 30, { align: 'center' });
+        
+        let yPosition = 50;
+        
+        for (let i = 0; i < state.sessionData.questions.length; i++) {
+          if (yPosition > 250) {
+            doc.addPage();
+            yPosition = 20;
+          }
+          
+          doc.setFontSize(16);
+          doc.setFont(undefined, 'bold');
+          doc.setTextColor(74, 44, 115);
+          doc.text(`Question ${i + 1}`, 20, yPosition);
+          yPosition += 10;
+          
+          const questionLines = doc.splitTextToSize(state.sessionData.questions[i], 170);
+          doc.setFontSize(14);
+          doc.setTextColor(51, 51, 51);
+          doc.text(questionLines, 20, yPosition);
+          yPosition += (questionLines.length * 7);
+          
+          doc.setFontSize(14);
+          doc.setFont(undefined, 'bold');
+          doc.text('Your Response:', 20, yPosition);
+          yPosition += 10;
+          
+          const responseLines = doc.splitTextToSize(state.sessionData.responses[i] || 'No response recorded', 170);
+          doc.setFontSize(12);
+          doc.setFont(undefined, 'normal');
+          doc.text(responseLines, 20, yPosition);
+          yPosition += (responseLines.length * 7);
+          
+          if (state.sessionData.mood) {
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.text('Mood:', 20, yPosition);
+            yPosition += 10;
+            
+            const moodText = ['Very Negative', 'Negative', 'Neutral', 'Positive', 'Very Positive'][state.sessionData.mood - 1];
+            doc.setFontSize(12);
+            doc.text(moodText, 20, yPosition);
+            yPosition += 15;
+          }
+          
+          if (state.sessionData.followups && state.sessionData.followups[i]) {
+            if (yPosition > 250) {
+              doc.addPage();
+              yPosition = 20;
+            }
+            
+            doc.setFontSize(14);
+            doc.setFont(undefined, 'bold');
+            doc.setTextColor(52, 152, 219);
+            doc.text('AI Follow-up:', 20, yPosition);
+            yPosition += 10;
+            
+            const followupLines = doc.splitTextToSize(state.sessionData.followups[i], 170);
+            doc.setFontSize(12);
+            doc.setFont(undefined, 'italic');
+            doc.text(followupLines, 20, yPosition);
+            yPosition += (followupLines.length * 7) + 15;
+          } else {
+            yPosition += 15;
+          }
+        }
+        
+        const pageCount = doc.internal.getNumberOfPages();
+        for (let i = 1; i <= pageCount; i++) {
+          doc.setPage(i);
+          doc.setFontSize(10);
+          doc.setFont(undefined, 'normal');
+          doc.setTextColor(102, 102, 102);
+          doc.text(`Page ${i} of ${pageCount}`, 105, 290, { align: 'center' });
+        }
+        
+        doc.save('ketamine-reflection.pdf');
+        showToast('PDF exported successfully', 'success');
+        
+      } catch (error) {
+        console.error('Error exporting PDF:', error);
+        exportAsText();
+      }
+    }
+
+    // Save current question and response to session data
+    function saveCurrentData() {
+      if (state.currentQuestion && transcriptionText.value.trim()) {
+        state.transcription = transcriptionText.value.trim();
+        
+        const index = state.sessionData.questions.indexOf(state.currentQuestion);
+        
+        if (index === -1) {
+          state.sessionData.questions.push(state.currentQuestion);
+          state.sessionData.responses.push(state.transcription);
+          
+          if (state.followupQuestion) {
+            state.sessionData.followups.push(state.followupQuestion);
+          } else {
+            state.sessionData.followups.push('');
+          }
+          
+          state.questionsAnswered++;
+          updateProgress();
+        } else {
+          state.sessionData.responses[index] = state.transcription;
+          
+          if (state.followupQuestion) {
+            state.sessionData.followups[index] = state.followupQuestion;
+          }
+        }
+      }
+    }
+
+    // Save the current session
+    function saveSession() {
+      saveCurrentData();
+      
+      if (state.sessionData.questions.length === 0) {
+        showErrorMessage('No data to save. Please answer at least one question.');
+        return;
+      }
+      
+      const sessionId = `session_${new Date().toISOString()}`;
+      
+      const sessionWithMetadata = {
+        ...state.sessionData,
+        metadata: {
+          id: sessionId,
+          timestamp: new Date().toISOString(),
+          questionCount: state.sessionData.questions.length,
+          template: state.currentTemplate,
+          mood: state.sessionData.mood
+        }
+      };
+      
+      try {
+        localStorage.setItem(`ketamine_${sessionId}`, JSON.stringify(sessionWithMetadata));
+        updateSessionIndex(sessionId);
+        loadSavedSessions();
+        showToast('Session saved successfully', 'success');
+      } catch (error) {
+        console.error('Error saving session:', error);
+        showErrorMessage('Could not save session. Local storage may be full.');
+      }
+    }
+
+    // Update session index
+    function updateSessionIndex(sessionId) {
+      try {
+        let sessionIndex = JSON.parse(localStorage.getItem('ketamine_session_index')) || [];
+        if (!sessionIndex.includes(sessionId)) {
+          sessionIndex.push(sessionId);
+          localStorage.setItem('ketamine_session_index', JSON.stringify(sessionIndex));
+        }
+      } catch (error) {
+        console.error('Error updating session index:', error);
+      }
+    }
+
+    // Load saved sessions
+    function loadSavedSessions() {
+      try {
+        const sessionIndex = JSON.parse(localStorage.getItem('ketamine_session_index')) || [];
+        state.sessionHistory.sessions = sessionIndex.map(sessionId => {
+          try {
+            const sessionData = JSON.parse(localStorage.getItem(`ketamine_${sessionId}`));
+            return sessionData ? sessionData.metadata : null;
+          } catch (error) {
+            return null;
+          }
+        }).filter(Boolean);
+        updateSessionList();
+      } catch (error) {
+        console.error('Error loading sessions:', error);
+      }
+    }
+
+    // Update session list UI
+    function updateSessionList() {
+      sessionList.innerHTML = '';
+      
+      if (state.sessionHistory.sessions.length === 0) {
+        sessionList.innerHTML = '<p class="empty-message">No saved sessions found.</p>';
+        return;
+      }
+      
+      const sortedSessions = [...state.sessionHistory.sessions].sort((a, b) => {
+        return new Date(b.timestamp) - new Date(a.timestamp);
+      });
+      
+      sortedSessions.forEach(session => {
+        const sessionDate = new Date(session.timestamp).toLocaleDateString();
+        const sessionTime = new Date(session.timestamp).toLocaleTimeString();
+        
+        const sessionItem = document.createElement('div');
+        sessionItem.className = 'session-item';
+        sessionItem.innerHTML = `
+          <div class="session-info">
+            <h4>${session.template.toUpperCase()} Session</h4>
+            <p>${sessionDate} at ${sessionTime}</p>
+            <p>${session.questionCount} questions | Mood: ${session.mood ? ['😢','😔','😐','😊','😄'][session.mood-1] : 'N/A'}</p>
+          </div>
+          <div class="session-actions">
+            <button class="btn small-btn load-session-btn" data-id="${session.id}">
+              <i class="fas fa-folder-open"></i> Load
+            </button>
+            <button class="btn small-btn delete-session-btn" data-id="${session.id}">
+              <i class="fas fa-trash"></i>
+            </button>
+          </div>
+        `;
+        
+        sessionItem.querySelector('.load-session-btn').addEventListener('click', () => loadSession(session.id));
+        sessionItem.querySelector('.delete-session-btn').addEventListener('click', () => deleteSession(session.id));
+        sessionList.appendChild(sessionItem);
+      });
+    }
+
+    // Toggle session history
+    function toggleSessionHistory() {
+      if (state.sessionHistory.visible) {
+        hideSessionHistory();
+      } else {
+        showSessionHistory();
+      }
+    }
+
+    function showSessionHistory() {
+      loadSavedSessions();
+      sessionHistoryPanel.classList.add('visible');
+      state.sessionHistory.visible = true;
+    }
+
+    function hideSessionHistory() {
+      sessionHistoryPanel.classList.remove('visible');
+      state.sessionHistory.visible = false;
+    }
+
+    // Start recording timer
+    function startRecordingTimer() {
+      state.recordingStartTime = Date.now();
+      state.recordingTimer = setInterval(updateRecordingTime, 1000);
+    }
+
+    function stopRecordingTimer() {
+      if (state.recordingTimer) {
+        clearInterval(state.recordingTimer);
+        state.recordingTimer = null;
+      }
+    }
+
+    function updateRecordingTime() {
+      if (!state.recordingStartTime) return;
+      
+      const elapsedSeconds = Math.floor((Date.now() - state.recordingStartTime) / 1000);
+      const minutes = Math.floor(elapsedSeconds / 60).toString().padStart(2, '0');
+      const seconds = (elapsedSeconds % 60).toString().padStart(2, '0');
+      
+      recordingTime.textContent = `${minutes}:${seconds}`;
+    }
+
+    // Show error message
+    function showErrorMessage(message) {
+      alert(message); // Simple alert for now
+    }
+
+    // Show success message
+    function showToast(message, type = 'info') {
+      alert(message); // Simple alert for now
+    }
+
+    // Initialize application
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>
