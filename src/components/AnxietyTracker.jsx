@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from "@/components/ui/label";
 import { Card } from "@/components/ui/card";
 import { Activity, Brain, BarChart3, Lightbulb } from 'lucide-react';
-import BodyMapSVG from './BodyMapSVG';
+import EnhancedBodyMapSVG from './EnhancedBodyMapSVG';
 import AnxietyVisualizations from './AnxietyVisualizations';
 import AnxietyResources from './AnxietyResources';
 
@@ -223,9 +223,10 @@ const AnxietyTracker = ({ onBack }) => {
             
             {useSVGMap ? (
               <div className="mb-6">
-                <BodyMapSVG 
+                <EnhancedBodyMapSVG 
                   selectedParts={selectedBodyParts} 
-                  onPartClick={handleBodyPartClick} 
+                  onPartClick={handleBodyPartClick}
+                  highlightIntensity="medium"
                 />
                 <div className="mt-4 text-center">
                   <p className="text-sm text-muted-foreground mb-2">

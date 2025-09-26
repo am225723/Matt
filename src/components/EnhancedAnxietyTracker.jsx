@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Activity, Brain, BarChart3, Lightbulb, TrendingUp, Calendar, Heart } from 'lucide-react';
-import BodyMapSVG from './BodyMapSVG';
+import EnhancedBodyMapSVG from './EnhancedBodyMapSVG';
 import EnhancedAnxietyVisualizations from './EnhancedAnxietyVisualizations';
 import AnxietyResources from './AnxietyResources';
 
@@ -259,9 +259,10 @@ const EnhancedAnxietyTracker = ({ onBack }) => {
             
             {useSVGMap ? (
               <div className="mb-6">
-                <BodyMapSVG 
+                <EnhancedBodyMapSVG 
                   selectedParts={selectedBodyParts} 
-                  onPartClick={handleBodyPartClick} 
+                  onPartClick={handleBodyPartClick}
+                  highlightIntensity="medium"
                 />
                 <div className="mt-4 flex justify-between items-center">
                   <p className="text-sm text-muted-foreground">

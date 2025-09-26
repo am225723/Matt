@@ -4,6 +4,7 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
 @import '@/styles/anxiety-tracker.css';
+@import '@/styles/enhanced-body-map.css';
 
 :root {
   --background: 222.2 84% 4.9%;
