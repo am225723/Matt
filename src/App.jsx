@@ -5,7 +5,8 @@ import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import HealthDashboard from '@/components/HealthDashboard';
-import AnxietyTracker from '@/components/AnxietyTracker';
+import EnhancedAnxietyTracker from '@/components/EnhancedAnxietyTracker';
+import BodyMapDemo from '@/components/BodyMapDemo';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
@@ -162,6 +163,15 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           className="bg-teal-500/30"
         />
       </motion.div>
+      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+        <DashboardTile
+          title="Body Map Demo"
+          description="Interactive body visualization with enhanced features."
+          icon={<Activity className="w-6 h-6 text-white" />}
+          onClick={() => onSelect('bodymap')}
+          className="bg-gradient-to-br from-blue-500/30 to-purple-500/30"
+        />
+      </motion.div>
     </motion.div>
 
     <motion.div
@@ -218,7 +228,8 @@ const App = () => {
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
       {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
-      {view === 'anxiety' && <AnxietyTracker onBack={handleBackToDashboard} />}
+      {view === 'anxiety' && <EnhancedAnxietyTracker onBack={handleBackToDashboard} />}
+      {view === 'bodymap' && <BodyMapDemo onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
