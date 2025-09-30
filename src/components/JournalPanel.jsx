@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Card } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label";
+import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -14,9 +14,12 @@ import {
   Calendar,
   Zap,
   Brain,
-  Smiley,
+  Smile,
   Frown,
-  Meh
+  Meh,
+  ChevronLeft,
+  ChevronRight,
+  Save
 } from 'lucide-react';
 
 const JournalPanel = ({ 
@@ -30,7 +33,7 @@ const JournalPanel = ({
 
   // Mood options with colors
   const moodOptions = [
-    { value: 'calm', label: 'Calm', icon: Smiley, color: 'text-green-500' },
+    { value: 'calm', label: 'Calm', icon: Smile, color: 'text-green-500' },
     { value: 'anxious', label: 'Anxious', icon: Frown, color: 'text-orange-500' },
     { value: 'stressed', label: 'Stressed', icon: Zap, color: 'text-red-500' },
     { value: 'overwhelmed', label: 'Overwhelmed', icon: Brain, color: 'text-purple-500' },
@@ -38,7 +41,7 @@ const JournalPanel = ({
     { value: 'nervous', label: 'Nervous', icon: Meh, color: 'text-yellow-500' },
     { value: 'worried', label: 'Worried', icon: Brain, color: 'text-blue-500' },
     { value: 'fearful', label: 'Fearful', icon: Frown, color: 'text-gray-600' },
-    { value: 'relaxed', label: 'Relaxed', icon: Smiley, color: 'text-green-600' },
+    { value: 'relaxed', label: 'Relaxed', icon: Smile, color: 'text-green-600' },
     { value: 'tense', label: 'Tense', icon: Zap, color: 'text-orange-600' }
   ];
 
