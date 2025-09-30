@@ -19,6 +19,7 @@ const BodyPartDetailsModal = ({
       selectedParts.forEach(part => {
         initialDetails[part] = existingDetails[part] || {
           sensations: [],
+          feelings: [],
           intensity: 5,
           notes: '',
           isNew: true
@@ -37,6 +38,23 @@ const BodyPartDetailsModal = ({
     'Pressure', 'Heaviness', 'Lightness', 'Warmth', 'Cold',
     'Itching', 'Twitching', 'Shaking', 'Weakness', 'Tension'
   ];
+
+  const feelings = [
+    'Anxious', 'Sad', 'Angry', 'Happy', 'Excited', 'Scared',
+    'Nervous', 'Relaxed', 'Stressed', 'Empty', 'Full', 'Guilty'
+  ];
+
+  const handleFeelingToggle = (part, feeling) => {
+    setPartDetails(prev => ({
+      ...prev,
+      [part]: {
+        ...prev[part],
+        feelings: prev[part].feelings.includes(feeling)
+          ? prev[part].feelings.filter(f => f !== feeling)
+          : [...prev[part].feelings, feeling]
+      }
+    }));
+  };
 
   const handleSensationToggle = (part, sensation) => {
     setPartDetails(prev => ({
@@ -188,6 +206,31 @@ const BodyPartDetailsModal = ({
                 >
                   <Plus className="w-5 h-5" />
                 </motion.button>
+              </div>
+            </div>
+
+            {/* Emotional Feelings */}
+            <div className="bg-gradient-to-r from-yellow-50 to-orange-50 rounded-xl p-6">
+              <h3 className="text-lg font-semibold mb-4 flex items-center">
+                <Brain className="w-5 h-5 mr-2 text-orange-600" />
+                Emotional Feelings
+              </h3>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+                {feelings.map(feeling => (
+                  <motion.button
+                    key={feeling}
+                    onClick={() => handleFeelingToggle(currentPart, feeling)}
+                    className={`p-3 rounded-lg text-sm font-medium transition-all ${
+                      currentDetails.feelings?.includes(feeling)
+                        ? 'bg-orange-500 text-white shadow-md'
+                        : 'bg-white text-gray-700 hover:bg-orange-50 border border-gray-200'
+                    }`}
+                    whileHover={{ scale: 1.02 }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {feeling}
+                  </motion.button>
+                ))}
               </div>
             </div>
 

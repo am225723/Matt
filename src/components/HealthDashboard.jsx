@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from "@/components/ui/label";
-import { Activity, Heart, Bed } from 'lucide-react';
+import { Activity, Heart, Bed, Weight, Brain, Salad } from 'lucide-react';
 
 const HealthDashboard = ({ onBack }) => {
   const [healthData, setHealthData] = useState(null);
@@ -10,6 +10,9 @@ const HealthDashboard = ({ onBack }) => {
     steps: '',
     sleep: '',
     restingHr: '',
+    weight: '',
+    stressLevel: '',
+    nutrition: '',
   });
 
   const handleInputChange = (e) => {
@@ -26,6 +29,9 @@ const HealthDashboard = ({ onBack }) => {
       steps: parseInt(formData.steps, 10) || 0,
       sleep: parseFloat(formData.sleep) || 0,
       restingHr: parseInt(formData.restingHr, 10) || 0,
+      weight: parseFloat(formData.weight) || 0,
+      stressLevel: parseInt(formData.stressLevel, 10) || 0,
+      nutrition: formData.nutrition,
     });
   };
 
@@ -62,6 +68,9 @@ const HealthDashboard = ({ onBack }) => {
                 {renderDataPoint(Activity, "Steps", healthData.steps, "steps")}
                 {renderDataPoint(Bed, "Sleep", healthData.sleep, "hours")}
                 {renderDataPoint(Heart, "Resting HR", healthData.restingHr, "bpm")}
+                {renderDataPoint(Weight, "Weight", healthData.weight, "lbs")}
+                {renderDataPoint(Brain, "Stress Level", healthData.stressLevel, "/ 10")}
+                {renderDataPoint(Salad, "Nutrition", healthData.nutrition, "")}
               </div>
               <Button onClick={handleEdit} variant="outline">Edit Data</Button>
             </div>
@@ -96,6 +105,39 @@ const HealthDashboard = ({ onBack }) => {
                     type="number"
                     placeholder="e.g., 60"
                     value={formData.restingHr}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="weight">Weight (lbs)</Label>
+                  <Input
+                    id="weight"
+                    type="number"
+                    step="0.1"
+                    placeholder="e.g., 150.5"
+                    value={formData.weight}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="stressLevel">Stress Level (1-10)</Label>
+                  <Input
+                    id="stressLevel"
+                    type="number"
+                    min="1"
+                    max="10"
+                    placeholder="e.g., 3"
+                    value={formData.stressLevel}
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="nutrition">Nutrition Notes</Label>
+                  <Input
+                    id="nutrition"
+                    type="text"
+                    placeholder="e.g., Balanced meals"
+                    value={formData.nutrition}
                     onChange={handleInputChange}
                   />
                 </div>
