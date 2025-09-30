@@ -455,18 +455,6 @@ const EnhancedAdvancedBodyMap = ({ onBack, onSave }) => {
           </div>
         </div>
 
-        {/* Body Part Details Modal */}
-        <BodyPartDetailsModal
-          isOpen={showDetailsModal}
-          onClose={() => setShowDetailsModal(false)}
-          selectedParts={selectedParts}
-          onSave={(details) => {
-            setBodyParts(prev => ({ ...prev, ...details }));
-            setShowDetailsModal(false);
-          }}
-          existingDetails={bodyParts}
-        />
-
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
           {/* Left side - Body Map or Controls */}
           <div>

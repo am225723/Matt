@@ -6,7 +6,6 @@ import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import HealthDashboard from '@/components/HealthDashboard';
 import EnhancedAnxietyTracker from '@/components/EnhancedAnxietyTracker';
-import BodyMapDemo from '@/components/BodyMapDemo';
 import EnhancedAdvancedBodyMap from '@/components/EnhancedAdvancedBodyMap';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
@@ -166,21 +165,13 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
       </motion.div>
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
         <DashboardTile
-          title="Body Map Demo"
-          description="Interactive body visualization with enhanced features."
-          icon={<Activity className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('bodymap')}
-          className="bg-gradient-to-br from-blue-500/30 to-purple-500/30"
-        />
-<motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
           title="Advanced Anxiety Tracker"
           description="Complete anxiety tracking with body mapping, health metrics, and emotional journal."
           icon={<Activity className="w-6 h-6 text-white" />}
           onClick={() => onSelect('advanced-anxiety')}
           className="bg-gradient-to-br from-purple-500/30 to-pink-500/30"
         />
-      </motion.div>      </motion.div>
+      </motion.div>
     </motion.div>
 
     <motion.div
@@ -238,7 +229,6 @@ const App = () => {
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
       {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
       {view === 'anxiety' && <EnhancedAnxietyTracker onBack={handleBackToDashboard} />}
-      {view === 'bodymap' && <BodyMapDemo onBack={handleBackToDashboard} />}
       {view === 'advanced-anxiety' && <EnhancedAdvancedBodyMap onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
