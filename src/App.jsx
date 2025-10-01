@@ -141,17 +141,8 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
       </motion.div>
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
         <DashboardTile
-          title="Health Dashboard"
-         <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-           <DashboardTile
-             title="Enhanced Health Dashboard"
-             description="Advanced health tracking with AI insights and beautiful visualizations."
-             icon={<Activity className="w-6 h-6 text-white" />}
-             onClick={() => onSelect('enhanced-health')}
-             className="bg-cyan-500/30"
-           />
-         </motion.div>
-          description="Connect your wearables to track your health data."
+            title="Health Dashboard"
+            description="Connect your wearables to track your health data."
           icon={<Heart className="w-6 h-6 text-white" />}
           onClick={() => onSelect('health')}
           className="bg-pink-500/30"
