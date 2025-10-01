@@ -1,3 +1,4 @@
+// Forcing a cache refresh
 import React, { useState, useEffect } from 'react';
 import ExcuseReframe from '@/ExcuseReframe';
 import YardageBook from '@/YardageBook';
@@ -5,7 +6,6 @@ import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import HealthDashboard from '@/components/HealthDashboard';
-feature/enhance-anxiety-tracker-and-health
 import AnxietyTracker from '@/components/AnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
@@ -13,7 +13,7 @@ import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializeGemini } from '@/utils/gemini';
-import { motion } from ';
+import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
 
@@ -163,18 +163,6 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           className="bg-teal-500/30"
         />
       </motion.div>
-      eature/enhance-anxiety-tracker-and-health-dashboard
-=======
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Advanced Anxiety Tracker"
-          description="Complete anxiety tracking with body mapping, health metrics, and emotional journal."
-          icon={<Activity className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('advanced-anxiety')}
-          className="bg-gradient-to-br from-purple-500/30 to-pink-500/30"
-        />
-      </motion.div>
-main
     </motion.div>
 
     <motion.div
@@ -231,12 +219,7 @@ const App = () => {
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
       {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
-feature/enhance-anxiety-tracker-and-health-dashboard
       {view === 'anxiety' && <AnxietyTracker onBack={handleBackToDashboard} />}
-=======
-      {view === 'anxiety' && <EnhancedAnxietyTracker onBack={handleBackToDashboard} />}
-      {view === 'advanced-anxiety' && <EnhancedAdvancedBodyMap onBack={handleBackToDashboard} />}
-main
       <Toaster />
     </div>
   );
