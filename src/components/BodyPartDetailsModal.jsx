@@ -45,6 +45,21 @@ const BodyPartDetailsModal = ({
   ];
 
   const handleFeelingToggle = (part, feeling) => {
+feature/enhance-anxiety-tracker-and-health-dashboard
+    setPartDetails(prev => {
+      const partData = prev[part] || { sensations: [], feelings: [], intensity: 5, notes: '' };
+      const currentFeelings = partData.feelings || [];
+      return {
+        ...prev,
+        [part]: {
+          ...partData,
+          feelings: currentFeelings.includes(feeling)
+            ? currentFeelings.filter(f => f !== feeling)
+            : [...currentFeelings, feeling]
+        }
+      };
+    });
+=======
     setPartDetails(prev => ({
       ...prev,
       [part]: {
@@ -54,18 +69,23 @@ const BodyPartDetailsModal = ({
           : [...prev[part].feelings, feeling]
       }
     }));
+main
   };
 
   const handleSensationToggle = (part, sensation) => {
-    setPartDetails(prev => ({
-      ...prev,
-      [part]: {
-        ...prev[part],
-        sensations: prev[part].sensations.includes(sensation)
-          ? prev[part].sensations.filter(s => s !== sensation)
-          : [...prev[part].sensations, sensation]
-      }
-    }));
+    setPartDetails(prev => {
+      const partData = prev[part] || { sensations: [], feelings: [], intensity: 5, notes: '' };
+      const currentSensations = partData.sensations || [];
+      return {
+        ...prev,
+        [part]: {
+          ...partData,
+          sensations: currentSensations.includes(sensation)
+            ? currentSensations.filter(s => s !== sensation)
+            : [...currentSensations, sensation]
+        }
+      };
+    });
   };
 
   const handleIntensityChange = (part, change) => {
