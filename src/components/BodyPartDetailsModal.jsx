@@ -45,6 +45,7 @@ const BodyPartDetailsModal = ({
   ];
 
   const handleFeelingToggle = (part, feeling) => {
+feature/enhance-anxiety-tracker-and-health-dashboard
     setPartDetails(prev => {
       const partData = prev[part] || { sensations: [], feelings: [], intensity: 5, notes: '' };
       const currentFeelings = partData.feelings || [];
@@ -58,6 +59,17 @@ const BodyPartDetailsModal = ({
         }
       };
     });
+=======
+    setPartDetails(prev => ({
+      ...prev,
+      [part]: {
+        ...prev[part],
+        feelings: prev[part].feelings.includes(feeling)
+          ? prev[part].feelings.filter(f => f !== feeling)
+          : [...prev[part].feelings, feeling]
+      }
+    }));
+main
   };
 
   const handleSensationToggle = (part, sensation) => {
