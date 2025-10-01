@@ -7,6 +7,7 @@ import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import HealthDashboard from '@/components/HealthDashboard';
 import AnxietyTracker from '@/components/AnxietyTracker';
+import NewAnxietyTracker from '@/components/NewAnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
@@ -219,7 +220,7 @@ const App = () => {
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
       {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
-      {view === 'anxiety' && <AnxietyTracker onBack={handleBackToDashboard} />}
+      {view === 'anxiety' && <NewAnxietyTracker onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
