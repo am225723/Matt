@@ -383,8 +383,8 @@ const NewAnxietyTracker = ({ onBack }) => {
 
 // Body Map View Component
 const BodyMapView = ({ bodyMapView, setBodyMapView, onBodyPartClick, entries }) => {
-  const frontImageUrl = 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1531.png';
-  const rearImageUrl = 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1530.png';
+  const frontImageUrl = '/1531.png';
+  const rearImageUrl = '/1530.png';
 
   // Calculate heatmap data
   const getHeatmapIntensity = (bodyPart) => {
