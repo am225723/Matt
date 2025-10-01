@@ -6,6 +6,8 @@ import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import HealthDashboard from '@/components/HealthDashboard';
+import EnhancedHealthDashboard from '@/components/EnhancedHealthDashboard';
+import HealthDataVisualization from '@/components/HealthDataVisualization';
 import AnxietyTracker from '@/components/AnxietyTracker';
 import NewAnxietyTracker from '@/components/NewAnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
@@ -140,6 +142,15 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
         <DashboardTile
           title="Health Dashboard"
+         <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
+           <DashboardTile
+             title="Enhanced Health Dashboard"
+             description="Advanced health tracking with AI insights and beautiful visualizations."
+             icon={<Activity className="w-6 h-6 text-white" />}
+             onClick={() => onSelect('enhanced-health')}
+             className="bg-cyan-500/30"
+           />
+         </motion.div>
           description="Connect your wearables to track your health data."
           icon={<Heart className="w-6 h-6 text-white" />}
           onClick={() => onSelect('health')}
@@ -219,6 +230,7 @@ const App = () => {
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
+        {view === 'enhanced-health' && <EnhancedHealthDashboard onBack={handleBackToDashboard} />}
       {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
       {view === 'anxiety' && <NewAnxietyTracker onBack={handleBackToDashboard} />}
       <Toaster />
