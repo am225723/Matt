@@ -11,6 +11,7 @@ class AudioService {
     this.audioUrl = null;
     this.stream = null;
     this.recognition = null;
+    this.finalTranscript = '';
     
     // Initialize speech recognition if available
     this.initSpeechRecognition();
@@ -56,8 +57,9 @@ class AudioService {
     }
     
     try {
-      // Reset audio chunks
+      // Reset audio chunks and transcript
       this.audioChunks = [];
+      this.finalTranscript = '';
       
       // Request microphone access
       this.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
@@ -140,36 +142,33 @@ class AudioService {
   
   /**
    * Set up speech recognition for transcription
-   * @param {Function} onInterimResult - Callback for interim results
-   * @param {Function} onFinalResult - Callback for final results
+   * @param {Function} onResult - Callback for interim and final results
+   * @param {Function} onEnd - Callback for when recognition ends
    */
-  setupTranscription(onInterimResult, onFinalResult) {
+  setupTranscription(onResult, onEnd) {
     if (!this.recognition) {
       return false;
     }
     
-    let finalTranscript = '';
-    
     this.recognition.onresult = (event) => {
       let interimTranscript = '';
-      
       for (let i = event.resultIndex; i < event.results.length; ++i) {
+        const transcript = event.results[i][0].transcript;
         if (event.results[i].isFinal) {
-          finalTranscript += event.results[i][0].transcript;
-          if (onFinalResult) {
-            onFinalResult(finalTranscript);
-          }
+          this.finalTranscript += transcript;
         } else {
-          interimTranscript += event.results[i][0].transcript;
-          if (onInterimResult) {
-            onInterimResult(interimTranscript);
-          }
+          interimTranscript += transcript;
         }
       }
+      onResult(this.finalTranscript, interimTranscript);
     };
     
     this.recognition.onerror = (event) => {
       console.error('Speech recognition error:', event.error);
+    };
+
+    this.recognition.onend = () => {
+      onEnd();
     };
     
     return true;

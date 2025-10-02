@@ -15,7 +15,7 @@ import {
   RefreshCw, Download, Share2, Eye, EyeOff, ChevronLeft, ChevronRight,
   Phone, Watch, Thermometer, Droplets, Wind, Sun, Moon
 } from 'lucide-react';
-import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 import { format, subDays, startOfDay, endOfDay, isToday, isYesterday } from 'date-fns';
 
 const EnhancedHealthDashboard = ({ onBack }) => {
@@ -216,20 +216,6 @@ const EnhancedHealthDashboard = ({ onBack }) => {
       stressLevel: d.stressLevel,
     }));
   }, [filteredData]);
-
-  // Custom hooks simulation
-  const useLocalStorage = (key, defaultValue) => {
-    const [value, setValue] = useState(() => {
-      const item = window.localStorage.getItem(key);
-      return item ? JSON.parse(item) : defaultValue;
-    });
-    
-    useEffect(() => {
-      window.localStorage.setItem(key, JSON.stringify(value));
-    }, [key, value]);
-    
-    return [value, setValue];
-  };
 
   // Widget components
   const OverviewCard = ({ title, value, unit, trend, icon: Icon, color, goal }) => (

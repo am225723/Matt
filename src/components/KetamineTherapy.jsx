@@ -10,6 +10,7 @@ import AudioService from '@/services/audioService.js';
 import PDFService from '@/services/pdfService.js';
 import AIService from '@/services/aiService.js';
 import { getSessions, saveSession, deleteSession } from '@/utils/ketamineSessionStorage.js';
+import AIVoiceResponse from './AIVoiceResponse';
 
 const KetamineTherapy = ({ onBack }) => {
   const { toast } = useToast();
@@ -91,11 +92,15 @@ const KetamineTherapy = ({ onBack }) => {
         setRecordingTime(0);
         setTranscription('');
         if (audioService.current.isTranscriptionSupported()) {
-          audioService.current.setupTranscription(
-            (interim, final) => { setTranscription(final + interim); },
-            (final) => { setTranscription(final); setIsTranscribing(false); }
-          );
           setIsTranscribing(true);
+          audioService.current.setupTranscription(
+            (final, interim) => {
+              setTranscription(final + interim);
+            },
+            () => {
+              setIsTranscribing(false);
+            }
+          );
         }
       } catch (error) {
         console.error("Could not start recording:", error);
@@ -238,7 +243,8 @@ const KetamineTherapy = ({ onBack }) => {
                   {isGeneratingFollowUp ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <BrainCircuit className="w-4 h-4 mr-2" />}
                   Generate Follow-up
                 </Button>
-                {followUpQuestion && (<p className="text-lg text-teal-300 pt-4">{followUpQuestion}</p>)}
+                {isGeneratingFollowUp && !followUpQuestion && <Loader2 className="w-6 h-6 text-teal-300 animate-spin mt-4" />}
+                <AIVoiceResponse text={followUpQuestion} />
               </CardContent>
             </Card>
           </motion.div>
