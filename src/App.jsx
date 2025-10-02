@@ -141,11 +141,11 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
       </motion.div>
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
         <DashboardTile
-            title="Health Dashboard"
-            description="Connect your wearables to track your health data."
+            title="Enhanced Health Dashboard"
+            description="AI-powered health insights with real-time tracking, advanced analytics, and personalized recommendations."
           icon={<Heart className="w-6 h-6 text-white" />}
           onClick={() => onSelect('health')}
-          className="bg-pink-500/30"
+          className="bg-cyan-500/40"
         />
       </motion.div>
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
@@ -220,8 +220,8 @@ const App = () => {
       {view === 'playbook' && <ResiliencePlaybook plan={loadedPlan} onBack={handleBackToDashboard} />}
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
-      {view === 'health' && <HealthDashboard onBack={handleBackToDashboard} />}
-        {view === 'enhanced-health' && <EnhancedHealthDashboard onBack={handleBackToDashboard} />}
+      {view === 'health' && <EnhancedHealthDashboard onBack={handleBackToDashboard} />}
+        
       {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
       {view === 'anxiety' && <NewAnxietyTracker onBack={handleBackToDashboard} />}
       <Toaster />
