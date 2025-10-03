@@ -11,12 +11,13 @@ import { Switch } from '@/components/ui/switch';
 import { Slider } from '@/components/ui/slider';
 import { 
   Activity, Heart, Bed, Weight, Brain, Salad, TrendingUp, TrendingDown, 
-  Calendar, Clock, Zap, Shield, Target, Award, AlertCircle, Settings,
+  Calendar as CalendarIcon, Clock, Zap, Shield, Target, Award, AlertCircle, Settings,
   RefreshCw, Download, Share2, Eye, EyeOff, ChevronLeft, ChevronRight,
-  Phone, Watch, Thermometer, Droplets, Wind, Sun, Moon
+  Phone, Watch, Thermometer, Droplets, Wind, Sun, Moon, PlusCircle
 } from 'lucide-react';
 import { useLocalStorage } from '../hooks/useLocalStorage';
-import { format, subDays, startOfDay, endOfDay, isToday, isYesterday } from 'date-fns';
+import { format, subDays, startOfDay, endOfDay, isToday, isYesterday, parseISO } from 'date-fns';
+import HealthDataModal from './HealthDataModal';
 
 const EnhancedHealthDashboard = ({ onBack }) => {
   // Enhanced state management
@@ -24,6 +25,8 @@ const EnhancedHealthDashboard = ({ onBack }) => {
   const [currentData, setCurrentData] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [timeRange, setTimeRange] = useState('7d');
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalDate, setModalDate] = useState(new Date());
   const [widgetVisibility, setWidgetVisibility] = useLocalStorage('widgetVisibility', {
     overview: true,
     trends: true,
@@ -47,7 +50,7 @@ const EnhancedHealthDashboard = ({ onBack }) => {
         heartRate: Math.floor(Math.random() * 20) + 60, // 60-80 bpm
         weight: 150 + Math.random() * 10 - 5, // 145-155 lbs
         stressLevel: Math.floor(Math.random() * 8) + 2, // 2-10
-        hydration: Math.floor(Math.random() * 50) + 50, // 50-100 oz
+        alcoholIntake: Math.floor(Math.random() * 4), // 0-3 drinks
         calories: Math.floor(Math.random() * 1000) + 1500, // 1500-2500
         mood: Math.floor(Math.random() * 5) + 1, // 1-5
         exerciseMinutes: Math.floor(Math.random() * 60) + 30, // 30-90 mins
@@ -57,6 +60,48 @@ const EnhancedHealthDashboard = ({ onBack }) => {
     }
     return data;
   };
+
+  const handleOpenModal = (date) => {
+    setModalDate(date);
+    setIsModalOpen(true);
+  };
+
+  const handleSaveData = (data) => {
+    setHealthData(prevData => {
+      const existingIndex = prevData.findIndex(d => startOfDay(parseISO(d.date)).getTime() === startOfDay(parseISO(data.date)).getTime());
+
+      let newData = [];
+      if (existingIndex > -1) {
+        // Update existing data
+        newData = [...prevData];
+        newData[existingIndex] = { ...newData[existingIndex], ...data };
+      } else {
+        // Add new data
+        newData = [...prevData, data];
+      }
+
+      // Sort data by date to ensure charts are correct
+      return newData.sort((a, b) => new Date(a.date) - new Date(b.date));
+    });
+  };
+
+  const handleDeleteData = (dateString) => {
+    setHealthData(prevData => {
+      return prevData.filter(d => {
+        const entryDate = startOfDay(parseISO(d.date));
+        const dateToDelete = startOfDay(parseISO(dateString));
+        return entryDate.getTime() !== dateToDelete.getTime();
+      });
+    });
+  };
+
+  const selectedDateData = useMemo(() => {
+    return healthData.find(d => {
+      const entryDate = startOfDay(parseISO(d.date));
+      const modalDateStart = startOfDay(modalDate);
+      return entryDate.getTime() === modalDateStart.getTime();
+    });
+  }, [healthData, modalDate]);
 
   // Initialize with sample data if empty
   useEffect(() => {
@@ -520,6 +565,10 @@ const EnhancedHealthDashboard = ({ onBack }) => {
 
         {/* Quick Actions */}
         <div className="mt-8 flex flex-wrap gap-4">
+          <Button onClick={() => handleOpenModal(new Date())}>
+            <PlusCircle className="w-4 h-4 mr-2" />
+            Log New Data
+          </Button>
           <Button onClick={() => setHealthData(generateSampleData())} variant="outline">
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh Data
@@ -534,6 +583,15 @@ const EnhancedHealthDashboard = ({ onBack }) => {
           </Button>
         </div>
       </main>
+
+      <HealthDataModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+        onSave={handleSaveData}
+        onDelete={handleDeleteData}
+        selectedDateData={selectedDateData}
+        date={modalDate}
+      />
     </div>
   );
 };
