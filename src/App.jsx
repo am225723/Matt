@@ -15,7 +15,7 @@ import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
-import { initializeGemini } from '@/utils/gemini';
+import { initializePerplexity } from '@/utils/perplexity';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
@@ -184,12 +184,12 @@ const App = () => {
   const [loadedPlan, setLoadedPlan] = useState(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
     if (!apiKey) {
-      console.error("VITE_GEMINI_API_KEY is not set. Please add it to your .env file.");
-      alert("Gemini API key is not set. Please add it to your .env file.");
+      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
+      alert("Perplexity API key is not set. Please add it to your .env file.");
     } else {
-      initializeGemini(apiKey);
+      initializePerplexity(apiKey);
     }
     updateStreak();
   }, []);
