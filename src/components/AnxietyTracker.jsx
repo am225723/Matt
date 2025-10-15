@@ -343,7 +343,7 @@ const AnxietyTracker = ({ onBack }) => {
         >
           {/* Background Image */}
           <image
-            href={showFront ? 'https://raw.githubusercontent.com/am225723/Matt/main/1531.png' : 'https://raw.githubusercontent.com/am225723/Matt/main/1530.png'}
+            href={showFront ? '/1531.png' : '/1530.png'}
             x="0"
             y="0"
             height="600"
