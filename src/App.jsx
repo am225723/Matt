@@ -9,6 +9,7 @@ import HealthDashboard from '@/components/HealthDashboard';
 import EnhancedHealthDashboard from '@/components/EnhancedHealthDashboard';
 import HealthDataVisualization from '@/components/HealthDataVisualization';
 import AnxietyTracker from '@/components/AnxietyTracker';
+import AnxietyTrackerRedesigned from '@/components/AnxietyTrackerRedesigned';
 import NewAnxietyTracker from '@/components/NewAnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
@@ -19,6 +20,7 @@ import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
+import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
 
 const DashboardTile = ({
   title,
@@ -222,8 +224,8 @@ const App = () => {
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <EnhancedHealthDashboard onBack={handleBackToDashboard} />}
         
-      {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
-      {view === 'anxiety' && <NewAnxietyTracker onBack={handleBackToDashboard} />}
+      {view === 'ketamine' && <KetamineTherapyRedesigned onBack={handleBackToDashboard} />}
+      {view === 'anxiety' && <AnxietyTrackerRedesigned onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
