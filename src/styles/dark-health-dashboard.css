@@ -1,0 +1,153 @@
+/* Dark Color Scheme for Health Dashboard */
+
+/* Override default text colors to dark */
+.health-dashboard-dark {
+  --text-primary: #1f2937;
+  --text-secondary: #374151;
+  --text-muted: #6b7280;
+  --chart-line-1: #1e40af;
+  --chart-line-2: #7c3aed;
+  --chart-line-3: #dc2626;
+  --chart-line-4: #059669;
+  --chart-line-5: #d97706;
+  --chart-area-1: rgba(30, 64, 175, 0.1);
+  --chart-area-2: rgba(124, 58, 237, 0.1);
+  --chart-area-3: rgba(220, 38, 38, 0.1);
+  --chart-area-4: rgba(5, 150, 105, 0.1);
+  --chart-area-5: rgba(217, 119, 6, 0.1);
+}
+
+/* Chart text colors */
+.health-dashboard-dark .recharts-text {
+  fill: #1f2937 !important;
+}
+
+.health-dashboard-dark .recharts-cartesian-axis-tick-value {
+  fill: #374151 !important;
+}
+
+.health-dashboard-dark .recharts-legend-item-text {
+  color: #1f2937 !important;
+}
+
+/* Tooltip styling */
+.health-dashboard-dark .recharts-tooltip-wrapper {
+  color: #1f2937 !important;
+}
+
+/* Card text colors */
+.health-dashboard-dark .card-title {
+  color: #111827 !important;
+}
+
+.health-dashboard-dark .card-description {
+  color: #4b5563 !important;
+}
+
+/* Badge colors */
+.health-dashboard-dark .badge {
+  background-color: #1e40af;
+  color: white;
+}
+
+/* Metric values */
+.health-dashboard-dark .metric-value {
+  color: #111827 !important;
+  font-weight: 600;
+}
+
+.health-dashboard-dark .metric-label {
+  color: #6b7280 !important;
+}
+
+/* Progress bars */
+.health-dashboard-dark .progress-bar {
+  background-color: #1e40af;
+}
+
+/* Buttons */
+.health-dashboard-dark button {
+  color: #1f2937;
+}
+
+/* Insights and recommendations */
+.health-dashboard-dark .insight-text,
+.health-dashboard-dark .recommendation-text {
+  color: #374151 !important;
+}
+
+/* Stats */
+.health-dashboard-dark .stat-value {
+  color: #111827 !important;
+  font-weight: 700;
+}
+
+.health-dashboard-dark .stat-label {
+  color: #6b7280 !important;
+}
+
+/* Trend indicators */
+.health-dashboard-dark .trend-up {
+  color: #059669 !important;
+}
+
+.health-dashboard-dark .trend-down {
+  color: #dc2626 !important;
+}
+
+/* Headers */
+.health-dashboard-dark h1,
+.health-dashboard-dark h2,
+.health-dashboard-dark h3,
+.health-dashboard-dark h4,
+.health-dashboard-dark h5,
+.health-dashboard-dark h6 {
+  color: #111827 !important;
+}
+
+/* Paragraphs */
+.health-dashboard-dark p {
+  color: #374151 !important;
+}
+
+/* Links */
+.health-dashboard-dark a {
+  color: #1e40af !important;
+}
+
+.health-dashboard-dark a:hover {
+  color: #1e3a8a !important;
+}
+
+/* Table text */
+.health-dashboard-dark table {
+  color: #1f2937 !important;
+}
+
+.health-dashboard-dark th {
+  color: #111827 !important;
+  font-weight: 600;
+}
+
+.health-dashboard-dark td {
+  color: #374151 !important;
+}
+
+/* Select and input text */
+.health-dashboard-dark select,
+.health-dashboard-dark input {
+  color: #1f2937 !important;
+}
+
+/* Ensure all text elements use dark colors */
+.health-dashboard-dark * {
+  color: inherit;
+}
+
+/* Override any light text colors */
+.health-dashboard-dark .text-white,
+.health-dashboard-dark .text-gray-100,
+.health-dashboard-dark .text-gray-200,
+.health-dashboard-dark .text-gray-300 {
+  color: #1f2937 !important;
+}
