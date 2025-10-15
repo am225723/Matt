@@ -28,6 +28,9 @@ const KetamineTherapy = ({ onBack }) => {
   const [showHistoryPanel, setShowHistoryPanel] = useState(false);
 
   const audioService = useRef(new AudioService());
+  const audioPlayerRef = useRef(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [audioVolume, setAudioVolume] = useState([1]);
 
   useEffect(() => {
     setSessionHistory(getSessions());

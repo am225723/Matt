@@ -343,7 +343,7 @@ const AnxietyTracker = ({ onBack }) => {
         >
           {/* Background Image */}
           <image
-            href={showFront ? '/1531.png' : '/1530.png'}
+            href={showFront ? 'https://raw.githubusercontent.com/am225723/Matt/main/1531.png' : 'https://raw.githubusercontent.com/am225723/Matt/main/1530.png'}
             x="0"
             y="0"
             height="600"
@@ -622,7 +622,7 @@ const AnxietyTracker = ({ onBack }) => {
       
       <div className="max-w-4xl mx-auto">
         <div className="mb-6">
-          <h2 className="text-3xl font-bold flex items-center cursor-pointer select-none" onClick={handleTitleClick} title="Triple-click to open calibration">
+          <h2 className="text-3xl font-bold flex items-center">
             <Brain className="mr-2 h-8 w-8 text-primary" />
             Anxiety Tracker
           </h2>
@@ -664,14 +664,6 @@ const AnxietyTracker = ({ onBack }) => {
           <AnxietyVisualizations entries={entries} />
         )}
         
-         
-         {/* Calibration Modal */}
-         {showCalibration && (
-           <BodyMapCalibration 
-             onClose={() => setShowCalibration(false)}
-             onSave={handleCalibrationSave}
-           />
-         )}
         {activeTab === 'resources' && (
           <AnxietyResources recentEntries={entries} />
         )}
