@@ -25,11 +25,6 @@ const ExcuseReframe = ({ onNext }) => {
   }, []);
 
   const handleReframe = async () => {
-    if (!isInitialized) {
-      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
-      return;
-    }
-
     if (!excuse.trim()) {
       toast({ title: "Excuse is empty!", description: "Please enter something to reframe." });
       return;
@@ -73,7 +68,7 @@ const ExcuseReframe = ({ onNext }) => {
             rows={3}
             className="bg-white/70 border-gray-300 text-black backdrop-blur-sm"
           />
-          <Button onClick={handleReframe} disabled={isLoading} className="w-full bg-[#006E6D] text-white hover:bg-[#005a59]">
+          <Button onClick={handleReframe} disabled={isLoading || !isInitialized} className="w-full bg-[#006E6D] text-white hover:bg-[#005a59]">
             {isLoading ? (
               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
                 <Sparkles className="mr-2 h-4 w-4" />
