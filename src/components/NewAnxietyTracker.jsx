@@ -7,9 +7,10 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { 
   Activity, Brain, BarChart3, Lightbulb, ChevronLeft, ChevronRight, 
   RotateCcw, Plus, X, Save, Mic, Award, BookOpen, Pill, Heart,
-  TrendingUp, Calendar, Clock, AlertCircle, CheckCircle, Download
+  TrendingUp, Calendar, Clock, AlertCircle, CheckCircle, Download, Settings, Target
 } from 'lucide-react';
 import '../styles/new-anxiety-tracker.css';
+import BodyMapCalibration from './BodyMapCalibration';
 
 // Body part symptom mappings
 const bodyPartSymptoms = {
@@ -67,6 +68,10 @@ const NewAnxietyTracker = ({ onBack }) => {
   // Gamification
   const [streak, setStreak] = useState(0);
   const [badges, setBadges] = useState([]);
+  
+  // Calibration
+  const [showCalibration, setShowCalibration] = useState(false);
+  const [calibrationData, setCalibrationData] = useState({});
   const [totalEntries, setTotalEntries] = useState(0);
   
   // Voice recording
@@ -83,11 +88,13 @@ const NewAnxietyTracker = ({ onBack }) => {
     const savedStreak = localStorage.getItem('anxietyTrackerStreak');
     const savedBadges = localStorage.getItem('anxietyTrackerBadges');
     const savedMedications = localStorage.getItem('anxietyTrackerMedications');
+    const savedCalibration = localStorage.getItem('bodyMapCalibration');
     
     if (savedEntries) setEntries(JSON.parse(savedEntries));
     if (savedStreak) setStreak(parseInt(savedStreak));
     if (savedBadges) setBadges(JSON.parse(savedBadges));
     if (savedMedications) setMedications(JSON.parse(savedMedications));
+    if (savedCalibration) setCalibrationData(JSON.parse(savedCalibration));
   }, []);
 
   // Save data to localStorage
@@ -324,6 +331,7 @@ const NewAnxietyTracker = ({ onBack }) => {
             setBodyMapView={setBodyMapView}
             onBodyPartClick={handleBodyPartClick}
             entries={entries}
+            calibrationData={calibrationData}
           />
         )}
 
@@ -376,6 +384,31 @@ const NewAnxietyTracker = ({ onBack }) => {
             }}
           />
         )}
+        
+        {/* Calibration Button - Fixed at bottom */}
+        <div className="fixed bottom-6 right-6 z-50">
+          <Button
+            onClick={() => setShowCalibration(true)}
+            className="bg-blue-600 hover:bg-blue-700 shadow-lg rounded-full p-4"
+            size="lg"
+          >
+            <Target className="w-5 h-5 mr-2" />
+            Calibrate Body Map
+          </Button>
+        </div>
+
+        {/* Calibration Modal */}
+        <AnimatePresence>
+          {showCalibration && (
+            <BodyMapCalibration
+              onClose={() => setShowCalibration(false)}
+              onSave={(newCalibration) => {
+                setCalibrationData(newCalibration);
+                setShowCalibration(false);
+              }}
+            />
+          )}
+        </AnimatePresence>
       </AnimatePresence>
     </div>
   );
@@ -430,7 +463,17 @@ const BodyMapView = ({ bodyMapView, setBodyMapView, onBodyPartClick, entries }) 
     }
   };
 
-  const currentCoordinates = bodyPartCoordinates[bodyMapView];
+  // Apply calibration data to coordinates
+  const currentCoordinates = {};
+  Object.entries(bodyPartCoordinates[bodyMapView]).forEach(([bodyPart, coords]) => {
+    const calibration = calibrationData[bodyPart] || coords;
+    currentCoordinates[bodyPart] = {
+      x: calibration.x || coords.x,
+      y: calibration.y || coords.y,
+      width: calibration.width || coords.width,
+      height: calibration.height || coords.height
+    };
+  });
 
   return (
     <div className="body-map-view">

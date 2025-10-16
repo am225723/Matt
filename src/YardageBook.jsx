@@ -15,9 +15,10 @@ import {
   enhanceHoleWithFollowup,
   enhanceAllHoles,
   yardageBookReframeExcuse,
-  initializeGemini as initializeYardageBook,
+  
 } from '@/prompts/yardageBook';
 import { toast } from '@/components/ui/use-toast';
+   import { initializePerplexity } from '@/utils/perplexity';
 
 const holes = [
   { title: "Hole 1 – Tee Off with Intention", prompt: "Imagine you're stepping up to the first tee. What's your clear goal for the day at the Ryder Cup?" },
@@ -36,9 +37,9 @@ const YardageBook = ({ onBack }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
     if (apiKey) {
-      initializeYardageBook(apiKey);
+      initializePerplexity(apiKey);
       setIsInitialized(true);
     } else {
       toast({ title: "API Key Missing", description: "Gemini API key is not configured.", variant: "destructive" });

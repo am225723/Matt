@@ -1,6 +1,5 @@
-import { initializeGemini, generateContent } from '../utils/gemini';
+import { generateContent } from '../utils/perplexity';
 
-export { initializeGemini };
 
 const EXCUSE_REFRAME_SYSTEM_CONTEXT = `
 You are a pragmatic and direct problem-solving assistant. Your purpose is to analyze an excuse and provide a realistic, actionable solution to prevent the excuse from being used again. You do not provide emotional support; you provide solutions. Your response should be a direct, no-nonsense plan.
