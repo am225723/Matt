@@ -343,7 +343,7 @@ const AnxietyTracker = ({ onBack }) => {
         >
           {/* Background Image */}
           <image
-            href={showFront ? '/1531.png' : '/1530.png'}
+            href={showFront ? 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1531.png' : 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1530.png'}
             x="0"
             y="0"
             height="600"
