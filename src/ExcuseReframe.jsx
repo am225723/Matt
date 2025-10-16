@@ -3,7 +3,8 @@ import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
-import { reframeExcuse, initializeGemini } from '@/prompts/excuseReframe';
+import { reframeExcuse } from '@/prompts/excuseReframe';
+import { initializePerplexity } from '@/utils/perplexity';
 import { Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -14,21 +15,16 @@ const ExcuseReframe = ({ onNext }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
     if (apiKey) {
-      initializeGemini(apiKey);
+      initializePerplexity(apiKey);
       setIsInitialized(true);
     } else {
-      toast({ title: "API Key Missing", description: "Gemini API key is not configured.", variant: "destructive" });
+      toast({ title: "API Key Missing", description: "Perplexity API key is not configured.", variant: "destructive" });
     }
   }, []);
 
   const handleReframe = async () => {
-    if (!isInitialized) {
-      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
-      return;
-    }
-
     if (!excuse.trim()) {
       toast({ title: "Excuse is empty!", description: "Please enter something to reframe." });
       return;
@@ -72,7 +68,7 @@ const ExcuseReframe = ({ onNext }) => {
             rows={3}
             className="bg-white/70 border-gray-300 text-black backdrop-blur-sm"
           />
-          <Button onClick={handleReframe} disabled={isLoading} className="w-full bg-[#006E6D] text-white hover:bg-[#005a59]">
+          <Button onClick={handleReframe} disabled={isLoading || !isInitialized} className="w-full bg-[#006E6D] text-white hover:bg-[#005a59]">
             {isLoading ? (
               <motion.div animate={{ rotate: 360 }} transition={{ repeat: Infinity, duration: 1, ease: 'linear' }}>
                 <Sparkles className="mr-2 h-4 w-4" />
