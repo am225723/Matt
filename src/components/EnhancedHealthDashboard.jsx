@@ -18,6 +18,8 @@ import {
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import { format, subDays, startOfDay, endOfDay, isToday, isYesterday, parseISO } from 'date-fns';
 import HealthDataModal from './HealthDataModal';
+import SpreadsheetUpload from './SpreadsheetUpload';
+import '../styles/dark-health-dashboard.css';
 
 const EnhancedHealthDashboard = ({ onBack }) => {
   // Enhanced state management
@@ -37,6 +39,7 @@ const EnhancedHealthDashboard = ({ onBack }) => {
   });
   const [theme, setTheme] = useLocalStorage('healthTheme', 'light');
   const [isLoading, setIsLoading] = useState(false);
+  const [showSpreadsheetUpload, setShowSpreadsheetUpload] = useState(false);
 
   // Sample health data generator for demo
   const generateSampleData = () => {
@@ -92,6 +95,30 @@ const EnhancedHealthDashboard = ({ onBack }) => {
         const dateToDelete = startOfDay(parseISO(dateString));
         return entryDate.getTime() !== dateToDelete.getTime();
       });
+    });
+  };
+
+  const handleDataImport = (importedData) => {
+    setHealthData(prevData => {
+      // Merge imported data with existing data, avoiding duplicates
+      const mergedData = [...prevData];
+      
+      importedData.forEach(newEntry => {
+        const existingIndex = mergedData.findIndex(d => 
+          startOfDay(parseISO(d.date)).getTime() === startOfDay(parseISO(newEntry.date)).getTime()
+        );
+        
+        if (existingIndex > -1) {
+          // Update existing entry with new data
+          mergedData[existingIndex] = { ...mergedData[existingIndex], ...newEntry };
+        } else {
+          // Add new entry
+          mergedData.push(newEntry);
+        }
+      });
+      
+      // Sort by date
+      return mergedData.sort((a, b) => new Date(a.date) - new Date(b.date));
     });
   };
 
@@ -308,9 +335,9 @@ const EnhancedHealthDashboard = ({ onBack }) => {
                 <stop offset="95%" stopColor={color} stopOpacity={0.1}/>
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
-            <XAxis dataKey="date" stroke="#666" fontSize={12} />
-            <YAxis stroke="#666" fontSize={12} />
+            <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+            <XAxis dataKey="date" stroke="#1f2937" fontSize={12} />
+            <YAxis stroke="#1f2937" fontSize={12} />
             <Tooltip 
               contentStyle={{ backgroundColor: '#fff', border: '1px solid #e0e0e0', borderRadius: '8px' }}
             />
@@ -417,7 +444,7 @@ const EnhancedHealthDashboard = ({ onBack }) => {
 
   // Main dashboard layout
   return (
-    <div className={`min-h-screen ${theme === 'dark' ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
+    <div className={`min-h-screen health-dashboard-dark ${theme === 'dark' ? 'dark bg-gray-900' : 'bg-gray-50'}`}>
       {/* Header */}
       <header className="bg-white dark:bg-gray-800 shadow-lg border-b border-gray-200 dark:border-gray-700">
         <div className="container mx-auto px-4 py-4">
@@ -430,6 +457,14 @@ const EnhancedHealthDashboard = ({ onBack }) => {
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">Health Dashboard</h1>
             </div>
             <div className="flex items-center space-x-4">
+                 <Button
+                   variant="outline"
+                   onClick={() => setShowSpreadsheetUpload(true)}
+                   className="flex items-center gap-2"
+                 >
+                   <PlusCircle className="w-4 h-4" />
+                   Import Data
+                 </Button>
               <Select value={timeRange} onValueChange={setTimeRange}>
                 <SelectTrigger className="w-32">
                   <SelectValue />
@@ -521,7 +556,7 @@ const EnhancedHealthDashboard = ({ onBack }) => {
               title="Activity Trends" 
               data={chartData} 
               dataKey="steps" 
-              color="#3B82F6" 
+              color="#1e40af" 
             />
           </div>
           <div>
@@ -535,25 +570,25 @@ const EnhancedHealthDashboard = ({ onBack }) => {
             title="Sleep Patterns" 
             data={chartData} 
             dataKey="sleep" 
-            color="#8B5CF6" 
+            color="#7c3aed" 
           />
           <ChartWidget 
             title="Heart Rate Variability" 
             data={chartData} 
             dataKey="heartRate" 
-            color="#EF4444" 
+            color="#dc2626" 
           />
           <ChartWidget 
             title="Weight Fluctuation" 
             data={chartData} 
             dataKey="weight" 
-            color="#10B981" 
+            color="#059669" 
           />
           <ChartWidget 
             title="Stress Levels" 
             data={chartData} 
             dataKey="stressLevel" 
-            color="#F59E0B" 
+            color="#d97706" 
           />
         </div>
 
@@ -588,12 +623,19 @@ const EnhancedHealthDashboard = ({ onBack }) => {
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onSave={handleSaveData}
-        onDelete={handleDeleteData}
         selectedDateData={selectedDateData}
         date={modalDate}
       />
+        onDelete={handleDeleteData}
     </div>
   );
+        
+        {showSpreadsheetUpload && (
+          <SpreadsheetUpload
+            onDataImport={handleDataImport}
+            onClose={() => setShowSpreadsheetUpload(false)}
+          />
+        )}
 };
 
 export default EnhancedHealthDashboard;
