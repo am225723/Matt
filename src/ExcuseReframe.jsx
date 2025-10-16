@@ -3,7 +3,7 @@ import { Helmet } from 'react-helmet';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { toast } from '@/components/ui/use-toast';
-import { reframeExcuse, initializeGemini } from '@/prompts/excuseReframe';
+import { reframeExcuse } from '@/prompts/excuseReframe';
 import { Sparkles } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -11,24 +11,8 @@ const ExcuseReframe = ({ onNext }) => {
   const [excuse, setExcuse] = useState('');
   const [reframe, setReframe] = useState('');
   const [isLoading, setIsLoading] = useState(false);
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  useEffect(() => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
-    if (apiKey) {
-      initializeGemini(apiKey);
-      setIsInitialized(true);
-    } else {
-      toast({ title: "API Key Missing", description: "Gemini API key is not configured.", variant: "destructive" });
-    }
-  }, []);
 
   const handleReframe = async () => {
-    if (!isInitialized) {
-      toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
-      return;
-    }
-
     if (!excuse.trim()) {
       toast({ title: "Excuse is empty!", description: "Please enter something to reframe." });
       return;
