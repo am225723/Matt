@@ -1,29 +1,21 @@
-Of course, Aleix. I've resolved the merge conflict for you.
-The conflict was in the useEffect hook of the App component. The main branch correctly referenced the VITE_PERPLEXITY_API_KEY and included an alert, while the fix/react-mounting-issue branch seemed to have a typo, referencing a Gemini key instead. I've kept the correct implementation from the main branch.
-Here is the resolved code:
-// Forcing a cache refresh
 import React, { useState, useEffect } from 'react';
 import ExcuseReframe from '@/ExcuseReframe';
 import YardageBook from '@/YardageBook';
 import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
-import HealthDashboard from '@/components/HealthDashboard';
 import EnhancedHealthDashboard from '@/components/EnhancedHealthDashboard';
-import HealthDataVisualization from '@/components/HealthDataVisualization';
 import AnxietyTracker from '@/components/AnxietyTracker';
-import AnxietyTrackerRedesigned from '@/components/AnxietyTrackerRedesigned';
 import NewAnxietyTracker from '@/components/NewAnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
-import { initializePerplexity } from '@/utils/perplexity';
+import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
-import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
 
 const DashboardTile = ({
   title,
@@ -184,17 +176,16 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
   </div>
 );
 
-const App = () => {
+const AppFixed = () => {
   const [view, setView] = useState('dashboard');
   const [loadedPlan, setLoadedPlan] = useState(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
-      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
-      alert("Perplexity API key is not set. Please add it to your .env file.");
+      console.error("VITE_GEMINI_API_KEY is not set. Please add it to your .env file.");
     } else {
-      initializePerplexity(apiKey);
+      initializeGemini(apiKey);
     }
     updateStreak();
   }, []);
@@ -227,12 +218,11 @@ const App = () => {
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <EnhancedHealthDashboard onBack={handleBackToDashboard} />}
         
-      {view === 'ketamine' && <KetamineTherapyRedesigned onBack={handleBackToDashboard} />}
-      {view === 'anxiety' && <AnxietyTrackerRedesigned onBack={handleBackToDashboard} />}
+      {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
+      {view === 'anxiety' && <NewAnxietyTracker onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );
 };
 
-export default App;
-
+export default AppFixed;
