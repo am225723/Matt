@@ -1,13 +1,10 @@
-// Forcing a cache refresh
 import React, { useState, useEffect } from 'react';
 import ExcuseReframe from '@/ExcuseReframe';
 import YardageBook from '@/YardageBook';
 import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
-import HealthDashboard from '@/components/HealthDashboard';
 import EnhancedHealthDashboard from '@/components/EnhancedHealthDashboard';
-import HealthDataVisualization from '@/components/HealthDataVisualization';
 import AnxietyTracker from '@/components/AnxietyTracker';
 import NewAnxietyTracker from '@/components/NewAnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
@@ -179,7 +176,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
   </div>
 );
 
-const App = () => {
+const AppFixed = () => {
   const [view, setView] = useState('dashboard');
   const [loadedPlan, setLoadedPlan] = useState(null);
 
@@ -228,4 +225,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppFixed;
