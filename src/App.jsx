@@ -174,4 +174,4 @@ const AppWorking = () => {
   );
 };
 
-export default AppWorking;
+export default App;
