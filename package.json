@@ -7,7 +7,10 @@
     "dev": "vite",
     "build": "node tools/generate-llms.js || true && vite build",
     "preview": "vite preview",
-    "start:app": "node github-app.js"
+    "start:app": "node github-app.js",
+    "test": "vite --config vite.config.test.js",
+    "test:e2e": "python3 jules-scratch/verification/verify_dashboard.py",
+    "build:test": "vite build --config vite.config.test.js"
   },
   "dependencies": {
     "@emotion/is-prop-valid": "^1.2.1",
