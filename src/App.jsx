@@ -136,7 +136,7 @@ const Dashboard = ({ onSelect }) => (
   </div>
 );
 
-const App = () => {
+const AppWorking = () => {
   const [view, setView] = useState('dashboard');
 
   useEffect(() => {
