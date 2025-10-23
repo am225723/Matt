@@ -12,7 +12,7 @@ import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
-import { initializeGemini } from '@/utils/gemini';
+import { initializeperplexity } from '@/utils/perplexity.js';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
