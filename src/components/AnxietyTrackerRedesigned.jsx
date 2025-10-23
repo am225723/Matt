@@ -89,6 +89,7 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
   const [startTime, setStartTime] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [calibrationData, setCalibrationData] = useState({});
+  const [showFront, setShowFront] = useState(true);
 
   // Load data on mount
   useEffect(() => {
@@ -271,123 +272,119 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
   const renderBodyMap = () => {
     const selectedParts = Object.keys(bodyParts).filter(part => bodyParts[part].selected);
     
+    const bodyPartIds = {
+      head: 'head-region',
+      face: 'face-region',
+      neck: 'neck-region',
+      chest: 'chest-region',
+      stomach: 'stomach-region',
+      leftArm: 'left-arm-region',
+      rightArm: 'right-arm-region',
+      leftHand: 'left-hand-region',
+      rightHand: 'right-hand-region',
+      back: 'back-region',
+      leftLeg: 'left-leg-region',
+      rightLeg: 'right-leg-region',
+      leftFoot: 'left-foot-region',
+      rightFoot: 'right-foot-region'
+    };
+    
+    const getFillColor = (part) => {
+      if (bodyParts[part].selected) {
+        return 'rgba(59, 130, 246, 0.4)';
+      }
+      return 'rgba(203, 213, 225, 0.4)';
+    };
+
+    const getStrokeColor = (part) => {
+      return bodyParts[part].selected ? '#3b82f6' : '#64748b';
+    };
+
+    const getStrokeWidth = (part) => {
+      return bodyParts[part].selected ? '3' : '2';
+    };
+    
     return (
-      <div className="relative flex justify-center bg-gradient-to-b from-blue-50 to-indigo-50 rounded-xl p-6">
+      <div className="relative flex flex-col items-center bg-gradient-to-b from-blue-50 to-indigo-50 rounded-xl p-6">
         <svg
-          width="340"
-          height="540"
-          viewBox="0 0 340 540"
+          width="400"
+          height="600"
+          viewBox="0 0 400 600"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="drop-shadow-lg"
         >
-          {/* Background body silhouette */}
-          <path
-            d="M170 60 C130 60, 105 85, 105 125 C105 165, 130 190, 170 190 C210 190, 235 165, 235 125 C235 85, 210 60, 170 60 M170 190 L170 210 M120 210 L120 290 L220 290 L220 210 M120 290 L120 380 L220 380 L220 290 M120 210 L80 210 L55 310 L80 310 L105 250 M220 210 L260 210 L285 310 L260 310 L235 250 M55 310 L40 350 L65 365 L80 310 M285 310 L300 350 L275 365 L260 310 M120 380 L120 500 L160 500 L170 380 M220 380 L220 500 L180 500 L170 380 M120 500 L95 525 L160 525 L160 500 M220 500 L245 525 L180 525 L180 500"
-            fill="none"
-            stroke="#e5e7eb"
-            strokeWidth="2"
+          {/* Background Image */}
+          <image
+            href={showFront ? 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1531.png' : 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1530.png'}
+            x="0"
+            y="0"
+            height="600"
+            width="400"
+            preserveAspectRatio="xMidYMid slice"
           />
           
-          {/* Interactive body parts with calibration applied */}
-          {Object.entries(bodyParts).map(([partKey, partData]) => {
-            const isSelected = partData.selected;
-            const calibration = calibrationData[partKey] || { x: 0, y: 0, scale: 1, rotation: 0 };
-            
-            let element = null;
-            
-            switch (partKey) {
-              case 'head':
-                element = (
-                  <ellipse
-                    cx="170"
-                    cy="125"
-                    rx="65"
-                    ry="65"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 170 125)`}
-                  />
-                );
-                break;
-              case 'chest':
-                element = (
-                  <ellipse
-                    cx="170"
-                    cy="250"
-                    rx="50"
-                    ry="40"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 170 250)`}
-                  />
-                );
-                break;
-              case 'stomach':
-                element = (
-                  <ellipse
-                    cx="170"
-                    cy="335"
-                    rx="50"
-                    ry="45"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 170 335)`}
-                  />
-                );
-                break;
-              case 'rightArm':
-                element = (
-                  <ellipse
-                    cx="252"
-                    cy="260"
-                    rx="25"
-                    ry="50"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 252 260)`}
-                  />
-                );
-                break;
-              case 'leftArm':
-                element = (
-                  <ellipse
-                    cx="88"
-                    cy="260"
-                    rx="25"
-                    ry="50"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 88 260)`}
-                  />
-                );
-                break;
-              default:
-                // Add other body parts as needed
-                break;
-            }
-            
-            return element ? <g key={partKey}>{element}</g> : null;
+          {/* Interactive body parts */}
+          {Object.entries(bodyPartIds).map(([part, id]) => {
+            if (part === 'back' && showFront) return null;
+            if (part !== 'back' && !showFront) return null;
+
+            const pathData = {
+              head: "M 175,30 C 175,10 225,10 225,30 C 245,30 245,110 225,130 C 225,130 175,130 175,130 C 155,110 155,30 175,30 Z",
+              face: "M 180,60 H 220 V 125 H 180 Z",
+              neck: "M 185,130 H 215 V 155 H 185 Z",
+              chest: "M 150,155 H 250 V 260 H 150 Z",
+              stomach: "M 155,260 H 245 V 350 H 155 Z",
+              back: "M 150,155 H 250 V 350 H 150 Z",
+              leftArm: "M 110,160 H 150 V 320 H 110 Z",
+              rightArm: "M 250,160 H 290 V 320 H 250 Z",
+              leftHand: "M 100,320 H 140 V 380 H 100 Z",
+              rightHand: "M 260,320 H 300 V 380 H 260 Z",
+              leftLeg: "M 155,350 H 195 V 500 H 155 Z",
+              rightLeg: "M 205,350 H 245 V 500 H 205 Z",
+              leftFoot: "M 150,500 H 190 V 540 H 150 Z",
+              rightFoot: "M 210,500 H 250 V 540 H 210 Z",
+            };
+
+            return (
+              <motion.path
+                key={part}
+                id={id}
+                d={pathData[part]}
+                fill={getFillColor(part)}
+                stroke={getStrokeColor(part)}
+                strokeWidth={getStrokeWidth(part)}
+                onClick={() => handleBodyPartClick(part)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                style={{ cursor: 'pointer' }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 300, 
+                  damping: 15,
+                  duration: 0.3 
+                }}
+              />
+            );
           })}
         </svg>
         
+        {/* Toggle front/back button */}
+        <div className="mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFront(!showFront)}
+            className="bg-white/80 backdrop-blur-sm"
+          >
+            Show {showFront ? 'Back' : 'Front'}
+          </Button>
+        </div>
+        
         {/* Selection indicator */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+        <div className="mt-2">
           <Badge variant="outline" className="bg-white/80 backdrop-blur-sm">
             {selectedParts.length} part{selectedParts.length !== 1 ? 's' : ''} selected
           </Badge>

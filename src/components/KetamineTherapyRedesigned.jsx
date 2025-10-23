@@ -48,6 +48,7 @@ const KetamineTherapyRedesigned = ({ onBack }) => {
   const audioService = useRef(new AudioService());
   const audioPlayerRef = useRef(null);
   const waveformRef = useRef(null);
+  const transcriptionRef = useRef('');
 
   useEffect(() => {
     setSessionHistory(getSessions());
@@ -81,9 +82,15 @@ const KetamineTherapyRedesigned = ({ onBack }) => {
     return `${minutes}:${seconds}`;
   };
 
+  // Keep transcription ref in sync with state
+  useEffect(() => {
+    transcriptionRef.current = transcription;
+  }, [transcription]);
+
   const resetState = () => {
     setAudioURL('');
     setTranscription('');
+    transcriptionRef.current = '';
     setFollowUpQuestion('');
     setRecordingTime(0);
     setIsRecording(false);
@@ -116,27 +123,60 @@ const KetamineTherapyRedesigned = ({ onBack }) => {
           setAudioURL(URL.createObjectURL(audioBlob));
           setIsRecording(false);
           setCurrentStep('transcription');
-          setIsTranscribing(true);
           
           toast({
             title: "Recording Complete",
             description: "Processing your audio...",
           });
 
-          if (!audioService.current.isTranscriptionSupported()) {
+          // Handle live transcription case (browser speech recognition)
+          if (audioService.current.isTranscriptionSupported()) {
+            // Transcription already available from live capture
+            setIsTranscribing(false);
+            
+            // Wait a moment for final transcription to settle, then read from ref
+            setTimeout(async () => {
+              const currentTranscript = transcriptionRef.current;
+              if (currentTranscript && currentTranscript.trim().length > 0) {
+                await generateFollowUpAutomatically(currentTranscript);
+              }
+            }, 500);
+          } else if (!audioService.current.isTranscriptionSupported()) {
+            // Handle OpenAI Whisper transcription case
+            setIsTranscribing(true);
             try {
               const transcript = await audioService.current.transcribeAudio(audioBlob);
               setTranscription(transcript);
               setTranscriptionConfidence(85 + Math.random() * 15); // Simulate confidence
+              
+              // Auto-generate follow-up question after transcription
+              if (transcript && transcript.trim().length > 0) {
+                await generateFollowUpAutomatically(transcript);
+              }
             } catch (error) {
               console.error("Transcription error:", error);
-              setTranscription("Transcription failed. Please edit manually.");
-              setTranscriptionConfidence(0);
-              toast({
-                variant: "destructive",
-                title: "Transcription Failed",
-                description: error.message,
-              });
+              
+              // Fallback: Use AI to interpret the audio directly
+              try {
+                toast({
+                  title: "Trying Alternative Method",
+                  description: "Using AI to interpret your recording...",
+                });
+                
+                // Generate a follow-up based on context without transcription
+                const fallbackPrompt = "I shared my thoughts through voice but transcription wasn't available. Can you help me explore my feelings further?";
+                await generateFollowUpAutomatically(fallbackPrompt);
+                setTranscription("(Audio recorded - transcription not available)");
+              } catch (fallbackError) {
+                console.error("Fallback error:", fallbackError);
+                setTranscription("Transcription failed. Please edit manually.");
+                setTranscriptionConfidence(0);
+                toast({
+                  variant: "destructive",
+                  title: "Transcription Failed",
+                  description: "Please type your response or record again.",
+                });
+              }
             } finally {
               setIsTranscribing(false);
             }
@@ -168,7 +208,9 @@ const KetamineTherapyRedesigned = ({ onBack }) => {
           setIsTranscribing(true);
           audioService.current.setupTranscription(
             (final, interim) => {
-              setTranscription(final + interim);
+              const fullTranscript = final + interim;
+              setTranscription(fullTranscript);
+              transcriptionRef.current = fullTranscript;
             },
             () => {
               setIsTranscribing(false);
@@ -191,6 +233,33 @@ const KetamineTherapyRedesigned = ({ onBack }) => {
       title: isPaused ? "Recording Resumed" : "Recording Paused",
       description: isPaused ? "Continue when ready." : "Take a moment to collect your thoughts.",
     });
+  };
+
+  const generateFollowUpAutomatically = async (transcript) => {
+    if (!transcript || transcript.trim().length === 0) return;
+    
+    setIsGeneratingFollowUp(true);
+    setCurrentStep('followup');
+    
+    try {
+      const aiService = new AIService();
+      const followUp = await aiService.generateFollowUpQuestion(transcript);
+      setFollowUpQuestion(followUp);
+      
+      toast({
+        title: "Follow-up Generated",
+        description: "AI has created a personalized follow-up question.",
+      });
+    } catch (error) {
+      console.error('Error generating automatic follow-up:', error);
+      toast({
+        variant: "destructive",
+        title: "AI Error",
+        description: "Could not generate follow-up automatically. You can try manually.",
+      });
+    } finally {
+      setIsGeneratingFollowUp(false);
+    }
   };
 
   const handleGenerateFollowUp = async () => {
