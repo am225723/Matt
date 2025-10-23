@@ -1,10 +1,13 @@
+// Forcing a cache refresh
 import React, { useState, useEffect } from 'react';
 import ExcuseReframe from '@/ExcuseReframe';
 import YardageBook from '@/YardageBook';
 import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
+import HealthDashboard from '@/components/HealthDashboard';
 import EnhancedHealthDashboard from '@/components/EnhancedHealthDashboard';
+import HealthDataVisualization from '@/components/HealthDataVisualization';
 import AnxietyTracker from '@/components/AnxietyTracker';
 import NewAnxietyTracker from '@/components/NewAnxietyTracker';
 import AISuggestion from '@/components/AISuggestion';
@@ -12,7 +15,7 @@ import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
-import { initializePerplexity } from '@/utils/perplexity.js';
+import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
@@ -181,11 +184,12 @@ const App = () => {
   const [loadedPlan, setLoadedPlan] = useState(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
-      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
+      console.error("VITE_GEMINI_API_KEY is not set. Please add it to your .env file.");
+      alert("Gemini API key is not set. Please add it to your .env file.");
     } else {
-      initializePerplexity(apiKey);
+      initializeGemini(apiKey);
     }
     updateStreak();
   }, []);
@@ -212,7 +216,7 @@ const App = () => {
     <div className="min-h-screen bg-background text-foreground">
       {view === 'dashboard' && <Dashboard onSelect={setView} onSelectScenario={handleSelectScenario} />}
       {view === 'reframe' && <ExcuseReframe onNext={handleBackToDashboard} />}
-      {view === 'yardage' && <YardageBook onBack={handleBackToDashboard} />}
+      {view ===m === 'yardage' && <YardageBook onBack={handleBackToDashboard} />}
       {view === 'playbook' && <ResiliencePlaybook plan={loadedPlan} onBack={handleBackToDashboard} />}
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
