@@ -176,7 +176,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
   </div>
 );
 
-const AppFixed = () => {
+const App = () => {
   const [view, setView] = useState('dashboard');
   const [loadedPlan, setLoadedPlan] = useState(null);
 
@@ -225,4 +225,4 @@ const AppFixed = () => {
   );
 };
 
-export default AppFixed;
+export default App;
