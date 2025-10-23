@@ -203,6 +203,9 @@ logger.error = (msg, options) => {
 
 export default defineConfig({
         customLogger: logger,
+        define: {
+                global: 'window',
+        },
         plugins: [
                 ...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin()] : []),
                 react(),
@@ -229,8 +232,14 @@ export default defineConfig({
                                 '@babel/parser',
                                 '@babel/traverse',
                                 '@babel/generator',
-                                '@babel/types'
+                                '@babel/types',
+                                'fs',
+                                'path',
+                                'os'
                         ]
                 }
+        },
+        optimizeDeps: {
+                exclude: ['fs', 'path', 'os']
         }
 });
