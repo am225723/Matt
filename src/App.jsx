@@ -181,11 +181,11 @@ const AppFixed = () => {
   const [loadedPlan, setLoadedPlan] = useState(null);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
     if (!apiKey) {
-      console.error("VITE_GEMINI_API_KEY is not set. Please add it to your .env file.");
+      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
     } else {
-      initializeGemini(apiKey);
+      initializeperplexity(apiKey);
     }
     updateStreak();
   }, []);
