@@ -70,6 +70,10 @@ npm run dev
 - ✅ **Configured Vite**: Added `global: 'window'` define to fix browser compatibility
 - ✅ **API keys configured**: All three API keys (Perplexity, OpenAI, Gemini) are now set in Replit Secrets
 - ✅ **App successfully loading**: Dashboard renders with all feature tiles visible
+- ✅ **Anxiety Tracker Enhancement**: Updated AnxietyTrackerRedesigned to use Supabase background images (1530.png for back view, 1531.png for front view) with interactive SVG overlay paths
+- ✅ **Ketamine Journal Auto Follow-up**: Implemented automatic AI follow-up question generation immediately after transcription completes
+- ✅ **Fixed Stale Closure Bug**: Resolved critical issue where live transcription follow-ups weren't generated due to stale closure by using ref-based approach
+- ✅ **Transcription Fallback**: Added intelligent fallback mechanism where AI generates contextual follow-up questions even when transcription fails
 - Configured Vite server to bind to 0.0.0.0:5000 for Replit compatibility
 - Added ErrorBoundary component for better error handling
 
