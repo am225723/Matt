@@ -31,13 +31,19 @@ All npm dependencies are already installed. Key packages include:
 - Lucide React (icons)
 - Chart.js & Recharts (visualizations)
 
-### Environment Variables (Optional API Keys)
-The following API keys are optional but enable enhanced features:
-- `VITE_PERPLEXITY_API_KEY` - For AI-powered insights and excuse reframing
-- `VITE_OPENAI_API_KEY` - For audio transcription and AI follow-ups
-- `VITE_GEMINI_API_KEY` - Alternative AI provider
+### Environment Variables (API Keys)
+The following API keys have been configured in Replit Secrets and are available:
+- `PERPLEXITY_API_KEY` - Powers AI insights, excuse reframing, and yardage book features
+- `VITE_OPENAI_API_KEY` - Enables audio transcription and AI follow-ups
+- `VITE_GEMINI_API_KEY` - Alternative AI provider for enhanced features
 
-To add these, use Replit's Secrets feature in the Tools panel.
+**Note**: The app checks for both `PERPLEXITY_API_KEY` and `VITE_PERPLEXITY_API_KEY` for compatibility.
+
+### Supabase Integration
+The app uses Supabase for storing background images:
+- Public storage bucket URL: `https://efgtznvrnzqcxmfmjuue.supabase.co/storage/v1/object/public/bg-playbook/`
+- Background images for scenarios (drinking, networking, family, etc.)
+- No database connection required - images are publicly accessible
 
 ### Running the Application
 The frontend workflow is configured to run automatically on port 5000:
@@ -54,15 +60,18 @@ npm run dev
 ## Development Notes
 
 ### Known Issues (October 23, 2025)
-- Some imported components may cause runtime errors if their dependencies aren't properly configured
-- API key warnings are non-blocking (changed from alerts to console warnings)
-- App is currently loading with simplified imports to avoid runtime errors
+- Console warning about `UNSAFE_componentWillMount` from react-helmet (non-blocking)
+- Some browser-incompatible packages were removed (perplexityai with puppeteer dependency)
 
-### Recent Changes
-- Removed blocking alert for missing Perplexity API key
-- Changed to console.warn to allow app to load without API keys
+### Recent Changes (October 23, 2025)
+- ✅ **Fixed critical runtime error**: Removed `perplexityai` npm package that depended on puppeteer (Node.js-only)
+- ✅ **Rewrote Perplexity integration**: Now uses direct fetch API calls to Perplexity's REST API
+- ✅ **Fixed import error**: Removed invalid `Area` import from react-chartjs-2
+- ✅ **Configured Vite**: Added `global: 'window'` define to fix browser compatibility
+- ✅ **API keys configured**: All three API keys (Perplexity, OpenAI, Gemini) are now set in Replit Secrets
+- ✅ **App successfully loading**: Dashboard renders with all feature tiles visible
 - Configured Vite server to bind to 0.0.0.0:5000 for Replit compatibility
-- Temporarily simplified component imports to isolate rendering issues
+- Added ErrorBoundary component for better error handling
 
 ## Deployment
 The application is configured for Vite's built-in dev server. For production deployment:

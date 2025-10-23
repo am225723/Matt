@@ -37,12 +37,12 @@ const YardageBook = ({ onBack }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY || import.meta.env.PERPLEXITY_API_KEY;
     if (apiKey) {
       initializePerplexity(apiKey);
       setIsInitialized(true);
     } else {
-      toast({ title: "API Key Missing", description: "Gemini API key is not configured.", variant: "destructive" });
+      toast({ title: "API Key Missing", description: "Perplexity API key is not configured.", variant: "destructive" });
     }
   }, []);
 
