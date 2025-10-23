@@ -12,7 +12,7 @@ import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
-import { initializeperplexity } from '@/utils/perplexity.js';
+import { initializePerplexity } from '@/utils/perplexity.js';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
@@ -185,7 +185,7 @@ const AppFixed = () => {
     if (!apiKey) {
       console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
     } else {
-      initializeperplexity(apiKey);
+      initializePerplexity(apiKey);
     }
     updateStreak();
   }, []);
