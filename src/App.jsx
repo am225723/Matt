@@ -55,9 +55,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
   <div
     className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-white"
     style={{
-      backgroundImage: "url('https://horizons-cdn.hostinger.com/2ede1032-5057-4306-b7a4-16441876e852/8ba7f2dee73ececf10b1908d56ce953d.png')",
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
+      backgroundColor: '#1a202c',
     }}
   >
     <div className="absolute inset-0 bg-black/40"></div>
@@ -188,8 +186,7 @@ const App = () => {
   useEffect(() => {
     const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
     if (!apiKey) {
-      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
-      alert("Perplexity API key is not set. Please add it to your .env file.");
+      console.warn("VITE_PERPLEXITY_API_KEY is not set. Some AI features will be limited.");
     } else {
       initializePerplexity(apiKey);
     }
