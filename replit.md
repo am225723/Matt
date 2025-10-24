@@ -63,42 +63,42 @@ npm run dev
 - Console warning about `UNSAFE_componentWillMount` from react-helmet (non-blocking)
 - Some browser-incompatible packages were removed (perplexityai with puppeteer dependency)
 
-### Recent Changes (October 23, 2025)
+### Recent Changes
 
-#### Core Functionality
+#### October 24, 2025 - UI/UX Enhancement Update
+- ✅ **Main Dashboard Background**: Added professional background image from Supabase (bg-main.jpg) with gradient overlay
+- ✅ **Uniform Tile Sizing**: All dashboard tiles now use consistent h-64 height for visual harmony
+- ✅ **Enhanced Tile Styling**: Improved hover animations (scale 1.05, y: -8), larger icons (16x16), better gradients and shadows
+- ✅ **Global Button Contrast Fix**: Completely overhauled button variants for proper accessibility:
+  - Default: Dark gray (bg-gray-900) with white text
+  - Destructive: Red (bg-red-600) with white text  
+  - Outline: White background with dark text and visible border
+  - Secondary: Light gray with dark text
+  - Ghost & Link: Dark text for readability
+- ✅ **Body Map Calibration Enhancement**: Replaced SVG silhouette with actual Supabase photo (1531.png) while maintaining calibration overlay functionality
+
+#### October 23, 2025 - Core Functionality & Anxiety Tracker
 - ✅ **Fixed critical runtime error**: Removed `perplexityai` npm package that depended on puppeteer (Node.js-only)
 - ✅ **Rewrote Perplexity integration**: Now uses direct fetch API calls to Perplexity's REST API
 - ✅ **Fixed import error**: Removed invalid `Area` import from react-chartjs-2
 - ✅ **Configured Vite**: Added `global: 'window'` define to fix browser compatibility
 - ✅ **API keys configured**: All three API keys (Perplexity, OpenAI, Gemini) are now set in Replit Secrets
 - ✅ **App successfully loading**: Dashboard renders with all feature tiles visible
-
-#### Anxiety Tracker Major Enhancements
 - ✅ **Invisible SVG Overlay**: Made SVG overlay nearly transparent (5% base opacity) so Supabase photos are clearly visible while maintaining clickable regions
 - ✅ **Supabase Photo Integration**: Uses 1530.png for back view, 1531.png for front view with toggle button
-- ✅ **Extended Body Parts**: Added 8 new body parts for comprehensive tracking:
-  - Left/Right Shoulders
-  - Upper Back, Mid Back, Lower Back
-  - Left/Right Glute
-  - Left/Right Calf
-- ✅ **Individual Body Part Questioning**: Completely revamped flow to ask questions for each body part individually:
-  - Each part gets dedicated screen with filtered sensations
-  - Intensity slider (0-10) per body part
-  - Notes field for additional details per part
-  - Progress indicator shows "Body Part X of Y"
-  - Smart sensation aggregation for analytics
-- ✅ **Enhanced Data Storage**: Entries now include both aggregated sensations and detailed per-part data (sensations, intensity, notes)
+- ✅ **Extended Body Parts**: Added 8 new body parts for comprehensive tracking (shoulders, upper/mid/lower back, glutes, calves)
+- ✅ **Individual Body Part Questioning**: Completely revamped flow to ask questions for each body part individually with intensity slider, notes field, and progress indicator
+- ✅ **Enhanced Data Storage**: Entries now include both aggregated sensations and detailed per-part data
 - ✅ **Fixed Progress Tracking**: Session progress bar correctly reaches 100% with new per-part workflow
-
-#### Ketamine Journal Enhancements
-- ✅ **Auto Follow-up Generation**: Implemented automatic AI follow-up question generation immediately after transcription completes
-- ✅ **Fixed Stale Closure Bug**: Resolved critical issue where live transcription follow-ups weren't generated due to stale closure by using ref-based approach
-- ✅ **Transcription Fallback**: Added intelligent fallback mechanism where AI generates contextual follow-up questions even when transcription fails
+- ✅ **Auto Follow-up Generation**: Implemented automatic AI follow-up question generation immediately after transcription completes in Ketamine Journal
+- ✅ **Fixed Stale Closure Bug**: Resolved critical issue where live transcription follow-ups weren't generated using ref-based approach
+- ✅ **Transcription Fallback**: Added intelligent fallback mechanism for AI follow-up questions when transcription fails
 
 #### Technical Improvements
 - Configured Vite server to bind to 0.0.0.0:5000 for Replit compatibility
 - Added ErrorBoundary component for better error handling
-- Improved font contrast across components using dark shades on light backgrounds
+- Improved font contrast across all components for better accessibility
+- Enhanced Framer Motion animations for smoother user experience
 
 ## Deployment
 The application is configured for Vite's built-in dev server. For production deployment:
@@ -117,4 +117,4 @@ npm run build
 - No specific user preferences recorded yet
 
 ## Last Updated
-October 23, 2025 - Initial Replit environment setup completed
+October 24, 2025 - UI/UX enhancements: main dashboard background, uniform tiles, global button contrast, body map calibration photo display
