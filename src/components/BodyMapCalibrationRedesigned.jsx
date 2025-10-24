@@ -275,19 +275,18 @@ const BodyMapCalibrationRedesigned = ({ onClose, onSave, initialCalibration = {}
                   </div>
                 )}
                 
-                {/* Body silhouette */}
+                {/* Body Image Background */}
                 <div 
                   className="absolute inset-0 flex items-center justify-center"
                   style={{ transform: `scale(${zoomLevel})` }}
                 >
-                  <svg width="340" height="540" viewBox="0 0 340 540" className="opacity-30">
-                    <path
-                      d="M170 60 C130 60, 105 85, 105 125 C105 165, 130 190, 170 190 C210 190, 235 165, 235 125 C235 85, 210 60, 170 60 M170 190 L170 210 M120 210 L120 290 L220 290 L220 210 M120 290 L120 380 L220 380 L220 290 M120 210 L80 210 L55 310 L80 310 L105 250 M220 210 L260 210 L285 310 L260 310 L235 250 M55 310 L40 350 L65 365 L80 310 M285 310 L300 350 L275 365 L260 310 M120 380 L120 500 L160 500 L170 380 M220 380 L220 500 L180 500 L170 380 M120 500 L95 525 L160 525 L160 500 M220 500 L245 525 L180 525 L180 500"
-                      fill="none"
-                      stroke="#9ca3af"
-                      strokeWidth="2"
-                    />
-                  </svg>
+                  {/* Supabase Photo */}
+                  <img
+                    src="https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1531.png"
+                    alt="Body Map"
+                    className="w-auto h-full object-contain"
+                    style={{ maxWidth: '340px', maxHeight: '540px' }}
+                  />
                   
                   {/* Calibrated overlays */}
                   {showPreview && (

@@ -31,23 +31,23 @@ const DashboardTile = ({
 }) => (
   <motion.div
     onClick={onClick}
-    className={`relative overflow-hidden rounded-2xl p-6 shadow-2xl cursor-pointer group ${className}`}
-    whileHover={{ scale: 1.03, y: -5 }}
-    transition={{ type: "spring", stiffness: 300, damping: 15 }}
+    className={`relative overflow-hidden rounded-2xl p-8 shadow-2xl cursor-pointer group h-64 ${className}`}
+    whileHover={{ scale: 1.05, y: -8 }}
+    transition={{ type: "spring", stiffness: 300, damping: 20 }}
   >
     <div className="relative z-10 flex flex-col justify-between h-full">
       <div>
-        <div className="p-3 bg-white/20 rounded-full w-14 h-14 flex items-center justify-center mb-4 border border-white/30">
+        <div className="p-4 bg-white/30 rounded-2xl w-16 h-16 flex items-center justify-center mb-4 border-2 border-white/50 shadow-lg">
           {icon}
         </div>
-        <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
-        <p className="text-white/80">{description}</p>
+        <h2 className="text-2xl font-bold text-white mb-3 drop-shadow-lg">{title}</h2>
+        <p className="text-white/90 text-base leading-relaxed drop-shadow-md">{description}</p>
       </div>
-      <div className="mt-6 text-white font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-        Open &rarr;
+      <div className="mt-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
+        Open <span className="text-2xl">&rarr;</span>
       </div>
     </div>
-    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
+    <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60 transition-all duration-300 backdrop-blur-sm"></div>
   </motion.div>
 );
 
@@ -55,10 +55,13 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
   <div
     className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-white"
     style={{
-      backgroundColor: '#1a202c',
+      backgroundImage: 'url(https://efgtznvrnzqcxmfmjuue.supabase.co/storage/v1/object/public/bg-playbook/bg-main.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
     }}
   >
-    <div className="absolute inset-0 bg-black/40"></div>
+    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60 backdrop-blur-sm"></div>
     <Helmet>
       <title>Matthew's Playbook</title>
       <meta name="description" content="Welcome to Matthew's personal development playbook dashboard." />
