@@ -384,11 +384,16 @@ const AnxietyTracker = ({ onBack }) => {
                 onClick={() => handleBodyPartClick(part)}
                 whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.98 }}
-                transition={{ type: "spring", stiffness: 300, damping: 15 }}
                 style={{ cursor: 'pointer' }}
                 initial={{ opacity: 0, scale: 0.8 }}
                 animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.3, delay: 0.1 * Object.keys(bodyPartIds).indexOf(part) }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 300, 
+                  damping: 15,
+                  duration: 0.3, 
+                  delay: 0.1 * Object.keys(bodyPartIds).indexOf(part) 
+                }}
               />
             );
           })}

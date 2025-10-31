@@ -4,6 +4,15 @@
  */
 class AIService {
   /**
+   * Generates a follow-up question based on the user's response only.
+   * @param {string} response - The user's transcribed response.
+   * @returns {Promise<string>} A promise that resolves with the AI-generated follow-up question.
+   */
+  async generateFollowUpQuestion(response) {
+    return AIService.generateFollowUp('', response);
+  }
+
+  /**
    * Generates a follow-up question based on the original question and the user's response.
    * @param {string} question - The original question.
    * @param {string} response - The user's transcribed response.
@@ -29,11 +38,17 @@ class AIService {
       Only ask one single follow-up question. Keep the question relatively short.
     `;
 
-    const userPrompt = `
+    const userPrompt = question 
+      ? `
       The reflection question was: "${question}"
       My response was: "${response}"
 
       Now, please provide a gentle follow-up question.
+    `
+      : `
+      My response was: "${response}"
+
+      Now, please provide a gentle follow-up question to help me explore my thoughts more deeply.
     `;
 
     const requestBody = {

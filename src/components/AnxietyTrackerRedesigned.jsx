@@ -66,9 +66,17 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
     rightArm: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
     leftHand: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
     rightHand: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
-    back: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    leftShoulder: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    rightShoulder: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    upperBack: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    midBack: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    lowerBack: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    leftGlute: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    rightGlute: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
     leftLeg: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
     rightLeg: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    leftCalf: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
+    rightCalf: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
     leftFoot: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' },
     rightFoot: { selected: false, sensations: [], feelings: [], intensity: 0, notes: '' }
   });
@@ -79,6 +87,7 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
   const [selectedReliefMethods, setSelectedReliefMethods] = useState([]);
   const [entries, setEntries] = useState([]);
   const [currentStep, setCurrentStep] = useState(1);
+  const [currentBodyPartIndex, setCurrentBodyPartIndex] = useState(0);
   const [customReliefMethod, setCustomReliefMethod] = useState('');
   const [filteredSensations, setFilteredSensations] = useState(sensations);
   const [activeTab, setActiveTab] = useState('track');
@@ -89,6 +98,7 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
   const [startTime, setStartTime] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [calibrationData, setCalibrationData] = useState({});
+  const [showFront, setShowFront] = useState(true);
 
   // Load data on mount
   useEffect(() => {
@@ -140,7 +150,11 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
     const selectedParts = Object.keys(bodyParts).filter(part => bodyParts[part].selected);
     
     if (selectedParts.length > 0) progress += 25;
-    if (selectedSensations.length > 0) progress += 25;
+    
+    // Check if any body part has sensations recorded
+    const hasSensations = selectedParts.some(part => bodyParts[part].sensations.length > 0);
+    if (hasSensations || currentStep > 2) progress += 25;
+    
     if (selectedActivities.length > 0) progress += 25;
     if (currentStep === 4) progress += 25;
     
@@ -157,9 +171,17 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
     rightArm: 'Right Arm',
     leftHand: 'Left Hand',
     rightHand: 'Right Hand',
-    back: 'Back',
+    leftShoulder: 'Left Shoulder',
+    rightShoulder: 'Right Shoulder',
+    upperBack: 'Upper Back',
+    midBack: 'Mid Back',
+    lowerBack: 'Lower Back',
+    leftGlute: 'Left Glute',
+    rightGlute: 'Right Glute',
     leftLeg: 'Left Leg',
     rightLeg: 'Right Leg',
+    leftCalf: 'Left Calf',
+    rightCalf: 'Right Calf',
     leftFoot: 'Left Foot',
     rightFoot: 'Right Foot'
   };
@@ -199,13 +221,40 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
   };
 
   const handleNextStep = () => {
-    if (currentStep < 4) {
+    const selectedParts = Object.keys(bodyParts).filter(part => bodyParts[part].selected);
+    
+    if (currentStep === 1) {
+      // Move from body selection to first body part questions
+      setCurrentBodyPartIndex(0);
+      setCurrentStep(2);
+    } else if (currentStep === 2) {
+      // Check if there are more body parts to question
+      if (currentBodyPartIndex < selectedParts.length - 1) {
+        setCurrentBodyPartIndex(currentBodyPartIndex + 1);
+      } else {
+        // All body parts done, aggregate sensations and move to activities
+        const allSensations = new Set();
+        selectedParts.forEach(partKey => {
+          bodyParts[partKey].sensations.forEach(sensation => allSensations.add(sensation));
+        });
+        setSelectedSensations(Array.from(allSensations));
+        setCurrentStep(3);
+      }
+    } else if (currentStep < 4) {
       setCurrentStep(currentStep + 1);
     }
   };
 
   const handlePrevStep = () => {
-    if (currentStep > 1) {
+    const selectedParts = Object.keys(bodyParts).filter(part => bodyParts[part].selected);
+    
+    if (currentStep === 2 && currentBodyPartIndex > 0) {
+      // Go back to previous body part
+      setCurrentBodyPartIndex(currentBodyPartIndex - 1);
+    } else if (currentStep > 1) {
+      if (currentStep === 2) {
+        setCurrentBodyPartIndex(0);
+      }
       setCurrentStep(currentStep - 1);
     }
   };
@@ -216,12 +265,30 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
     const selectedParts = Object.keys(bodyParts).filter(part => bodyParts[part].selected);
     const duration = startTime ? Math.round((new Date() - startTime) / 1000 / 60) : 0;
     
+    // Aggregate all sensations from individual body parts
+    const allSensations = new Set();
+    selectedParts.forEach(partKey => {
+      bodyParts[partKey].sensations.forEach(sensation => allSensations.add(sensation));
+    });
+    
+    // Build detailed body parts data
+    const detailedBodyParts = {};
+    selectedParts.forEach(partKey => {
+      detailedBodyParts[partKey] = {
+        name: bodyPartNames[partKey],
+        sensations: bodyParts[partKey].sensations,
+        intensity: bodyParts[partKey].intensity,
+        notes: bodyParts[partKey].notes
+      };
+    });
+    
     const entry = {
       id: Date.now(),
       timestamp: new Date().toISOString(),
       date: new Date().toLocaleDateString(),
       bodyParts: selectedParts,
-      sensations: selectedSensations,
+      detailedBodyParts: detailedBodyParts,
+      sensations: Array.from(allSensations),
       activities: selectedActivities,
       reliefMethods: [...selectedReliefMethods, customReliefMethod].filter(Boolean),
       duration: duration,
@@ -271,123 +338,145 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
   const renderBodyMap = () => {
     const selectedParts = Object.keys(bodyParts).filter(part => bodyParts[part].selected);
     
+    const bodyPartIds = {
+      head: 'head-region',
+      face: 'face-region',
+      neck: 'neck-region',
+      chest: 'chest-region',
+      stomach: 'stomach-region',
+      leftArm: 'left-arm-region',
+      rightArm: 'right-arm-region',
+      leftHand: 'left-hand-region',
+      rightHand: 'right-hand-region',
+      leftShoulder: 'left-shoulder-region',
+      rightShoulder: 'right-shoulder-region',
+      upperBack: 'upper-back-region',
+      midBack: 'mid-back-region',
+      lowerBack: 'lower-back-region',
+      leftGlute: 'left-glute-region',
+      rightGlute: 'right-glute-region',
+      leftLeg: 'left-leg-region',
+      rightLeg: 'right-leg-region',
+      leftCalf: 'left-calf-region',
+      rightCalf: 'right-calf-region',
+      leftFoot: 'left-foot-region',
+      rightFoot: 'right-foot-region'
+    };
+    
+    const getFillColor = (part) => {
+      if (bodyParts[part].selected) {
+        return 'rgba(59, 130, 246, 0.2)';
+      }
+      return 'rgba(203, 213, 225, 0.05)';
+    };
+
+    const getStrokeColor = (part) => {
+      return bodyParts[part].selected ? 'rgba(59, 130, 246, 0.6)' : 'transparent';
+    };
+
+    const getStrokeWidth = (part) => {
+      return bodyParts[part].selected ? '2' : '0';
+    };
+    
     return (
-      <div className="relative flex justify-center bg-gradient-to-b from-blue-50 to-indigo-50 rounded-xl p-6">
+      <div className="relative flex flex-col items-center bg-gradient-to-b from-blue-50 to-indigo-50 rounded-xl p-6">
         <svg
-          width="340"
-          height="540"
-          viewBox="0 0 340 540"
+          width="400"
+          height="600"
+          viewBox="0 0 400 600"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
           className="drop-shadow-lg"
         >
-          {/* Background body silhouette */}
-          <path
-            d="M170 60 C130 60, 105 85, 105 125 C105 165, 130 190, 170 190 C210 190, 235 165, 235 125 C235 85, 210 60, 170 60 M170 190 L170 210 M120 210 L120 290 L220 290 L220 210 M120 290 L120 380 L220 380 L220 290 M120 210 L80 210 L55 310 L80 310 L105 250 M220 210 L260 210 L285 310 L260 310 L235 250 M55 310 L40 350 L65 365 L80 310 M285 310 L300 350 L275 365 L260 310 M120 380 L120 500 L160 500 L170 380 M220 380 L220 500 L180 500 L170 380 M120 500 L95 525 L160 525 L160 500 M220 500 L245 525 L180 525 L180 500"
-            fill="none"
-            stroke="#e5e7eb"
-            strokeWidth="2"
+          {/* Background Image */}
+          <image
+            href={showFront ? 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1531.png' : 'https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1530.png'}
+            x="0"
+            y="0"
+            height="600"
+            width="400"
+            preserveAspectRatio="xMidYMid slice"
           />
           
-          {/* Interactive body parts with calibration applied */}
-          {Object.entries(bodyParts).map(([partKey, partData]) => {
-            const isSelected = partData.selected;
-            const calibration = calibrationData[partKey] || { x: 0, y: 0, scale: 1, rotation: 0 };
+          {/* Interactive body parts */}
+          {Object.entries(bodyPartIds).map(([part, id]) => {
+            // Front-only parts
+            const frontOnlyParts = ['face', 'chest', 'stomach'];
+            // Back-only parts
+            const backOnlyParts = ['upperBack', 'midBack', 'lowerBack', 'leftGlute', 'rightGlute', 'leftCalf', 'rightCalf'];
             
-            let element = null;
-            
-            switch (partKey) {
-              case 'head':
-                element = (
-                  <ellipse
-                    cx="170"
-                    cy="125"
-                    rx="65"
-                    ry="65"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 170 125)`}
-                  />
-                );
-                break;
-              case 'chest':
-                element = (
-                  <ellipse
-                    cx="170"
-                    cy="250"
-                    rx="50"
-                    ry="40"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 170 250)`}
-                  />
-                );
-                break;
-              case 'stomach':
-                element = (
-                  <ellipse
-                    cx="170"
-                    cy="335"
-                    rx="50"
-                    ry="45"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 170 335)`}
-                  />
-                );
-                break;
-              case 'rightArm':
-                element = (
-                  <ellipse
-                    cx="252"
-                    cy="260"
-                    rx="25"
-                    ry="50"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 252 260)`}
-                  />
-                );
-                break;
-              case 'leftArm':
-                element = (
-                  <ellipse
-                    cx="88"
-                    cy="260"
-                    rx="25"
-                    ry="50"
-                    fill={isSelected ? "rgba(59, 130, 246, 0.6)" : "rgba(203, 213, 225, 0.3)"}
-                    stroke={isSelected ? "#3b82f6" : "#64748b"}
-                    strokeWidth={isSelected ? "3" : "2"}
-                    className="cursor-pointer transition-all duration-200 hover:opacity-80"
-                    onClick={() => handleBodyPartClick(partKey)}
-                    transform={`translate(${calibration.x}, ${calibration.y}) scale(${calibration.scale}) rotate(${calibration.rotation} 88 260)`}
-                  />
-                );
-                break;
-              default:
-                // Add other body parts as needed
-                break;
-            }
-            
-            return element ? <g key={partKey}>{element}</g> : null;
+            if (frontOnlyParts.includes(part) && !showFront) return null;
+            if (backOnlyParts.includes(part) && showFront) return null;
+
+            const pathData = {
+              // Universal parts (visible on both sides)
+              head: "M 175,30 C 175,10 225,10 225,30 C 245,30 245,110 225,130 C 225,130 175,130 175,130 C 155,110 155,30 175,30 Z",
+              neck: "M 185,130 H 215 V 155 H 185 Z",
+              leftShoulder: "M 120,155 H 160 V 200 H 120 Z",
+              rightShoulder: "M 240,155 H 280 V 200 H 240 Z",
+              leftArm: "M 110,200 H 150 V 320 H 110 Z",
+              rightArm: "M 250,200 H 290 V 320 H 250 Z",
+              leftHand: "M 100,320 H 140 V 380 H 100 Z",
+              rightHand: "M 260,320 H 300 V 380 H 260 Z",
+              leftLeg: "M 155,380 H 195 V 470 H 155 Z",
+              rightLeg: "M 205,380 H 245 V 470 H 205 Z",
+              leftFoot: "M 150,500 H 190 V 540 H 150 Z",
+              rightFoot: "M 210,500 H 250 V 540 H 210 Z",
+              
+              // Front-only parts
+              face: "M 180,60 H 220 V 125 H 180 Z",
+              chest: "M 150,200 H 250 V 290 H 150 Z",
+              stomach: "M 155,290 H 245 V 380 H 155 Z",
+              
+              // Back-only parts
+              upperBack: "M 150,155 H 250 V 240 H 150 Z",
+              midBack: "M 155,240 H 245 V 310 H 155 Z",
+              lowerBack: "M 160,310 H 240 V 360 H 160 Z",
+              leftGlute: "M 155,360 H 195 V 410 H 155 Z",
+              rightGlute: "M 205,360 H 245 V 410 H 205 Z",
+              leftCalf: "M 160,470 H 192 V 500 H 160 Z",
+              rightCalf: "M 208,470 H 240 V 500 H 208 Z",
+            };
+
+            return (
+              <motion.path
+                key={part}
+                id={id}
+                d={pathData[part]}
+                fill={getFillColor(part)}
+                stroke={getStrokeColor(part)}
+                strokeWidth={getStrokeWidth(part)}
+                onClick={() => handleBodyPartClick(part)}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.98 }}
+                style={{ cursor: 'pointer' }}
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ 
+                  type: "spring", 
+                  stiffness: 300, 
+                  damping: 15,
+                  duration: 0.3 
+                }}
+              />
+            );
           })}
         </svg>
         
+        {/* Toggle front/back button */}
+        <div className="mt-4">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFront(!showFront)}
+            className="bg-white/80 backdrop-blur-sm"
+          >
+            Show {showFront ? 'Back' : 'Front'}
+          </Button>
+        </div>
+        
         {/* Selection indicator */}
-        <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2">
+        <div className="mt-2">
           <Badge variant="outline" className="bg-white/80 backdrop-blur-sm">
             {selectedParts.length} part{selectedParts.length !== 1 ? 's' : ''} selected
           </Badge>
@@ -472,42 +561,117 @@ const AnxietyTrackerRedesigned = ({ onBack }) => {
           </motion.div>
         )}
 
-        {/* Step 2: Sensations */}
-        {currentStep === 2 && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="space-y-6"
-          >
-            <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2 text-purple-800">
-                  <Heart className="w-5 h-5" />
-                  Step 2: What does it feel like?
-                </CardTitle>
-                <p className="text-purple-600">Select all sensations you're experiencing</p>
-              </CardHeader>
-              <CardContent>
-                {renderCheckboxGroup(filteredSensations, selectedSensations, handleSensationChange)}
-                
-                <div className="mt-6 flex justify-between">
-                  <Button variant="outline" onClick={handlePrevStep}>
-                    <ChevronLeft className="w-4 h-4 mr-2" />
-                    Back
-                  </Button>
-                  <Button
-                    onClick={handleNextStep}
-                    disabled={selectedSensations.length === 0}
-                    className="bg-purple-600 hover:bg-purple-700"
-                  >
-                    Next Step
-                    <ChevronRight className="w-4 h-4 ml-2" />
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
-          </motion.div>
-        )}
+        {/* Step 2: Individual Body Part Questions */}
+        {currentStep === 2 && (() => {
+          const selectedParts = Object.keys(bodyParts).filter(part => bodyParts[part].selected);
+          const currentPartKey = selectedParts[currentBodyPartIndex];
+          const currentPart = bodyParts[currentPartKey];
+          const currentPartName = bodyPartNames[currentPartKey];
+          
+          // Get sensations specific to this body part
+          const partSensations = bodyPartSensationMap[currentPartName] || sensations;
+          
+          return (
+            <motion.div
+              key={currentPartKey}
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              className="space-y-6"
+            >
+              <Card className="bg-gradient-to-r from-purple-50 to-pink-50 border-purple-200 shadow-lg">
+                <CardHeader>
+                  <div className="flex justify-between items-center mb-2">
+                    <Badge className="bg-purple-100 text-purple-800 border-purple-300">
+                      Body Part {currentBodyPartIndex + 1} of {selectedParts.length}
+                    </Badge>
+                  </div>
+                  <CardTitle className="flex items-center gap-2 text-purple-800">
+                    <Heart className="w-5 h-5" />
+                    What does it feel like in your {currentPartName}?
+                  </CardTitle>
+                  <p className="text-purple-600">Select all sensations you're experiencing in your {currentPartName}</p>
+                </CardHeader>
+                <CardContent>
+                  {renderCheckboxGroup(
+                    partSensations, 
+                    currentPart.sensations, 
+                    (sensation) => {
+                      setBodyParts(prev => ({
+                        ...prev,
+                        [currentPartKey]: {
+                          ...prev[currentPartKey],
+                          sensations: prev[currentPartKey].sensations.includes(sensation)
+                            ? prev[currentPartKey].sensations.filter(s => s !== sensation)
+                            : [...prev[currentPartKey].sensations, sensation]
+                        }
+                      }));
+                    }
+                  )}
+                  
+                  {/* Intensity Slider */}
+                  <div className="mt-6 space-y-2">
+                    <Label className="text-sm font-medium text-purple-800">
+                      Intensity Level: {currentPart.intensity}/10
+                    </Label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="10"
+                      value={currentPart.intensity}
+                      onChange={(e) => {
+                        setBodyParts(prev => ({
+                          ...prev,
+                          [currentPartKey]: {
+                            ...prev[currentPartKey],
+                            intensity: parseInt(e.target.value)
+                          }
+                        }));
+                      }}
+                      className="w-full h-2 bg-purple-200 rounded-lg appearance-none cursor-pointer"
+                    />
+                  </div>
+                  
+                  {/* Notes */}
+                  <div className="mt-4">
+                    <Label className="text-sm font-medium text-purple-800">
+                      Additional notes for {currentPartName} (optional):
+                    </Label>
+                    <textarea
+                      value={currentPart.notes}
+                      onChange={(e) => {
+                        setBodyParts(prev => ({
+                          ...prev,
+                          [currentPartKey]: {
+                            ...prev[currentPartKey],
+                            notes: e.target.value
+                          }
+                        }));
+                      }}
+                      className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-purple-500 focus:ring-purple-500 sm:text-sm p-3"
+                      placeholder="Any specific details about how this feels..."
+                      rows="3"
+                    />
+                  </div>
+                  
+                  <div className="mt-6 flex justify-between">
+                    <Button variant="outline" onClick={handlePrevStep} className="border-purple-300 text-purple-700 hover:bg-purple-50">
+                      <ChevronLeft className="w-4 h-4 mr-2" />
+                      {currentBodyPartIndex === 0 ? 'Back to Selection' : 'Previous Part'}
+                    </Button>
+                    <Button
+                      onClick={handleNextStep}
+                      className="bg-purple-600 hover:bg-purple-700"
+                    >
+                      {currentBodyPartIndex < selectedParts.length - 1 ? 'Next Part' : 'Continue'}
+                      <ChevronRight className="w-4 h-4 ml-2" />
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            </motion.div>
+          );
+        })()}
 
         {/* Step 3: Activities */}
         {currentStep === 3 && (

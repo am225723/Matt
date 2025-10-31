@@ -42,7 +42,7 @@ const YardageBook = ({ onBack }) => {
       initializePerplexity(apiKey);
       setIsInitialized(true);
     } else {
-      toast({ title: "API Key Missing", description: "Gemini API key is not configured.", variant: "destructive" });
+      toast({ title: "API Key Missing", description: "Perplexity API key is not configured.", variant: "destructive" });
     }
   }, []);
 

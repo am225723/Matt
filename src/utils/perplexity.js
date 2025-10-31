@@ -1,36 +1,44 @@
-import { Perplexity } from 'perplexityai';
+let apiKey = null;
 
-let perplexity;
-
-export const initializePerplexity = (apiKey) => {
-  if (!apiKey) {
+export const initializePerplexity = (key) => {
+  if (!key) {
     console.error("Perplexity API key is missing.");
     return false;
   }
-  if (!perplexity) {
-    perplexity = new Perplexity(apiKey);
-  }
+  apiKey = key;
   return true;
 };
 
-const getClient = () => {
-  if (!perplexity) {
+export const generateContent = async (systemContext, userPrompt) => {
+  if (!apiKey) {
     throw new Error("Perplexity AI is not initialized. Please provide an API key.");
   }
-  return perplexity;
-};
 
-export const generateContent = async (systemContext, userPrompt) => {
-  const client = getClient();
   try {
-    const completion = await client.chat.completions.create({
-      model: "sonar-pro",
-      messages: [
-        { role: "system", content: systemContext },
-        { role: "user", content: userPrompt }
-      ],
+    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-sonar-small-128k-online',
+        messages: [
+          { role: 'system', content: systemContext },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: 0.2,
+        top_p: 0.9,
+        stream: false
+      })
     });
-    return completion.choices[0].message.content;
+
+    if (!response.ok) {
+      throw new Error(`Perplexity API error: ${response.status} ${response.statusText}`);
+    }
+
+    const data = await response.json();
+    return data.choices[0].message.content;
   } catch (error) {
     console.error("Error calling Perplexity API:", error);
     throw new Error("Failed to get a response from Perplexity.");
