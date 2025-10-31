@@ -12,7 +12,7 @@ import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
-import { initializePerplexity } from '@/utils/perplexity.js'; // <-- FIXED
+import { initializeGemini } from '@/utils/gemini';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
 import KetamineTherapy from '@/components/KetamineTherapy';
@@ -26,23 +26,23 @@ const DashboardTile = ({
 }) => (
   <motion.div
     onClick={onClick}
-    className={`relative overflow-hidden rounded-2xl p-8 shadow-2xl cursor-pointer group h-64 ${className}`}
-    whileHover={{ scale: 1.05, y: -8 }}
-    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    className={`relative overflow-hidden rounded-2xl p-6 shadow-2xl cursor-pointer group ${className}`}
+    whileHover={{ scale: 1.03, y: -5 }}
+    transition={{ type: "spring", stiffness: 300, damping: 15 }}
   >
     <div className="relative z-10 flex flex-col justify-between h-full">
       <div>
-        <div className="p-4 bg-white/30 rounded-2xl w-16 h-16 flex items-center justify-center mb-4 border-2 border-white/50 shadow-lg">
+        <div className="p-3 bg-white/20 rounded-full w-14 h-14 flex items-center justify-center mb-4 border border-white/30">
           {icon}
         </div>
-        <h2 className="text-2xl font-bold text-white mb-3 drop-shadow-lg">{title}</h2>
-        <p className="text-white/90 text-base leading-relaxed drop-shadow-md">{description}</p>
+        <h2 className="text-2xl font-bold text-white mb-2">{title}</h2>
+        <p className="text-white/80">{description}</p>
       </div>
-      <div className="mt-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
-        Open <span className="text-2xl">&rarr;</span>
+      <div className="mt-6 text-white font-semibold opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+        Open &rarr;
       </div>
     </div>
-    <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60 transition-all duration-300 backdrop-blur-sm"></div>
+    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors duration-300"></div>
   </motion.div>
 );
 
@@ -50,13 +50,12 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
   <div
     className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-white"
     style={{
-      backgroundImage: 'url(https://efgtznvrnzqcxmfmjuue.supabase.co/storage/v1/object/public/bg-playbook/bg-main.jpg)',
+      backgroundImage: "url('https://horizons-cdn.hostinger.com/2ede1032-5057-4306-b7a4-16441876e852/8ba7f2dee73ececf10b1908d56ce953d.png')",
       backgroundSize: 'cover',
       backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
     }}
   >
-    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60 backdrop-blur-sm"></div>
+    <div className="absolute inset-0 bg-black/40"></div>
     <Helmet>
       <title>Matthew's Playbook</title>
       <meta name="description" content="Welcome to Matthew's personal development playbook dashboard." />
@@ -177,21 +176,19 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
   </div>
 );
 
-const App = () => {
+const AppFixed = () => {
   const [view, setView] = useState('dashboard');
   const [loadedPlan, setLoadedPlan] = useState(null);
 
-  // --- FIXED SECTION ---
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY; // <-- Use Perplexity Key
+    const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
     if (!apiKey) {
-      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
+      console.error("VITE_GEMINI_API_KEY is not set. Please add it to your .env file.");
     } else {
-      initializePerplexity(apiKey); // <-- Initialize Perplexity
+      initializeGemini(apiKey);
     }
     updateStreak();
   }, []);
-  // --- END FIXED SECTION ---
 
   const handleSelectPlan = (planId) => {
     const plan = getPlanFromLibrary(planId);
@@ -228,4 +225,4 @@ const App = () => {
   );
 };
 
-export default App;
+export default AppFixed;

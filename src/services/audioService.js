@@ -175,7 +175,24 @@ class AudioService {
   }
   
   /**
-   * Transcribe audio using the OpenAI Whisper API.
+   * Converts a Blob to a base64 encoded string.
+   * @param {Blob} blob - The blob to convert.
+   * @returns {Promise<string>} - A promise that resolves with the base64 encoded string.
+   * @private
+   */
+  _blobToBase64(blob) {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = reject;
+      reader.onload = () => {
+        resolve(reader.result.split(',')[1]);
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  /**
+   * Transcribe audio using the Perplexity Sonar API.
    * @param {Blob} audioBlob - The audio blob to transcribe.
    * @returns {Promise<string>} - A promise that resolves with the transcription text.
    */
@@ -183,24 +200,43 @@ class AudioService {
     // IMPORTANT: In a real-world application, you should NEVER expose your API key
     // on the client side. This API call should be made from a secure backend server
     // or a serverless function that holds the API key securely.
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    const apiEndpoint = 'https://api.openai.com/v1/audio/transcriptions';
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+    const apiEndpoint = 'https://api.perplexity.ai/chat/completions';
 
     if (!apiKey) {
-      throw new Error("OpenAI API key is not set in the .env file.");
+      throw new Error("Perplexity API key is not set in the .env file.");
     }
 
-    const formData = new FormData();
-    formData.append('file', audioBlob, 'recording.webm');
-    formData.append('model', 'whisper-1');
-
     try {
+      const base64Audio = await this._blobToBase64(audioBlob);
+      const audioDataUrl = `data:audio/webm;base64,${base64Audio}`;
+
+      const requestBody = {
+        model: 'sonar-medium-online',
+        messages: [
+          {
+            role: 'user',
+            content: [
+              {
+                type: 'text',
+                text: 'Please transcribe the following audio file.',
+              },
+              {
+                type: 'file',
+                file: audioDataUrl,
+              },
+            ],
+          },
+        ],
+      };
+
       const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           'Authorization': `Bearer ${apiKey}`,
         },
-        body: formData,
+        body: JSON.stringify(requestBody),
       });
 
       if (!response.ok) {
@@ -209,9 +245,10 @@ class AudioService {
       }
 
       const data = await response.json();
-      return data.text;
+      const transcription = data.choices[0]?.message?.content?.trim();
+      return transcription || "";
     } catch (error) {
-      console.error('Error transcribing audio with Whisper API:', error);
+      console.error('Error transcribing audio with Perplexity API:', error);
       throw error;
     }
   }

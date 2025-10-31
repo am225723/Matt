@@ -15,7 +15,7 @@ const ExcuseReframe = ({ onNext }) => {
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
-    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY || import.meta.env.PERPLEXITY_API_KEY;
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
     if (apiKey) {
       initializePerplexity(apiKey);
       setIsInitialized(true);

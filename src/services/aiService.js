@@ -22,11 +22,11 @@ class AIService {
     // IMPORTANT: In a real-world application, you should NEVER expose your API key
     // on the client side. This API call should be made from a secure backend server
     // or a serverless function that holds the API key securely.
-    const apiKey = import.meta.env.VITE_OPENAI_API_KEY;
-    const apiEndpoint = 'https://api.openai.com/v1/chat/completions';
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+    const apiEndpoint = 'https://api.perplexity.ai/chat/completions';
 
     if (!apiKey) {
-      throw new Error("OpenAI API key is not set in the .env file.");
+      throw new Error("Perplexity API key is not set in the .env file.");
     }
 
     const systemPrompt = `
@@ -52,7 +52,7 @@ class AIService {
     `;
 
     const requestBody = {
-      model: 'gpt-3.5-turbo',
+      model: 'sonar-medium-8x7b-chat',
       messages: [
         { role: 'system', content: systemPrompt.trim() },
         { role: 'user', content: userPrompt.trim() },

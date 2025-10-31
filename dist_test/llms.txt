@@ -1,0 +1,6 @@
+## Pages
+- [Matthew's Playbook](/): Welcome to Matthew
+- [Matthew's Playbook](/appdiagnostic): Welcome to Matthew
+- [Matthew's Playbook](/appfixed): Welcome to Matthew
+- [Matthew's Playbook](/appworking): Welcome to Matthew
+- [Excuse Reframing - Matthew's Playbook](/excusereframe): Use AI to reframe your excuses into empowering perspectives.
