@@ -13,7 +13,7 @@ import {
   Clock, Calendar, Trash2, X, Check
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { callPerplexityAPI } from '@/utils/perplexity';
+import { generateContent } from '@/utils/perplexity';
 
 const ExcuseReframerAdvanced = ({ onBack }) => {
   const { toast } = useToast();
@@ -141,7 +141,8 @@ Format your response as a JSON array with 4 objects, each containing:
 
 Return ONLY the JSON array, no other text.`;
 
-      const response = await callPerplexityAPI(prompt, 'reframe-excuses');
+      const systemContext = "You are an expert cognitive behavioral therapist helping someone reframe limiting beliefs.";
+      const response = await generateContent(systemContext, prompt);
       
       if (response) {
         try {

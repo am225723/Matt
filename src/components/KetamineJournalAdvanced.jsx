@@ -15,8 +15,8 @@ import {
   Volume2, VolumeX, RotateCcw, Send, Loader2, ArrowRight
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { transcribeAudio, initializeMediaRecorder } from '@/services/audioService';
-import { generateAIFollowUp } from '@/services/aiService';
+import { transcribeAudio } from '@/services/audioService';
+import AIService from '@/services/aiService';
 
 const KetamineJournalAdvanced = ({ onBack }) => {
   const { toast } = useToast();
@@ -231,10 +231,8 @@ const KetamineJournalAdvanced = ({ onBack }) => {
     setIsGeneratingFollowUp(true);
     
     try {
-      const context = paragraphs.map(p => p.text).join('\n\n');
-      const fullContext = context + '\n\n' + transcribedText;
-      
-      const followUp = await generateAIFollowUp(fullContext, 'ketamine-journal');
+      const aiService = new AIService();
+      const followUp = await aiService.generateFollowUpQuestion(transcribedText);
       
       if (followUp) {
         setAiFollowUpQuestion(followUp);

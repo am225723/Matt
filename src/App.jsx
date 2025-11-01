@@ -5,17 +5,20 @@ import ResiliencePlaybook from '@/components/ResiliencePlaybook';
 import PlaybookLibrary from '@/components/PlaybookLibrary';
 import Achievements from '@/components/Achievements';
 import EnhancedHealthDashboard from '@/components/EnhancedHealthDashboard';
-import AnxietyTracker from '@/components/AnxietyTracker';
-import NewAnxietyTracker from '@/components/NewAnxietyTracker';
+import AnxietyTrackerRedesigned from '@/components/AnxietyTrackerRedesigned';
 import AISuggestion from '@/components/AISuggestion';
 import { getPlanFromLibrary } from '@/utils/planLibraryStorage';
 import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
-import { initializePerplexity } from '@/utils/perplexity.js'; // <-- FIXED
+import { initializePerplexity } from '@/utils/perplexity.js';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
-import KetamineTherapy from '@/components/KetamineTherapy';
+import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
+
+// Import advanced components (lazy loaded to prevent blocking)
+const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseReframerAdvanced'));
+const KetamineJournalAdvanced = React.lazy(() => import('@/components/KetamineJournalAdvanced'));
 
 const DashboardTile = ({
   title,
@@ -214,15 +217,22 @@ const App = () => {
   return (
     <div className="min-h-screen bg-background text-foreground">
       {view === 'dashboard' && <Dashboard onSelect={setView} onSelectScenario={handleSelectScenario} />}
-      {view === 'reframe' && <ExcuseReframe onNext={handleBackToDashboard} />}
+      {view === 'reframe' && (
+        <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+          <ExcuseReframerAdvanced onBack={handleBackToDashboard} />
+        </React.Suspense>
+      )}
       {view === 'yardage' && <YardageBook onBack={handleBackToDashboard} />}
       {view === 'playbook' && <ResiliencePlaybook plan={loadedPlan} onBack={handleBackToDashboard} />}
       {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
       {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
       {view === 'health' && <EnhancedHealthDashboard onBack={handleBackToDashboard} />}
-        
-      {view === 'ketamine' && <KetamineTherapy onBack={handleBackToDashboard} />}
-      {view === 'anxiety' && <NewAnxietyTracker onBack={handleBackToDashboard} />}
+      {view === 'ketamine' && (
+        <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+          <KetamineJournalAdvanced onBack={handleBackToDashboard} />
+        </React.Suspense>
+      )}
+      {view === 'anxiety' && <AnxietyTrackerRedesigned onBack={handleBackToDashboard} />}
       <Toaster />
     </div>
   );

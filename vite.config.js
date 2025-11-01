@@ -202,29 +202,31 @@ logger.error = (msg, options) => {
 }
 
 export default defineConfig({
-	customLogger: logger,
-	plugins: [
-		...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin()] : []),
-		react(),
-		addTransformIndexHtml
-	],
-	server: {
-		cors: true,
-		headers: {
-			'Cross-Origin-Embedder-Policy': 'credentialless',
-		},
-		allowedHosts: true,
-	},
-	resolve: {
-		extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],
-		alias: {
-			'@': path.resolve(__dirname, './src'),
-		},
-	},
-	build: {
-		rollupOptions: {
-			external: [
-			]
-		}
-	}
+        customLogger: logger,
+        plugins: [
+                ...(isDev ? [inlineEditPlugin(), editModeDevPlugin(), iframeRouteRestorationPlugin()] : []),
+                react(),
+                addTransformIndexHtml
+        ],
+        server: {
+                host: '0.0.0.0',
+                port: 5000,
+                cors: true,
+                headers: {
+                        'Cross-Origin-Embedder-Policy': 'credentialless',
+                },
+                allowedHosts: true,
+        },
+        resolve: {
+                extensions: ['.jsx', '.js', '.tsx', '.ts', '.json', ],
+                alias: {
+                        '@': path.resolve(__dirname, './src'),
+                },
+        },
+        build: {
+                rollupOptions: {
+                        external: [
+                        ]
+                }
+        }
 });
