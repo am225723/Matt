@@ -15,7 +15,7 @@ import {
   Volume2, VolumeX, RotateCcw, Send, Loader2, ArrowRight
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { transcribeAudio } from '@/services/audioService';
+import AudioService from '@/services/audioService';
 import AIService from '@/services/aiService';
 
 const KetamineJournalAdvanced = ({ onBack }) => {
@@ -182,15 +182,16 @@ const KetamineJournalAdvanced = ({ onBack }) => {
     setIsTranscribing(true);
     
     try {
-      const transcriptionResult = await transcribeAudio(audioBlob);
+      const audioService = new AudioService();
+      const transcriptionText = await audioService.transcribeAudio(audioBlob);
       
-      if (transcriptionResult && transcriptionResult.text) {
-        setCurrentParagraphText(transcriptionResult.text);
+      if (transcriptionText) {
+        setCurrentParagraphText(transcriptionText);
         
         // Add to paragraphs
         const newParagraph = {
           id: Date.now(),
-          text: transcriptionResult.text,
+          text: transcriptionText,
           timestamp: new Date().toISOString(),
           audioBlob: audioBlob,
           duration: recordingTime
@@ -200,7 +201,7 @@ const KetamineJournalAdvanced = ({ onBack }) => {
         setAudioSegments(prev => [...prev, audioBlob]);
         
         // Generate AI follow-up question
-        await generateFollowUpQuestion(transcriptionResult.text);
+        await generateFollowUpQuestion(transcriptionText);
         
         toast({
           title: 'Transcription Complete',
