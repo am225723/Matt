@@ -46,6 +46,10 @@ waitForPort = 3000
 outputType = "console"
 
 [[ports]]
+localPort = 3000
+externalPort = 3000
+
+[[ports]]
 localPort = 5000
 externalPort = 80
 
@@ -58,6 +62,10 @@ localPort = 33861
 externalPort = 3002
 
 [[ports]]
+localPort = 36143
+externalPort = 5000
+
+[[ports]]
 localPort = 37137
 externalPort = 3000
 
@@ -68,10 +76,6 @@ externalPort = 3003
 [[ports]]
 localPort = 45239
 externalPort = 4200
-
-[[ports]]
-localPort = 3000
-externalPort = 3000
 
 [deployment]
 deploymentTarget = "autoscale"

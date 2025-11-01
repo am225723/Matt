@@ -29,83 +29,128 @@ const DashboardTile = ({
 }) => (
   <motion.div
     onClick={onClick}
-    className={`relative overflow-hidden rounded-3xl p-8 shadow-2xl cursor-pointer group h-64 ${className}`}
+    className={`relative overflow-hidden rounded-3xl cursor-pointer group h-72 ${className}`}
     whileHover={{ 
-      scale: 1.08, 
-      y: -12,
-      rotateY: 5,
-      rotateX: -5
+      scale: 1.05, 
+      y: -8,
     }}
-    whileTap={{ scale: 0.98 }}
+    whileTap={{ scale: 0.97 }}
     transition={{ 
       type: "spring", 
-      stiffness: 300, 
-      damping: 20,
-      duration: 0.4
+      stiffness: 400, 
+      damping: 25,
     }}
-    style={{ transformStyle: "preserve-3d", perspective: 1000 }}
   >
-    {/* Animated gradient overlay */}
+    {/* Glass morphism card */}
+    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl group-hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] transition-all duration-500" />
+    
+    {/* Animated gradient background */}
     <motion.div 
-      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
       style={{
-        background: "radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%)",
+        background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
       }}
       animate={{
-        scale: [1, 1.2, 1],
+        backgroundPosition: ['0% 0%', '100% 100%'],
       }}
       transition={{
-        duration: 3,
+        duration: 8,
         repeat: Infinity,
-        ease: "easeInOut"
+        repeatType: "reverse",
+        ease: "linear"
       }}
     />
     
-    {/* Glow effect on hover */}
-    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    {/* Shimmer effect */}
+    <motion.div
+      className="absolute inset-0 opacity-0 group-hover:opacity-100"
+      style={{
+        background: "linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%)",
+        backgroundSize: "200% 200%",
+      }}
+      animate={{
+        backgroundPosition: ['-200% -200%', '200% 200%'],
+      }}
+      transition={{
+        duration: 1.5,
+        repeat: Infinity,
+        ease: "linear"
+      }}
+    />
     
-    <div className="relative z-10 flex flex-col justify-between h-full">
+    {/* Content */}
+    <div className="relative z-10 flex flex-col justify-between h-full p-8">
       <div>
+        {/* Icon container with enhanced glow */}
         <motion.div 
-          className="p-4 bg-gradient-to-br from-white/40 to-white/20 rounded-2xl w-20 h-20 flex items-center justify-center mb-5 border-2 border-white/60 shadow-2xl backdrop-blur-md group-hover:scale-110 transition-transform duration-300"
-          whileHover={{ rotate: 360 }}
-          transition={{ duration: 0.6 }}
+          className="relative mb-6 w-fit"
+          whileHover={{ scale: 1.1 }}
+          transition={{ type: "spring", stiffness: 400, damping: 15 }}
         >
-          <div className="transform scale-125">
-            {icon}
+          <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300 scale-110" />
+          <div className="relative p-5 bg-gradient-to-br from-white/30 to-white/10 rounded-2xl w-24 h-24 flex items-center justify-center border border-white/30 shadow-xl backdrop-blur-md">
+            <motion.div
+              animate={{ 
+                rotate: [0, 5, -5, 0],
+              }}
+              transition={{
+                duration: 2,
+                repeat: Infinity,
+                ease: "easeInOut"
+              }}
+              className="transform scale-150"
+            >
+              {icon}
+            </motion.div>
           </div>
         </motion.div>
-        <h2 className="text-2xl font-bold text-white mb-3 drop-shadow-2xl tracking-tight group-hover:text-white/100 transition-colors">
-          {title}
+        
+        {/* Title with gradient */}
+        <h2 className="text-2xl font-bold text-white mb-3 tracking-tight leading-tight group-hover:tracking-wide transition-all duration-300">
+          <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">
+            {title}
+          </span>
         </h2>
-        <p className="text-white/95 text-base leading-relaxed drop-shadow-lg font-medium">
+        
+        {/* Description */}
+        <p className="text-white/90 text-sm leading-relaxed font-light tracking-wide">
           {description}
         </p>
       </div>
+      
+      {/* Call to action */}
       <motion.div 
-        className="mt-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2"
-        initial={{ x: -10 }}
-        whileHover={{ x: 0 }}
+        className="flex items-center gap-2 text-white/80 group-hover:text-white font-semibold text-base"
+        initial={{ opacity: 0, x: -10 }}
+        whileHover={{ x: 5 }}
+        animate={{ opacity: [0.6, 1, 0.6] }}
+        transition={{ 
+          opacity: { duration: 2, repeat: Infinity },
+          x: { type: "spring", stiffness: 300 }
+        }}
       >
-        Open <motion.span 
-          className="text-2xl"
-          animate={{ x: [0, 5, 0] }}
-          transition={{ duration: 1, repeat: Infinity }}
-        >&rarr;</motion.span>
+        <span>Explore</span>
+        <motion.svg 
+          width="20" 
+          height="20" 
+          viewBox="0 0 20 20" 
+          fill="none"
+          animate={{ x: [0, 3, 0] }}
+          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <path d="M7 3L14 10L7 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </motion.svg>
       </motion.div>
     </div>
     
-    {/* Enhanced gradient backdrop */}
-    <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/60 group-hover:from-black/40 group-hover:via-black/30 group-hover:to-black/50 transition-all duration-500 backdrop-blur-md"></div>
-    
-    {/* Animated border shimmer */}
-    <div className="absolute inset-0 rounded-3xl border-2 border-white/20 group-hover:border-white/40 transition-all duration-300" />
+    {/* Subtle top highlight */}
+    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
   </motion.div>
 );
 
 const Dashboard = ({ onSelect, onSelectScenario }) => (
   <div
-    className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 text-white"
+    className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 text-white overflow-hidden"
     style={{
       backgroundImage: 'url(https://efgtznvrnzqcxmfmjuue.supabase.co/storage/v1/object/public/bg-playbook/bg-main.jpg)',
       backgroundSize: 'cover',
@@ -113,40 +158,90 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
       backgroundRepeat: 'no-repeat',
     }}
   >
-    <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-black/50 to-black/60 backdrop-blur-sm"></div>
+    {/* Enhanced gradient overlay */}
+    <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/70"></div>
+    
+    {/* Animated floating orbs for depth */}
+    <motion.div
+      className="absolute top-20 left-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
+      animate={{
+        x: [0, 50, 0],
+        y: [0, 30, 0],
+        scale: [1, 1.1, 1],
+      }}
+      transition={{
+        duration: 10,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
+    <motion.div
+      className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
+      animate={{
+        x: [0, -50, 0],
+        y: [0, -30, 0],
+        scale: [1, 1.2, 1],
+      }}
+      transition={{
+        duration: 12,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
+    <motion.div
+      className="absolute top-1/2 left-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"
+      animate={{
+        x: [-50, 50, -50],
+        y: [-30, 30, -30],
+        scale: [1, 1.15, 1],
+      }}
+      transition={{
+        duration: 15,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
     <Helmet>
       <title>Matthew's Playbook</title>
       <meta name="description" content="Welcome to Matthew's personal development playbook dashboard." />
       <meta property="og:title" content="Matthew's Playbook" />
       <meta property="og:description" content="Welcome to Matthew's personal development playbook dashboard." />
     </Helmet>
-    <div className="relative z-10 text-center mb-12">
-      <motion.h1
-        initial={{ opacity: 0, y: -20 }}
+    <div className="relative z-10 text-center mb-16 max-w-4xl">
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="text-5xl md:text-6xl font-extrabold tracking-tight text-white mb-4"
+        transition={{ duration: 0.8, ease: "easeOut" }}
+        className="mb-6"
       >
-        Matthew's Playbook
-      </motion.h1>
-      <motion.p
+        <h1 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-2">
+          <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
+            Matthew's Playbook
+          </span>
+        </h1>
+      </motion.div>
+      
+      <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5, delay: 0.2 }}
-        className="text-lg md:text-xl text-white/80"
+        transition={{ duration: 0.8, delay: 0.2 }}
+        className="relative"
       >
-        Your space for mental clarity and resilience.
-        <br />
-        Pick where you would like to start.
-      </motion.p>
+        <div className="absolute inset-0 bg-white/5 blur-2xl rounded-full" />
+        <p className="relative text-lg md:text-xl lg:text-2xl text-white/90 font-light leading-relaxed tracking-wide">
+          Your space for mental clarity and resilience.
+          <br />
+          <span className="text-white/70">Pick where you would like to start.</span>
+        </p>
+      </motion.div>
     </div>
     
     <motion.div
-      className="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-8 w-full max-w-6xl"
+      className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-7xl px-4"
       initial="hidden"
       animate="visible"
       variants={{
-        visible: { transition: { staggerChildren: 0.2, delayChildren: 0.4 } },
+        visible: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } },
       }}
     >
       <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
