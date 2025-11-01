@@ -65,6 +65,29 @@ npm run dev
 
 ### Recent Changes
 
+#### November 01, 2025 - Advanced Feature Rebuilds
+- ✅ **Ketamine Journal Advanced**: Complete rebuild with sophisticated session-based workflow
+  - Segmented audio recording: Record multiple audio segments per session, each transcribing to new paragraph
+  - Real-time paragraph generation: Each recording segment automatically transcribes and adds to journal
+  - AI follow-up questions: Automatic generation of compassionate follow-up questions after each transcription
+  - Mood tracking: Before/after session mood capture with emoji selectors
+  - Session export: Export complete sessions as formatted text
+  - Navigation controls: Previous/Next paragraph navigation through session history
+  - Clean visual design: Modern interface with clear typography and spacing
+- ✅ **Excuse Reframer Advanced**: Complete rebuild with wizard-style interface
+  - Step-by-step wizard: Guided flow through excuse input, category selection, and reframe generation
+  - Multiple AI suggestions: Generates 3 different reframes per excuse with different perspectives
+  - Category templates: Pre-defined categories (fitness, work, social, etc.) with example excuses
+  - Before/After comparison: Side-by-side view of original excuse vs. empowering reframe
+  - Favorites system: Save and manage your most impactful reframes
+  - Progress tracking: Visual step indicator throughout wizard process
+  - Insight explanations: Each reframe includes psychological insight about why it works
+- ✅ **Lazy Loading Implementation**: Both advanced components use React.lazy() and Suspense to prevent errors from blocking the main app
+- ✅ **Fixed Import Errors**: Corrected function imports in both new components
+  - KetamineJournalAdvanced: Uses `AIService.generateFollowUpQuestion()` from aiService.js
+  - ExcuseReframerAdvanced: Uses `generateContent()` from perplexity.js
+- ✅ **Body Map URL Fix**: Corrected Supabase image URLs to use proper path (https://efgtznvrnzqcxmfmjuue.supabase.co/storage/v1/object/public/images/)
+
 #### October 24, 2025 - UI/UX Enhancement Update
 - ✅ **Main Dashboard Background**: Added professional background image from Supabase (bg-main.jpg) with gradient overlay
 - ✅ **Uniform Tile Sizing**: All dashboard tiles now use consistent h-64 height for visual harmony
@@ -116,5 +139,11 @@ npm run build
 ## User Preferences
 - No specific user preferences recorded yet
 
+## Component Files
+- **Advanced Components**: `src/components/KetamineJournalAdvanced.jsx`, `src/components/ExcuseReframerAdvanced.jsx`
+- **Original Components**: `src/components/KetamineTherapyRedesigned.jsx`, `src/ExcuseReframe.jsx`
+- **Services**: `src/services/aiService.js` (AI follow-ups), `src/services/audioService.js` (transcription)
+- **Utilities**: `src/utils/perplexity.js` (Perplexity API integration)
+
 ## Last Updated
-October 24, 2025 - UI/UX enhancements: main dashboard background, uniform tiles, global button contrast, body map calibration photo display
+November 01, 2025 - Sophisticated rebuilds of Ketamine Journal and Excuse Reframer with enhanced features and wizard-style interfaces
