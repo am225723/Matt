@@ -12,14 +12,22 @@ import {
   Mic, MicOff, Play, Pause, Save, Download, Trash2, Edit3, CheckCircle2,
   BrainCircuit, Sparkles, MessageSquare, FileText, Calendar, Clock,
   Heart, Smile, Meh, Frown, ChevronRight, ChevronLeft, X, Plus,
-  Volume2, VolumeX, RotateCcw, Send, Loader2, ArrowRight
+  Volume2, VolumeX, RotateCcw, Send, Loader2, ArrowRight, ArrowLeft, StopCircle, List
 } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import AudioService from '@/services/audioService';
 import AIService from '@/services/aiService';
+import { getAllTopics, getTopicById } from '@/data/questionBank';
 
 const KetamineJournalAdvanced = ({ onBack }) => {
   const { toast } = useToast();
+  
+  // Question bank state
+  const [sessionMode, setSessionMode] = useState('topic-select'); // 'topic-select', 'question-flow', 'free-form'
+  const [selectedTopic, setSelectedTopic] = useState(null);
+  const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
+  const [questionResponses, setQuestionResponses] = useState([]);
+  const [currentResponse, setCurrentResponse] = useState('');
   
   // Session state
   const [activeTab, setActiveTab] = useState('record');
@@ -346,6 +354,82 @@ const KetamineJournalAdvanced = ({ onBack }) => {
     return moodEmojis[4];
   };
 
+  // Question bank functions
+  const selectTopic = (topicId) => {
+    const topic = getTopicById(topicId);
+    setSelectedTopic(topic);
+    setCurrentQuestionIndex(0);
+    setQuestionResponses([]);
+    setCurrentResponse('');
+    setSessionMode('question-flow');
+    startNewSession();
+  };
+
+  const handleNextQuestion = () => {
+    if (!selectedTopic) return;
+    
+    // Save current response
+    if (currentResponse.trim()) {
+      const newResponse = {
+        question: selectedTopic.questions[currentQuestionIndex],
+        answer: currentResponse,
+        timestamp: new Date().toISOString()
+      };
+      setQuestionResponses(prev => [...prev, newResponse]);
+      
+      // Add to paragraphs
+      const newParagraph = {
+        id: Date.now(),
+        text: `Q: ${selectedTopic.questions[currentQuestionIndex]}\n\nA: ${currentResponse}`,
+        timestamp: new Date().toISOString()
+      };
+      setParagraphs(prev => [...prev, newParagraph]);
+    }
+    
+    // Move to next question or end
+    if (currentQuestionIndex < selectedTopic.questions.length - 1) {
+      setCurrentQuestionIndex(prev => prev + 1);
+      setCurrentResponse('');
+    } else {
+      toast({
+        title: 'Topic Complete',
+        description: 'You have answered all questions in this topic.',
+      });
+    }
+  };
+
+  const handlePreviousQuestion = () => {
+    if (currentQuestionIndex > 0) {
+      setCurrentQuestionIndex(prev => prev - 1);
+      // Load previous response if it exists
+      const previousResponse = questionResponses[currentQuestionIndex - 1];
+      if (previousResponse) {
+        setCurrentResponse(previousResponse.answer);
+      }
+    }
+  };
+
+  const endQuestionSession = () => {
+    if (questionResponses.length > 0 || currentResponse.trim()) {
+      saveSession();
+    }
+    setSessionMode('topic-select');
+    setSelectedTopic(null);
+    setCurrentQuestionIndex(0);
+    setQuestionResponses([]);
+    setCurrentResponse('');
+    setCurrentSession(null);
+    toast({
+      title: 'Session Ended',
+      description: 'Your responses have been saved.',
+    });
+  };
+
+  const startFreeFormSession = () => {
+    setSessionMode('free-form');
+    startNewSession();
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50 p-6">
       {/* Header */}
@@ -372,15 +456,18 @@ const KetamineJournalAdvanced = ({ onBack }) => {
               <p className="text-gray-600 mt-1">A space for reflection and guided self-exploration</p>
             </div>
           </div>
-          {!currentSession && (
-            <Button
-              onClick={startNewSession}
-              size="lg"
-              className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white shadow-lg hover:shadow-xl transition-all"
-            >
-              <Plus className="w-5 h-5 mr-2" />
-              New Session
-            </Button>
+          {!currentSession && sessionMode === 'topic-select' && (
+            <div className="flex gap-3">
+              <Button
+                onClick={startFreeFormSession}
+                size="lg"
+                variant="outline"
+                className="bg-white shadow-lg hover:shadow-xl transition-all"
+              >
+                <Edit3 className="w-5 h-5 mr-2" />
+                Free Form Journal
+              </Button>
+            </div>
           )}
         </div>
       </motion.div>
@@ -661,25 +748,162 @@ const KetamineJournalAdvanced = ({ onBack }) => {
                   </Card>
                 </div>
               </div>
-            ) : (
-              <Card className="bg-white shadow-xl border-2 border-gray-100">
-                <CardContent className="py-16">
-                  <div className="text-center">
-                    <BrainCircuit className="w-20 h-20 mx-auto text-indigo-400 mb-4" />
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">No Active Session</h2>
-                    <p className="text-gray-600 mb-6">Start a new journaling session to begin</p>
-                    <Button
-                      onClick={startNewSession}
-                      size="lg"
-                      className="bg-gradient-to-r from-indigo-600 to-purple-600 text-white"
+            ) : sessionMode === 'topic-select' ? (
+              <div className="space-y-6">
+                <Card className="bg-white shadow-xl border-2 border-indigo-100">
+                  <CardHeader>
+                    <CardTitle className="text-2xl flex items-center gap-2">
+                      <List className="w-7 h-7 text-indigo-600" />
+                      Choose a Topic to Explore
+                    </CardTitle>
+                    <CardDescription className="text-base">
+                      Select a guided topic or start a free-form journal session
+                    </CardDescription>
+                  </CardHeader>
+                </Card>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {getAllTopics().map((topic) => (
+                    <motion.div
+                      key={topic.id}
+                      whileHover={{ scale: 1.03, y: -5 }}
+                      whileTap={{ scale: 0.98 }}
                     >
-                      <Plus className="w-5 h-5 mr-2" />
-                      Start New Session
-                    </Button>
-                  </div>
-                </CardContent>
-              </Card>
-            )}
+                      <Card
+                        onClick={() => selectTopic(topic.id)}
+                        className="bg-white shadow-lg hover:shadow-2xl transition-all cursor-pointer border-2 hover:border-indigo-400 h-full"
+                      >
+                        <CardHeader>
+                          <div className="flex items-center gap-3 mb-2">
+                            <div className="text-4xl">{topic.icon}</div>
+                            <CardTitle className="text-lg">{topic.title}</CardTitle>
+                          </div>
+                          <CardDescription className="text-sm">
+                            {topic.description}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                          <div className="text-sm text-gray-600">
+                            <Badge variant="secondary" className="text-xs">
+                              {topic.questions.length} questions
+                            </Badge>
+                          </div>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  ))}
+                </div>
+              </div>
+            ) : sessionMode === 'question-flow' && selectedTopic ? (
+              <div className="space-y-6">
+                {/* Question Progress */}
+                <Card className="bg-white shadow-xl border-2 border-indigo-100">
+                  <CardHeader>
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-3">
+                        <div className="text-3xl">{selectedTopic.icon}</div>
+                        <div>
+                          <CardTitle>{selectedTopic.title}</CardTitle>
+                          <CardDescription>
+                            Question {currentQuestionIndex + 1} of {selectedTopic.questions.length}
+                          </CardDescription>
+                        </div>
+                      </div>
+                      <Button
+                        onClick={endQuestionSession}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        <StopCircle className="w-4 h-4 mr-2" />
+                        End Session
+                      </Button>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <Progress
+                      value={((currentQuestionIndex + 1) / selectedTopic.questions.length) * 100}
+                      className="h-2"
+                    />
+                  </CardContent>
+                </Card>
+
+                {/* Current Question */}
+                <Card className="bg-gradient-to-br from-indigo-50 to-purple-50 shadow-2xl border-2 border-indigo-200">
+                  <CardHeader>
+                    <CardTitle className="text-2xl text-indigo-900">
+                      {selectedTopic.questions[currentQuestionIndex]}
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-6">
+                    <div>
+                      <Label htmlFor="response" className="text-lg text-gray-700 mb-2 block">
+                        Your Response
+                      </Label>
+                      <Textarea
+                        id="response"
+                        value={currentResponse}
+                        onChange={(e) => setCurrentResponse(e.target.value)}
+                        placeholder="Take your time to reflect and respond..."
+                        className="min-h-[200px] text-base bg-white border-2 border-indigo-200 focus:border-indigo-400"
+                      />
+                    </div>
+
+                    {/* Navigation Buttons */}
+                    <div className="flex justify-between gap-4">
+                      <Button
+                        onClick={handlePreviousQuestion}
+                        variant="outline"
+                        disabled={currentQuestionIndex === 0}
+                        size="lg"
+                      >
+                        <ArrowLeft className="w-5 h-5 mr-2" />
+                        Previous
+                      </Button>
+                      <Button
+                        onClick={handleNextQuestion}
+                        disabled={!currentResponse.trim()}
+                        size="lg"
+                        className="bg-indigo-600 hover:bg-indigo-700"
+                      >
+                        {currentQuestionIndex < selectedTopic.questions.length - 1 ? (
+                          <>
+                            Next Question
+                            <ArrowRight className="w-5 h-5 ml-2" />
+                          </>
+                        ) : (
+                          <>
+                            Complete Topic
+                            <CheckCircle2 className="w-5 h-5 ml-2" />
+                          </>
+                        )}
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Previous Responses */}
+                {questionResponses.length > 0 && (
+                  <Card className="bg-white shadow-xl">
+                    <CardHeader>
+                      <CardTitle className="flex items-center gap-2">
+                        <FileText className="w-5 h-5 text-indigo-600" />
+                        Your Responses ({questionResponses.length})
+                      </CardTitle>
+                    </CardHeader>
+                    <CardContent>
+                      <div className="space-y-3 max-h-96 overflow-y-auto">
+                        {questionResponses.map((resp, idx) => (
+                          <div key={idx} className="bg-gray-50 p-4 rounded-lg border border-gray-200">
+                            <p className="text-sm font-semibold text-indigo-600 mb-2">Q: {resp.question}</p>
+                            <p className="text-gray-700">{resp.answer}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            ) : null}
           </TabsContent>
 
           {/* History Tab */}

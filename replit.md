@@ -67,6 +67,11 @@ npm run dev
 
 #### November 01, 2025 - Advanced Feature Rebuilds
 - ✅ **Ketamine Journal Advanced**: Complete rebuild with sophisticated session-based workflow
+  - **Question Bank System**: Curated questions organized by topic (Anxiety, Depression, Trauma, Fears, Self-Image, Core Self)
+  - **Topic Selection**: Choose from 6 guided topics or start a free-form journal session
+  - **Guided Question Flow**: One question at a time with progress tracking and navigation
+  - **Question Navigation**: Move forward/backward through questions, edit previous responses
+  - **End Session Anytime**: Save progress and end the session at any point
   - Segmented audio recording: Record multiple audio segments per session, each transcribing to new paragraph
   - Real-time paragraph generation: Each recording segment automatically transcribes and adds to journal
   - AI follow-up questions: Automatic generation of compassionate follow-up questions after each transcription
@@ -142,8 +147,18 @@ npm run build
 ## Component Files
 - **Advanced Components**: `src/components/KetamineJournalAdvanced.jsx`, `src/components/ExcuseReframerAdvanced.jsx`
 - **Original Components**: `src/components/KetamineTherapyRedesigned.jsx`, `src/ExcuseReframe.jsx`
+- **Data Files**: `src/data/questionBank.js` (Question topics and prompts for Ketamine Journal)
 - **Services**: `src/services/aiService.js` (AI follow-ups), `src/services/audioService.js` (transcription)
 - **Utilities**: `src/utils/perplexity.js` (Perplexity API integration)
+
+## Question Bank Topics
+The Ketamine Journal includes curated question banks for the following topics:
+1. **Anxiety Exploration** (24 questions) - Explore anxiety patterns, triggers, and coping mechanisms
+2. **Depression & Mood** (18 questions) - Navigate feelings of sadness and low mood
+3. **Repressed Trauma** (17 questions) - Gently explore unprocessed experiences
+4. **Unacknowledged Fears** (17 questions) - Bring hidden fears into the light
+5. **Self-Image** (17 questions) - Examine how you see yourself
+6. **Core Self** (17 questions) - Connect with your authentic self
 
 ## Last Updated
 November 01, 2025 - Sophisticated rebuilds of Ketamine Journal and Excuse Reframer with enhanced features and wizard-style interfaces
