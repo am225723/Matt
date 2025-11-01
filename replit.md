@@ -75,7 +75,12 @@ The backend server handles secure API proxying for audio transcription to preven
 
 ### Recent Changes
 
-#### November 01, 2025 - UI Enhancements and Feature Verification
+#### November 01, 2025 - UI Enhancements and Body Map Improvements
+- ✅ **Complete Body Map Visualization**: Added all 14 body part circles to calibration overlay
+  - Added visible circles for: Face, Neck, Left Arm, Left Hand, Right Hand, Back, Left Leg, Right Leg, Left Foot, Right Foot
+  - All body parts now have adjustable SVG ellipses positioned on the photo
+  - Users can see, select, and calibrate all 14 body parts instead of just 4
+  - Each circle is clickable, draggable, and fully customizable (position, scale, rotation)
 - ✅ **Sophisticated Dashboard Design**: Modern glass morphism aesthetic
   - **Glass Morphism Cards**: Frosted glass effect with backdrop-blur-xl
   - **Larger Icons**: 24x24 icons with subtle wobble animations and enhanced glows

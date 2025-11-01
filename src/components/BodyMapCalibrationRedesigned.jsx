@@ -375,6 +375,186 @@ const BodyMapCalibrationRedesigned = ({ onClose, onSave, initialCalibration = {}
                                 onClick={() => setSelectedPart(partKey)}
                               />
                             )}
+                            {partKey === 'face' && (
+                              <ellipse
+                                cx="170"
+                                cy="155"
+                                rx="50"
+                                ry="55"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 170 155)`}
+                                style={{ 
+                                  transformOrigin: '170px 155px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'neck' && (
+                              <ellipse
+                                cx="170"
+                                cy="205"
+                                rx="25"
+                                ry="25"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 170 205)`}
+                                style={{ 
+                                  transformOrigin: '170px 205px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'leftArm' && (
+                              <ellipse
+                                cx="88"
+                                cy="260"
+                                rx="25"
+                                ry="50"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 88 260)`}
+                                style={{ 
+                                  transformOrigin: '88px 260px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'leftHand' && (
+                              <ellipse
+                                cx="70"
+                                cy="330"
+                                rx="18"
+                                ry="22"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 70 330)`}
+                                style={{ 
+                                  transformOrigin: '70px 330px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'rightHand' && (
+                              <ellipse
+                                cx="270"
+                                cy="330"
+                                rx="18"
+                                ry="22"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 270 330)`}
+                                style={{ 
+                                  transformOrigin: '270px 330px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'back' && (
+                              <ellipse
+                                cx="170"
+                                cy="280"
+                                rx="55"
+                                ry="70"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 170 280)`}
+                                style={{ 
+                                  transformOrigin: '170px 280px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'leftLeg' && (
+                              <ellipse
+                                cx="140"
+                                cy="420"
+                                rx="30"
+                                ry="65"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 140 420)`}
+                                style={{ 
+                                  transformOrigin: '140px 420px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'rightLeg' && (
+                              <ellipse
+                                cx="200"
+                                cy="420"
+                                rx="30"
+                                ry="65"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 200 420)`}
+                                style={{ 
+                                  transformOrigin: '200px 420px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'leftFoot' && (
+                              <ellipse
+                                cx="140"
+                                cy="500"
+                                rx="22"
+                                ry="20"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 140 500)`}
+                                style={{ 
+                                  transformOrigin: '140px 500px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
+                            {partKey === 'rightFoot' && (
+                              <ellipse
+                                cx="200"
+                                cy="500"
+                                rx="22"
+                                ry="20"
+                                fill={`${color}${Math.round(opacity * 255).toString(16).padStart(2, '0')}`}
+                                stroke={color}
+                                strokeWidth={isSelected ? "3" : "2"}
+                                transform={`translate(${partData.x}, ${partData.y}) scale(${partData.scale}) rotate(${partData.rotation} 200 500)`}
+                                style={{ 
+                                  transformOrigin: '200px 500px',
+                                  cursor: 'pointer'
+                                }}
+                                onMouseDown={(e) => handleMouseDown(e, partKey)}
+                                onClick={() => setSelectedPart(partKey)}
+                              />
+                            )}
                           </g>
                         );
                       })}
