@@ -5,6 +5,7 @@ A comprehensive React + Vite web application for personal development, mental we
 
 ## Project Structure
 - **Frontend**: React + Vite (Port 5000)
+- **Backend**: Express server (Port 3000) - Handles secure API proxying for transcription
 - **Build System**: Vite with custom plugins for visual editing
 - **Styling**: Tailwind CSS with custom theme
 - **State Management**: Local storage for gamification, plans, and user data
@@ -46,10 +47,19 @@ The app uses Supabase for storing background images:
 - No database connection required - images are publicly accessible
 
 ### Running the Application
-The frontend workflow is configured to run automatically on port 5000:
+Two workflows are configured to run automatically:
+
+**Frontend** (Port 5000):
 ```bash
 npm run dev
 ```
+
+**Backend** (Port 3000):
+```bash
+node server.js
+```
+
+The backend server handles secure API proxying for audio transcription to prevent exposing API keys on the client.
 
 ### Vite Configuration
 - Host: 0.0.0.0 (allows Replit proxy access)
@@ -64,6 +74,26 @@ npm run dev
 - Some browser-incompatible packages were removed (perplexityai with puppeteer dependency)
 
 ### Recent Changes
+
+#### November 01, 2025 - UI Enhancements and Feature Verification
+- ✅ **Enhanced Dashboard Tiles**: Sophisticated aesthetic with advanced animations
+  - 3D hover effects with perspective transforms (rotateY/rotateX)
+  - Larger, animated icons (20x20) with 360° rotation on hover
+  - Animated gradient overlays with pulsing effects
+  - Shimmer borders and glow effects on hover
+  - Smoother spring animations with enhanced timing
+  - Animated arrow with continuous movement
+- ✅ **Audio Transcription Fix**: Migrated from Perplexity to OpenAI Whisper API with secure backend proxy
+  - Created Express backend server (`server.js`) to securely handle API keys
+  - Backend endpoint `/api/transcribe` proxies requests to OpenAI Whisper-1 model
+  - Prevents API key exposure on client-side (security best practice)
+  - CORS-enabled backend on port 3000 for frontend communication
+  - FormData-based multipart requests for audio file upload
+- ✅ **Verified Ketamine Journal Readability**: Confirmed white backgrounds with dark text (gray-700, gray-800) throughout
+- ✅ **Verified Anxiety Tracker Body Map**: Confirmed all body parts properly mapped
+  - Front view: Face, Neck, Chest, Stomach, Arms, Hands, Legs, Feet
+  - Back view: Upper/Mid/Lower Back, Glutes, Calves
+  - Universal parts visible on both views: Head, Neck, Shoulders, Arms, Hands, Legs, Feet
 
 #### November 01, 2025 - Advanced Feature Rebuilds
 - ✅ **Ketamine Journal Advanced**: Complete rebuild with sophisticated session-based workflow

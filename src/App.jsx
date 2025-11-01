@@ -29,23 +29,77 @@ const DashboardTile = ({
 }) => (
   <motion.div
     onClick={onClick}
-    className={`relative overflow-hidden rounded-2xl p-8 shadow-2xl cursor-pointer group h-64 ${className}`}
-    whileHover={{ scale: 1.05, y: -8 }}
-    transition={{ type: "spring", stiffness: 300, damping: 20 }}
+    className={`relative overflow-hidden rounded-3xl p-8 shadow-2xl cursor-pointer group h-64 ${className}`}
+    whileHover={{ 
+      scale: 1.08, 
+      y: -12,
+      rotateY: 5,
+      rotateX: -5
+    }}
+    whileTap={{ scale: 0.98 }}
+    transition={{ 
+      type: "spring", 
+      stiffness: 300, 
+      damping: 20,
+      duration: 0.4
+    }}
+    style={{ transformStyle: "preserve-3d", perspective: 1000 }}
   >
+    {/* Animated gradient overlay */}
+    <motion.div 
+      className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500"
+      style={{
+        background: "radial-gradient(circle at center, rgba(255,255,255,0.15) 0%, transparent 70%)",
+      }}
+      animate={{
+        scale: [1, 1.2, 1],
+      }}
+      transition={{
+        duration: 3,
+        repeat: Infinity,
+        ease: "easeInOut"
+      }}
+    />
+    
+    {/* Glow effect on hover */}
+    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-transparent to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+    
     <div className="relative z-10 flex flex-col justify-between h-full">
       <div>
-        <div className="p-4 bg-white/30 rounded-2xl w-16 h-16 flex items-center justify-center mb-4 border-2 border-white/50 shadow-lg">
-          {icon}
-        </div>
-        <h2 className="text-2xl font-bold text-white mb-3 drop-shadow-lg">{title}</h2>
-        <p className="text-white/90 text-base leading-relaxed drop-shadow-md">{description}</p>
+        <motion.div 
+          className="p-4 bg-gradient-to-br from-white/40 to-white/20 rounded-2xl w-20 h-20 flex items-center justify-center mb-5 border-2 border-white/60 shadow-2xl backdrop-blur-md group-hover:scale-110 transition-transform duration-300"
+          whileHover={{ rotate: 360 }}
+          transition={{ duration: 0.6 }}
+        >
+          <div className="transform scale-125">
+            {icon}
+          </div>
+        </motion.div>
+        <h2 className="text-2xl font-bold text-white mb-3 drop-shadow-2xl tracking-tight group-hover:text-white/100 transition-colors">
+          {title}
+        </h2>
+        <p className="text-white/95 text-base leading-relaxed drop-shadow-lg font-medium">
+          {description}
+        </p>
       </div>
-      <div className="mt-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center gap-2">
-        Open <span className="text-2xl">&rarr;</span>
-      </div>
+      <motion.div 
+        className="mt-6 text-white font-bold text-lg opacity-0 group-hover:opacity-100 transition-all duration-300 flex items-center gap-2"
+        initial={{ x: -10 }}
+        whileHover={{ x: 0 }}
+      >
+        Open <motion.span 
+          className="text-2xl"
+          animate={{ x: [0, 5, 0] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >&rarr;</motion.span>
+      </motion.div>
     </div>
-    <div className="absolute inset-0 bg-gradient-to-br from-black/40 via-black/30 to-black/50 group-hover:from-black/50 group-hover:via-black/40 group-hover:to-black/60 transition-all duration-300 backdrop-blur-sm"></div>
+    
+    {/* Enhanced gradient backdrop */}
+    <div className="absolute inset-0 bg-gradient-to-br from-black/50 via-black/40 to-black/60 group-hover:from-black/40 group-hover:via-black/30 group-hover:to-black/50 transition-all duration-500 backdrop-blur-md"></div>
+    
+    {/* Animated border shimmer */}
+    <div className="absolute inset-0 rounded-3xl border-2 border-white/20 group-hover:border-white/40 transition-all duration-300" />
   </motion.div>
 );
 

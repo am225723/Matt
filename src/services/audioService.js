@@ -192,63 +192,35 @@ class AudioService {
   }
 
   /**
-   * Transcribe audio using the Perplexity Sonar API.
+   * Transcribe audio using OpenAI Whisper API via secure backend proxy.
    * @param {Blob} audioBlob - The audio blob to transcribe.
    * @returns {Promise<string>} - A promise that resolves with the transcription text.
    */
   async transcribeAudio(audioBlob) {
-    // IMPORTANT: In a real-world application, you should NEVER expose your API key
-    // on the client side. This API call should be made from a secure backend server
-    // or a serverless function that holds the API key securely.
-    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
-    const apiEndpoint = 'https://api.perplexity.ai/chat/completions';
-
-    if (!apiKey) {
-      throw new Error("Perplexity API key is not set in the .env file.");
-    }
+    // Use backend proxy to securely handle API key
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
+    const apiEndpoint = `${backendUrl}/api/transcribe`;
 
     try {
-      const base64Audio = await this._blobToBase64(audioBlob);
-      const audioDataUrl = `data:audio/webm;base64,${base64Audio}`;
-
-      const requestBody = {
-        model: 'sonar-medium-online',
-        messages: [
-          {
-            role: 'user',
-            content: [
-              {
-                type: 'text',
-                text: 'Please transcribe the following audio file.',
-              },
-              {
-                type: 'file',
-                file: audioDataUrl,
-              },
-            ],
-          },
-        ],
-      };
+      // Create FormData for multipart/form-data request
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'recording.webm');
 
       const response = await fetch(apiEndpoint, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${apiKey}`,
-        },
-        body: JSON.stringify(requestBody),
+        body: formData,
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        throw new Error(`API request failed: ${errorData.error.message}`);
+        throw new Error(`Transcription failed: ${errorData.message || response.statusText}`);
       }
 
       const data = await response.json();
-      const transcription = data.choices[0]?.message?.content?.trim();
+      const transcription = data.text?.trim();
       return transcription || "";
     } catch (error) {
-      console.error('Error transcribing audio with Perplexity API:', error);
+      console.error('Error transcribing audio:', error);
       throw error;
     }
   }
