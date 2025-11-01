@@ -199,5 +199,23 @@ The Ketamine Journal includes curated question banks for the following topics:
 5. **Self-Image** (17 questions) - Examine how you see yourself
 6. **Core Self** (17 questions) - Connect with your authentic self
 
+## Routing
+The application now uses React Router v6 for URL-based navigation:
+- **Dashboard**: `/` - Main landing page with all feature tiles
+- **Resilience Playbook**: `/playbook` - Create new playbook strategies
+- **Playbook Library**: `/library` - Browse and manage saved playbooks
+- **Achievements**: `/achievements` - Track progress and badges
+- **Excuse Reframing**: `/reframe` - AI-powered excuse transformation
+- **Yardage Book**: `/yardage` - Ryder Cup personal guidance
+- **Health Dashboard**: `/health` - Health tracking and AI insights
+- **Ketamine Journal**: `/ketamine` - Guided therapy journaling
+- **Anxiety Tracker**: `/anxiety` - Interactive body map tracking
+
+Each route has its own URL, enabling:
+- Direct links to specific features
+- Browser back/forward navigation
+- Proper URL sharing
+- Better SEO (when published)
+
 ## Last Updated
-November 01, 2025 - Sophisticated rebuilds of Ketamine Journal and Excuse Reframer with enhanced features and wizard-style interfaces
+November 01, 2025 - Added React Router v6 for URL-based navigation across all dashboard features
