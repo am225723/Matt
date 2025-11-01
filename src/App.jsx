@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { BrowserRouter as Router, Routes, Route, Link, useNavigate, useLocation } from 'react-router-dom';
 import ExcuseReframe from '@/ExcuseReframe';
 import YardageBook from '@/YardageBook';
 import ResiliencePlaybook from '@/components/ResiliencePlaybook';
@@ -24,23 +25,23 @@ const DashboardTile = ({
   title,
   description,
   icon,
-  onClick,
+  to,
   className
 }) => (
-  <motion.div
-    onClick={onClick}
-    className={`relative overflow-hidden rounded-3xl cursor-pointer group h-72 ${className}`}
-    whileHover={{ 
-      scale: 1.05, 
-      y: -8,
-    }}
-    whileTap={{ scale: 0.97 }}
-    transition={{ 
-      type: "spring", 
-      stiffness: 400, 
-      damping: 25,
-    }}
-  >
+  <Link to={to} className="block">
+    <motion.div
+      className={`relative overflow-hidden rounded-3xl cursor-pointer group h-72 ${className}`}
+      whileHover={{ 
+        scale: 1.05, 
+        y: -8,
+      }}
+      whileTap={{ scale: 0.97 }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 400, 
+        damping: 25,
+      }}
+    >
     {/* Glass morphism card */}
     <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl group-hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] transition-all duration-500" />
     
@@ -145,10 +146,18 @@ const DashboardTile = ({
     
     {/* Subtle top highlight */}
     <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-  </motion.div>
+    </motion.div>
+  </Link>
 );
 
-const Dashboard = ({ onSelect, onSelectScenario }) => (
+const Dashboard = () => {
+  const navigate = useNavigate();
+  
+  const handleSelectScenario = (scenario) => {
+    navigate('/playbook', { state: { scenario } });
+  };
+  
+  return (
   <div
     className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 text-white overflow-hidden"
     style={{
@@ -249,7 +258,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           title="Resilience Playbook"
           description="Build a new step-by-step strategy for challenging situations."
           icon={<BookOpen className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('playbook')}
+          to="/playbook"
           className="bg-blue-500/30"
         />
       </motion.div>
@@ -258,7 +267,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           title="Playbook Library"
           description="Review and manage your saved resilience playbooks."
           icon={<Library className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('library')}
+          to="/library"
           className="bg-yellow-500/30"
         />
       </motion.div>
@@ -267,7 +276,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           title="Achievements"
           description="Track your progress and view your earned badges."
           icon={<Trophy className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('achievements')}
+          to="/achievements"
           className="bg-red-500/30"
         />
       </motion.div>
@@ -276,7 +285,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           title="Excuse Reframing"
           description="Transform limiting beliefs into empowering perspectives with AI."
           icon={<MessageSquareQuote className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('reframe')}
+          to="/reframe"
           className="bg-purple-500/30"
         />
       </motion.div>
@@ -285,7 +294,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           title="Ryder Cup Yardage Book"
           description="Your personal caddie to navigate the Ryder Cup with intention."
           icon={<Golf className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('yardage')}
+          to="/yardage"
           className="bg-green-500/30"
         />
       </motion.div>
@@ -294,7 +303,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
             title="Enhanced Health Dashboard"
             description="AI-powered health insights with real-time tracking, advanced analytics, and personalized recommendations."
           icon={<Heart className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('health')}
+          to="/health"
           className="bg-cyan-500/40"
         />
       </motion.div>
@@ -303,7 +312,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           title="Ketamine Journal"
           description="A space for reflection and guided self-exploration."
           icon={<BrainCircuit className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('ketamine')}
+          to="/ketamine"
           className="bg-indigo-500/30"
         />
       </motion.div>
@@ -312,7 +321,7 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
           title="Anxiety Tracker"
           description="Track and manage anxiety symptoms and patterns with an interactive body map."
           icon={<Activity className="w-6 h-6 text-white" />}
-          onClick={() => onSelect('anxiety')}
+          to="/anxiety"
           className="bg-teal-500/30"
         />
       </motion.div>
@@ -324,66 +333,101 @@ const Dashboard = ({ onSelect, onSelectScenario }) => (
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.8 }}
     >
-      <AISuggestion onSelectScenario={onSelectScenario} />
+      <AISuggestion onSelectScenario={handleSelectScenario} />
     </motion.div>
   </div>
-);
+  );
+};
 
-const App = () => {
-  const [view, setView] = useState('dashboard');
-  const [loadedPlan, setLoadedPlan] = useState(null);
+// Wrapper components that use useNavigate
+const PlaybookWrapper = () => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const scenario = location.state?.scenario;
+  const plan = location.state?.plan;
+  
+  return <ResiliencePlaybook plan={plan || (scenario ? { scenario, answers: {} } : null)} onBack={() => navigate('/')} />;
+};
 
-  // --- FIXED SECTION ---
-  useEffect(() => {
-    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY; // <-- Use Perplexity Key
-    if (!apiKey) {
-      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
-    } else {
-      initializePerplexity(apiKey); // <-- Initialize Perplexity
-    }
-    updateStreak();
-  }, []);
-  // --- END FIXED SECTION ---
-
+const LibraryWrapper = () => {
+  const navigate = useNavigate();
+  
   const handleSelectPlan = (planId) => {
     const plan = getPlanFromLibrary(planId);
     if (plan) {
-      setLoadedPlan(plan);
-      setView('playbook');
+      navigate('/playbook', { state: { plan } });
     }
   };
+  
+  return <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={() => navigate('/')} />;
+};
 
-  const handleSelectScenario = (scenario) => {
-    setLoadedPlan({ scenario, answers: {} });
-    setView('playbook');
-  };
+const ExcuseReframerWrapper = () => {
+  const navigate = useNavigate();
+  return (
+    <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <ExcuseReframerAdvanced onBack={() => navigate('/')} />
+    </React.Suspense>
+  );
+};
 
-  const handleBackToDashboard = () => {
-    setLoadedPlan(null);
-    setView('dashboard');
-  }
+const KetamineJournalWrapper = () => {
+  const navigate = useNavigate();
+  return (
+    <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
+      <KetamineJournalAdvanced onBack={() => navigate('/')} />
+    </React.Suspense>
+  );
+};
+
+const AchievementsWrapper = () => {
+  const navigate = useNavigate();
+  return <Achievements onBack={() => navigate('/')} />;
+};
+
+const YardageBookWrapper = () => {
+  const navigate = useNavigate();
+  return <YardageBook onBack={() => navigate('/')} />;
+};
+
+const HealthDashboardWrapper = () => {
+  const navigate = useNavigate();
+  return <EnhancedHealthDashboard onBack={() => navigate('/')} />;
+};
+
+const AnxietyTrackerWrapper = () => {
+  const navigate = useNavigate();
+  return <AnxietyTrackerRedesigned onBack={() => navigate('/')} />;
+};
+
+const App = () => {
+  useEffect(() => {
+    const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
+    if (!apiKey) {
+      console.error("VITE_PERPLEXITY_API_KEY is not set. Please add it to your .env file.");
+    } else {
+      initializePerplexity(apiKey);
+    }
+    updateStreak();
+  }, []);
 
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      {view === 'dashboard' && <Dashboard onSelect={setView} onSelectScenario={handleSelectScenario} />}
-      {view === 'reframe' && (
-        <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-          <ExcuseReframerAdvanced onBack={handleBackToDashboard} />
-        </React.Suspense>
-      )}
-      {view === 'yardage' && <YardageBook onBack={handleBackToDashboard} />}
-      {view === 'playbook' && <ResiliencePlaybook plan={loadedPlan} onBack={handleBackToDashboard} />}
-      {view === 'library' && <PlaybookLibrary onSelectPlan={handleSelectPlan} onBack={handleBackToDashboard} />}
-      {view === 'achievements' && <Achievements onBack={handleBackToDashboard} />}
-      {view === 'health' && <EnhancedHealthDashboard onBack={handleBackToDashboard} />}
-      {view === 'ketamine' && (
-        <React.Suspense fallback={<div className="flex items-center justify-center min-h-screen">Loading...</div>}>
-          <KetamineJournalAdvanced onBack={handleBackToDashboard} />
-        </React.Suspense>
-      )}
-      {view === 'anxiety' && <AnxietyTrackerRedesigned onBack={handleBackToDashboard} />}
-      <Toaster />
-    </div>
+    <Router>
+      <div className="min-h-screen bg-background text-foreground">
+        <Routes>
+          <Route path="/" element={<Dashboard />} />
+          <Route path="/playbook" element={<PlaybookWrapper />} />
+          <Route path="/library" element={<LibraryWrapper />} />
+          <Route path="/achievements" element={<AchievementsWrapper />} />
+          <Route path="/reframe" element={<ExcuseReframerWrapper />} />
+          <Route path="/yardage" element={<YardageBookWrapper />} />
+          <Route path="/health" element={<HealthDashboardWrapper />} />
+          <Route path="/ketamine" element={<KetamineJournalWrapper />} />
+          <Route path="/anxiety" element={<AnxietyTrackerWrapper />} />
+        </Routes>
+        <Toaster />
+      </div>
+    </Router>
   );
 };
 
