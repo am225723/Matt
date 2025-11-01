@@ -282,7 +282,7 @@ const BodyMapCalibrationRedesigned = ({ onClose, onSave, initialCalibration = {}
                 >
                   {/* Supabase Photo */}
                   <img
-                    src="https://boratqerjbqthxdzvypd.supabase.co/storage/v1/object/public/Photos/1531.png"
+                    src="https://efgtznvrnzqcxmfmjuue.supabase.co/storage/v1/object/public/images/1531.png"
                     alt="Body Map"
                     className="w-auto h-full object-contain"
                     style={{ maxWidth: '340px', maxHeight: '540px' }}
