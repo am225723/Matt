@@ -246,7 +246,7 @@ const Dashboard = () => {
             
             {/* Content - Horizontal flex layout */}
             <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-              {/* Character avatar on the side - Full height photo */}
+              {/* Character avatar on the side - Full height of header */}
               <motion.div
                 initial={{ scale: 0, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
@@ -256,12 +256,12 @@ const Dashboard = () => {
                   stiffness: 200,
                   damping: 15
                 }}
-                className="relative flex-shrink-0 h-full flex items-center"
+                className="relative flex-shrink-0 self-stretch flex items-center"
               >
                 {/* Glow effect behind character */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl" />
                 
-                {/* Full character image - top to bottom */}
+                {/* Full character image - fills header height */}
                 <img
                   src={matthewAvatar}
                   alt="Matthew"
@@ -371,7 +371,7 @@ const Dashboard = () => {
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
-                  className="flex items-center gap-2 text-xs sm:text-sm text-amber-200/60 italic"
+                  className="flex items-center gap-2 text-xs sm:text-sm text-amber-200/60 italic justify-center"
                   style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                   <span className="text-amber-400/40">✧</span>
