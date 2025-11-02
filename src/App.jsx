@@ -23,9 +23,17 @@ const KetamineJournalAdvanced = React.lazy(() => import('@/components/KetamineJo
 
 // Import character images
 import matthewAvatar from '@/assets/images/matthew-avatar.jpg';
+import featurePlaybook from '@/assets/images/feature-playbook.png';
+import featureLibrary from '@/assets/images/feature-library.png';
+import featureAchievements from '@/assets/images/feature-achievements.png';
+import featureReframer from '@/assets/images/feature-reframer.png';
+import featureYardage from '@/assets/images/feature-yardage.png';
+import featureHealth from '@/assets/images/feature-health.png';
+import featureKetamine from '@/assets/images/feature-ketamine.png';
+import featureAnxiety from '@/assets/images/feature-anxiety.png';
 
-// Sophisticated Mobile-First Tile Component
-const DashboardTile = ({ title, description, icon, to, gradient, delay }) => (
+// Sophisticated Mobile-First Tile Component with Character Images
+const DashboardTile = ({ title, description, icon, to, gradient, delay, image }) => (
   <Link to={to} className="block w-full">
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -33,7 +41,7 @@ const DashboardTile = ({ title, description, icon, to, gradient, delay }) => (
       transition={{ delay, duration: 0.5 }}
       whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
-      className="group relative overflow-hidden rounded-2xl cursor-pointer h-32 sm:h-36"
+      className="group relative overflow-hidden rounded-2xl cursor-pointer h-40 sm:h-44"
     >
       {/* Gradient background */}
       <div className={`absolute inset-0 ${gradient}`} />
@@ -50,30 +58,35 @@ const DashboardTile = ({ title, description, icon, to, gradient, delay }) => (
       />
       
       {/* Content */}
-      <div className="relative h-full p-6 flex items-center gap-4">
-        {/* Icon with glow */}
-        <div className="relative flex-shrink-0">
-          <div className="absolute inset-0 bg-white/30 rounded-xl blur-lg group-hover:blur-xl transition-all" />
-          <div className="relative bg-white/20 backdrop-blur-md rounded-xl p-3 border border-white/30">
-            <div className="text-white transform group-hover:scale-110 transition-transform">
-              {icon}
-            </div>
-          </div>
-        </div>
+      <div className="relative h-full p-5 flex items-center gap-4">
+        {/* Character Image */}
+        {image && (
+          <motion.div
+            className="relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24"
+            whileHover={{ scale: 1.1, rotate: 5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <img
+              src={image}
+              alt={title}
+              className="w-full h-full object-contain drop-shadow-2xl"
+            />
+          </motion.div>
+        )}
         
         {/* Text */}
         <div className="flex-1 min-w-0">
-          <h3 className="text-xl sm:text-2xl font-bold text-white mb-1 tracking-tight">
+          <h3 className="text-lg sm:text-xl font-bold text-white mb-1 tracking-tight">
             {title}
           </h3>
-          <p className="text-white/90 text-sm sm:text-base line-clamp-2">
+          <p className="text-white/90 text-xs sm:text-sm line-clamp-2">
             {description}
           </p>
         </div>
         
         {/* Arrow */}
         <div className="flex-shrink-0 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
             <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
@@ -99,6 +112,7 @@ const Dashboard = () => {
       icon: <BookOpen className="w-6 h-6" />,
       to: "/playbook",
       gradient: "bg-gradient-to-br from-blue-500 to-blue-600",
+      image: featurePlaybook,
       delay: 0.1
     },
     {
@@ -107,6 +121,7 @@ const Dashboard = () => {
       icon: <Library className="w-6 h-6" />,
       to: "/library",
       gradient: "bg-gradient-to-br from-amber-500 to-orange-600",
+      image: featureLibrary,
       delay: 0.15
     },
     {
@@ -115,6 +130,7 @@ const Dashboard = () => {
       icon: <Trophy className="w-6 h-6" />,
       to: "/achievements",
       gradient: "bg-gradient-to-br from-yellow-500 to-amber-600",
+      image: featureAchievements,
       delay: 0.2
     },
     {
@@ -123,6 +139,7 @@ const Dashboard = () => {
       icon: <MessageSquareQuote className="w-6 h-6" />,
       to: "/reframe",
       gradient: "bg-gradient-to-br from-purple-500 to-purple-600",
+      image: featureReframer,
       delay: 0.25
     },
     {
@@ -131,6 +148,7 @@ const Dashboard = () => {
       icon: <Golf className="w-6 h-6" />,
       to: "/yardage",
       gradient: "bg-gradient-to-br from-green-500 to-emerald-600",
+      image: featureYardage,
       delay: 0.3
     },
     {
@@ -139,6 +157,7 @@ const Dashboard = () => {
       icon: <Heart className="w-6 h-6" />,
       to: "/health",
       gradient: "bg-gradient-to-br from-rose-500 to-pink-600",
+      image: featureHealth,
       delay: 0.35
     },
     {
@@ -147,6 +166,7 @@ const Dashboard = () => {
       icon: <BrainCircuit className="w-6 h-6" />,
       to: "/ketamine",
       gradient: "bg-gradient-to-br from-indigo-500 to-indigo-600",
+      image: featureKetamine,
       delay: 0.4
     },
     {
@@ -155,6 +175,7 @@ const Dashboard = () => {
       icon: <Activity className="w-6 h-6" />,
       to: "/anxiety",
       gradient: "bg-gradient-to-br from-teal-500 to-cyan-600",
+      image: featureAnxiety,
       delay: 0.45
     }
   ];
@@ -197,15 +218,15 @@ const Dashboard = () => {
       {/* Main content - Mobile-first container */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         
-        {/* Sophisticated Header with Character */}
+        {/* Sophisticated Horizontal Header with Character */}
         <motion.div
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="mb-8 sm:mb-10"
         >
-          {/* Main title card */}
-          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 p-6 sm:p-8 lg:p-10 shadow-2xl">
+          {/* Main title card - Horizontal layout */}
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 p-6 sm:p-8 shadow-2xl">
             {/* Animated background gradient */}
             <motion.div
               className="absolute inset-0 opacity-30"
@@ -223,9 +244,9 @@ const Dashboard = () => {
               }}
             />
             
-            {/* Content */}
-            <div className="relative z-10 flex flex-col items-center gap-6 sm:gap-8">
-              {/* Character avatar */}
+            {/* Content - Horizontal flex layout */}
+            <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
+              {/* Character avatar on the side */}
               <motion.div
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
@@ -235,7 +256,7 @@ const Dashboard = () => {
                   stiffness: 200,
                   damping: 15
                 }}
-                className="relative"
+                className="relative flex-shrink-0"
               >
                 {/* Outer glow ring */}
                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-full blur-2xl opacity-60 scale-110" />
@@ -257,12 +278,12 @@ const Dashboard = () => {
                 <img
                   src={matthewAvatar}
                   alt="Matthew"
-                  className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36 rounded-full border-4 border-white/30 shadow-2xl object-cover"
+                  className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full border-4 border-white/30 shadow-2xl object-cover"
                 />
                 
                 {/* Sparkle effect */}
                 <motion.div
-                  className="absolute -top-2 -right-2 w-8 h-8 text-yellow-400"
+                  className="absolute -top-2 -right-2 w-8 h-8 text-yellow-400 text-2xl"
                   animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360],
@@ -277,12 +298,12 @@ const Dashboard = () => {
                 </motion.div>
               </motion.div>
               
-              {/* Title section */}
-              <div className="text-center space-y-3 sm:space-y-4">
+              {/* Title section - flex-1 to take remaining space */}
+              <div className="flex-1 text-center sm:text-left space-y-2 sm:space-y-3">
                 {/* Main title with gradient and effects */}
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
                 >
                   <h1 className="relative inline-block">
@@ -292,7 +313,7 @@ const Dashboard = () => {
                     </span>
                     
                     {/* Main text */}
-                    <span className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
+                    <span className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight">
                       <span className="bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
                         Matthew's Playbook
                       </span>
@@ -320,10 +341,10 @@ const Dashboard = () => {
                 
                 {/* Subtitle with elegant styling */}
                 <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.7, duration: 0.8 }}
-                  className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 font-light tracking-wide"
+                  className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 font-light tracking-wide"
                 >
                   <span className="inline-block">Your Personal Journey to</span>{' '}
                   <span className="font-semibold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
@@ -331,22 +352,14 @@ const Dashboard = () => {
                   </span>
                 </motion.p>
                 
-                {/* Decorative divider */}
-                <motion.div
-                  initial={{ scaleX: 0 }}
-                  animate={{ scaleX: 1 }}
-                  transition={{ delay: 0.9, duration: 0.6 }}
-                  className="mx-auto w-32 sm:w-40 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full"
-                />
-                
                 {/* Call to action */}
                 <motion.p
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 1.1, duration: 0.6 }}
-                  className="text-sm sm:text-base text-white/70 font-light italic"
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.9, duration: 0.6 }}
+                  className="text-xs sm:text-sm text-white/70 font-light italic"
                 >
-                  Choose your path below
+                  Choose your path below ↓
                 </motion.p>
               </div>
             </div>
@@ -363,6 +376,7 @@ const Dashboard = () => {
               icon={feature.icon}
               to={feature.to}
               gradient={feature.gradient}
+              image={feature.image}
               delay={feature.delay}
             />
           ))}
