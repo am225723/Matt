@@ -22,8 +22,7 @@ const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseRefra
 const KetamineJournalAdvanced = React.lazy(() => import('@/components/KetamineJournalAdvanced'));
 
 // Import character images
-import matthewCharacter from '@/assets/images/matthew-character.png';
-import matthewSmile from '@/assets/images/matthew-smile.jpg';
+import matthewPhoto from '@/assets/images/matthew-photo.jpg';
 
 // Sophisticated Mobile-First Tile Component
 const DashboardTile = ({ title, description, icon, to, gradient, delay }) => (
@@ -215,7 +214,7 @@ const Dashboard = () => {
             >
               <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl" />
               <img
-                src={matthewSmile}
+                src={matthewPhoto}
                 alt="Matthew"
                 className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white/20 shadow-2xl object-cover"
               />
