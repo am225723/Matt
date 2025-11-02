@@ -22,7 +22,7 @@ const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseRefra
 const KetamineJournalAdvanced = React.lazy(() => import('@/components/KetamineJournalAdvanced'));
 
 // Import character images
-import matthewPhoto from '@/assets/images/matthew-photo.jpg';
+import matthewAvatar from '@/assets/images/matthew-avatar.jpg';
 
 // Sophisticated Mobile-First Tile Component
 const DashboardTile = ({ title, description, icon, to, gradient, delay }) => (
@@ -197,37 +197,158 @@ const Dashboard = () => {
       {/* Main content - Mobile-first container */}
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
         
-        {/* Header with character */}
+        {/* Sophisticated Header with Character */}
         <motion.div
-          initial={{ opacity: 0, y: -20 }}
+          initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6 }}
-          className="mb-6 sm:mb-8"
+          transition={{ duration: 0.8, ease: "easeOut" }}
+          className="mb-8 sm:mb-10"
         >
-          <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 bg-white/5 backdrop-blur-md rounded-3xl p-4 sm:p-6 border border-white/10">
-            {/* Character image */}
+          {/* Main title card */}
+          <div className="relative overflow-hidden rounded-3xl sm:rounded-[2.5rem] bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 p-6 sm:p-8 lg:p-10 shadow-2xl">
+            {/* Animated background gradient */}
             <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              className="relative flex-shrink-0"
-            >
-              <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl" />
-              <img
-                src={matthewPhoto}
-                alt="Matthew"
-                className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full border-4 border-white/20 shadow-2xl object-cover"
-              />
-            </motion.div>
+              className="absolute inset-0 opacity-30"
+              style={{
+                background: "linear-gradient(135deg, rgba(59, 130, 246, 0.3) 0%, rgba(147, 51, 234, 0.3) 50%, rgba(236, 72, 153, 0.3) 100%)",
+              }}
+              animate={{
+                backgroundPosition: ['0% 0%', '100% 100%'],
+              }}
+              transition={{
+                duration: 8,
+                repeat: Infinity,
+                repeatType: "reverse",
+                ease: "linear"
+              }}
+            />
             
-            {/* Welcome text */}
-            <div className="flex-1 text-center sm:text-left">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white mb-1 sm:mb-2">
-                Hey Matthew! 👋
-              </h1>
-              <p className="text-base sm:text-lg text-white/80">
-                What would you like to work on today?
-              </p>
+            {/* Content */}
+            <div className="relative z-10 flex flex-col items-center gap-6 sm:gap-8">
+              {/* Character avatar */}
+              <motion.div
+                initial={{ scale: 0, rotate: -180 }}
+                animate={{ scale: 1, rotate: 0 }}
+                transition={{ 
+                  delay: 0.3,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 15
+                }}
+                className="relative"
+              >
+                {/* Outer glow ring */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-full blur-2xl opacity-60 scale-110" />
+                
+                {/* Rotating gradient ring */}
+                <motion.div
+                  className="absolute inset-0 rounded-full"
+                  style={{
+                    background: "conic-gradient(from 0deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)",
+                    padding: "3px",
+                  }}
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
+                >
+                  <div className="w-full h-full rounded-full bg-slate-900" />
+                </motion.div>
+                
+                {/* Avatar image */}
+                <img
+                  src={matthewAvatar}
+                  alt="Matthew"
+                  className="relative w-24 h-24 sm:w-32 sm:h-32 lg:w-36 lg:h-36 rounded-full border-4 border-white/30 shadow-2xl object-cover"
+                />
+                
+                {/* Sparkle effect */}
+                <motion.div
+                  className="absolute -top-2 -right-2 w-8 h-8 text-yellow-400"
+                  animate={{
+                    scale: [1, 1.2, 1],
+                    rotate: [0, 180, 360],
+                  }}
+                  transition={{
+                    duration: 2,
+                    repeat: Infinity,
+                    ease: "easeInOut"
+                  }}
+                >
+                  ✨
+                </motion.div>
+              </motion.div>
+              
+              {/* Title section */}
+              <div className="text-center space-y-3 sm:space-y-4">
+                {/* Main title with gradient and effects */}
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5, duration: 0.8 }}
+                >
+                  <h1 className="relative inline-block">
+                    {/* Glow effect behind text */}
+                    <span className="absolute inset-0 blur-2xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-50" aria-hidden="true">
+                      Matthew's Playbook
+                    </span>
+                    
+                    {/* Main text */}
+                    <span className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight">
+                      <span className="bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
+                        Matthew's Playbook
+                      </span>
+                    </span>
+                    
+                    {/* Animated shimmer overlay */}
+                    <motion.span
+                      className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0"
+                      animate={{
+                        x: ['-200%', '200%'],
+                        opacity: [0, 0.3, 0],
+                      }}
+                      transition={{
+                        duration: 3,
+                        repeat: Infinity,
+                        repeatDelay: 2,
+                        ease: "easeInOut"
+                      }}
+                      style={{
+                        backgroundSize: '50% 100%',
+                      }}
+                    />
+                  </h1>
+                </motion.div>
+                
+                {/* Subtitle with elegant styling */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.7, duration: 0.8 }}
+                  className="text-base sm:text-lg md:text-xl lg:text-2xl text-white/90 font-light tracking-wide"
+                >
+                  <span className="inline-block">Your Personal Journey to</span>{' '}
+                  <span className="font-semibold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+                    Mental Clarity & Resilience
+                  </span>
+                </motion.p>
+                
+                {/* Decorative divider */}
+                <motion.div
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: 1 }}
+                  transition={{ delay: 0.9, duration: 0.6 }}
+                  className="mx-auto w-32 sm:w-40 h-1 bg-gradient-to-r from-transparent via-white/40 to-transparent rounded-full"
+                />
+                
+                {/* Call to action */}
+                <motion.p
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 1.1, duration: 0.6 }}
+                  className="text-sm sm:text-base text-white/70 font-light italic"
+                >
+                  Choose your path below
+                </motion.p>
+              </div>
             </div>
           </div>
         </motion.div>
