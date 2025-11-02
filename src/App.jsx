@@ -246,7 +246,7 @@ const Dashboard = () => {
             
             {/* Content - Horizontal flex layout */}
             <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-              {/* Character avatar on the side - Full height of header */}
+              {/* Character avatar on the side - Small size */}
               <motion.div
                 initial={{ scale: 0, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
@@ -256,21 +256,21 @@ const Dashboard = () => {
                   stiffness: 200,
                   damping: 15
                 }}
-                className="relative flex-shrink-0 self-stretch flex items-center"
+                className="relative flex-shrink-0"
               >
                 {/* Glow effect behind character */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl scale-110" />
                 
-                {/* Full character image - fills header height */}
+                {/* Character image - 20% of original size */}
                 <img
                   src={matthewAvatar}
                   alt="Matthew"
-                  className="relative h-full w-auto object-contain drop-shadow-2xl"
+                  className="relative w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-2xl"
                 />
                 
                 {/* Sparkle effect */}
                 <motion.div
-                  className="absolute top-2 right-0 w-8 h-8 text-yellow-400 text-2xl"
+                  className="absolute -top-1 -right-1 w-6 h-6 text-yellow-400 text-xl"
                   animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360],
