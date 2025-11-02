@@ -21,131 +21,49 @@ import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
 const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseReframerAdvanced'));
 const KetamineJournalAdvanced = React.lazy(() => import('@/components/KetamineJournalAdvanced'));
 
-const DashboardTile = ({
-  title,
-  description,
-  icon,
-  to,
-  className
-}) => (
-  <Link to={to} className="block">
+// Import character images
+import matthewCharacter from '@/assets/images/matthew-character.png';
+import matthewPhoto from '@/assets/images/matthew-photo.jpg';
+
+// Interactive Feature Bubble Component
+const FeatureBubble = ({ title, description, icon, to, delay, position }) => (
+  <Link to={to} className="block absolute" style={{ ...position }}>
     <motion.div
-      className={`relative overflow-hidden rounded-3xl cursor-pointer group h-72 ${className}`}
-      whileHover={{ 
-        scale: 1.05, 
-        y: -8,
-      }}
-      whileTap={{ scale: 0.97 }}
+      initial={{ scale: 0, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
       transition={{ 
-        type: "spring", 
-        stiffness: 400, 
-        damping: 25,
+        delay,
+        type: "spring",
+        stiffness: 200,
+        damping: 15
       }}
+      whileHover={{ 
+        scale: 1.15,
+        rotate: [0, -5, 5, 0],
+        transition: { duration: 0.3 }
+      }}
+      whileTap={{ scale: 0.95 }}
+      className="group relative"
     >
-    {/* Glass morphism card */}
-    <div className="absolute inset-0 bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl border border-white/20 rounded-3xl shadow-2xl group-hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] transition-all duration-500" />
-    
-    {/* Animated gradient background */}
-    <motion.div 
-      className="absolute inset-0 opacity-40 group-hover:opacity-60 transition-opacity duration-500"
-      style={{
-        background: "linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)",
-      }}
-      animate={{
-        backgroundPosition: ['0% 0%', '100% 100%'],
-      }}
-      transition={{
-        duration: 8,
-        repeat: Infinity,
-        repeatType: "reverse",
-        ease: "linear"
-      }}
-    />
-    
-    {/* Shimmer effect */}
-    <motion.div
-      className="absolute inset-0 opacity-0 group-hover:opacity-100"
-      style={{
-        background: "linear-gradient(45deg, transparent 30%, rgba(255, 255, 255, 0.1) 50%, transparent 70%)",
-        backgroundSize: "200% 200%",
-      }}
-      animate={{
-        backgroundPosition: ['-200% -200%', '200% 200%'],
-      }}
-      transition={{
-        duration: 1.5,
-        repeat: Infinity,
-        ease: "linear"
-      }}
-    />
-    
-    {/* Content */}
-    <div className="relative z-10 flex flex-col justify-between h-full p-8">
-      <div>
-        {/* Icon container with enhanced glow */}
-        <motion.div 
-          className="relative mb-6 w-fit"
-          whileHover={{ scale: 1.1 }}
-          transition={{ type: "spring", stiffness: 400, damping: 15 }}
-        >
-          <div className="absolute inset-0 bg-white/20 rounded-2xl blur-xl group-hover:blur-2xl transition-all duration-300 scale-110" />
-          <div className="relative p-5 bg-gradient-to-br from-white/30 to-white/10 rounded-2xl w-24 h-24 flex items-center justify-center border border-white/30 shadow-xl backdrop-blur-md">
-            <motion.div
-              animate={{ 
-                rotate: [0, 5, -5, 0],
-              }}
-              transition={{
-                duration: 2,
-                repeat: Infinity,
-                ease: "easeInOut"
-              }}
-              className="transform scale-150"
-            >
-              {icon}
-            </motion.div>
-          </div>
-        </motion.div>
-        
-        {/* Title with gradient */}
-        <h2 className="text-2xl font-bold text-white mb-3 tracking-tight leading-tight group-hover:tracking-wide transition-all duration-300">
-          <span className="bg-gradient-to-r from-white via-white to-white/80 bg-clip-text text-transparent drop-shadow-[0_2px_10px_rgba(255,255,255,0.3)]">
-            {title}
-          </span>
-        </h2>
-        
-        {/* Description */}
-        <p className="text-white/90 text-sm leading-relaxed font-light tracking-wide">
-          {description}
-        </p>
+      {/* Glow effect */}
+      <div className="absolute inset-0 bg-gradient-to-br from-blue-400/30 to-purple-400/30 rounded-full blur-xl group-hover:blur-2xl transition-all duration-300" />
+      
+      {/* Bubble */}
+      <div className="relative bg-white rounded-full p-6 shadow-2xl border-4 border-blue-100 group-hover:border-blue-300 transition-all duration-300 w-32 h-32 flex flex-col items-center justify-center">
+        <div className="text-blue-600 mb-2 transform group-hover:scale-110 transition-transform">
+          {icon}
+        </div>
+        <p className="text-xs font-bold text-gray-800 text-center leading-tight">{title}</p>
       </div>
       
-      {/* Call to action */}
-      <motion.div 
-        className="flex items-center gap-2 text-white/80 group-hover:text-white font-semibold text-base"
-        initial={{ opacity: 0, x: -10 }}
-        whileHover={{ x: 5 }}
-        animate={{ opacity: [0.6, 1, 0.6] }}
-        transition={{ 
-          opacity: { duration: 2, repeat: Infinity },
-          x: { type: "spring", stiffness: 300 }
-        }}
+      {/* Tooltip on hover */}
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        whileHover={{ opacity: 1, y: 0 }}
+        className="absolute top-full left-1/2 transform -translate-x-1/2 mt-4 px-4 py-2 bg-white rounded-lg shadow-xl border-2 border-blue-200 w-48 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none z-50"
       >
-        <span>Explore</span>
-        <motion.svg 
-          width="20" 
-          height="20" 
-          viewBox="0 0 20 20" 
-          fill="none"
-          animate={{ x: [0, 3, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity, ease: "easeInOut" }}
-        >
-          <path d="M7 3L14 10L7 17" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-        </motion.svg>
+        <p className="text-xs text-gray-700 text-center">{description}</p>
       </motion.div>
-    </div>
-    
-    {/* Subtle top highlight */}
-    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-white/40 to-transparent" />
     </motion.div>
   </Link>
 );
@@ -156,186 +74,197 @@ const Dashboard = () => {
   const handleSelectScenario = (scenario) => {
     navigate('/playbook', { state: { scenario } });
   };
+
+  const features = [
+    {
+      title: "Playbook",
+      description: "Build strategies for challenging situations",
+      icon: <BookOpen className="w-8 h-8" />,
+      to: "/playbook",
+      position: { top: '10%', left: '15%' },
+      delay: 0.2
+    },
+    {
+      title: "Library",
+      description: "Review saved resilience playbooks",
+      icon: <Library className="w-8 h-8" />,
+      to: "/library",
+      position: { top: '5%', left: '45%' },
+      delay: 0.3
+    },
+    {
+      title: "Achievements",
+      description: "Track progress and earned badges",
+      icon: <Trophy className="w-8 h-8" />,
+      to: "/achievements",
+      position: { top: '15%', right: '15%' },
+      delay: 0.4
+    },
+    {
+      title: "Reframe",
+      description: "Transform limiting beliefs with AI",
+      icon: <MessageSquareQuote className="w-8 h-8" />,
+      to: "/reframe",
+      position: { top: '40%', left: '8%' },
+      delay: 0.5
+    },
+    {
+      title: "Yardage",
+      description: "Navigate the Ryder Cup with intention",
+      icon: <Golf className="w-8 h-8" />,
+      to: "/yardage",
+      position: { top: '40%', right: '8%' },
+      delay: 0.6
+    },
+    {
+      title: "Health",
+      description: "AI-powered health insights",
+      icon: <Heart className="w-8 h-8" />,
+      to: "/health",
+      position: { bottom: '20%', left: '12%' },
+      delay: 0.7
+    },
+    {
+      title: "Journal",
+      description: "Guided self-exploration space",
+      icon: <BrainCircuit className="w-8 h-8" />,
+      to: "/ketamine",
+      position: { bottom: '15%', left: '42%' },
+      delay: 0.8
+    },
+    {
+      title: "Anxiety",
+      description: "Interactive body map tracker",
+      icon: <Activity className="w-8 h-8" />,
+      to: "/anxiety",
+      position: { bottom: '20%', right: '12%' },
+      delay: 0.9
+    }
+  ];
   
   return (
-  <div
-    className="relative min-h-screen flex flex-col items-center justify-center p-4 sm:p-8 lg:p-12 text-white overflow-hidden"
-    style={{
-      backgroundImage: 'url(https://efgtznvrnzqcxmfmjuue.supabase.co/storage/v1/object/public/bg-playbook/bg-main.jpg)',
-      backgroundSize: 'cover',
-      backgroundPosition: 'center',
-      backgroundRepeat: 'no-repeat',
-    }}
-  >
-    {/* Enhanced gradient overlay */}
-    <div className="absolute inset-0 bg-gradient-to-br from-black/70 via-black/60 to-black/70"></div>
-    
-    {/* Animated floating orbs for depth */}
-    <motion.div
-      className="absolute top-20 left-20 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl"
-      animate={{
-        x: [0, 50, 0],
-        y: [0, 30, 0],
-        scale: [1, 1.1, 1],
-      }}
-      transition={{
-        duration: 10,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    />
-    <motion.div
-      className="absolute bottom-20 right-20 w-96 h-96 bg-purple-500/10 rounded-full blur-3xl"
-      animate={{
-        x: [0, -50, 0],
-        y: [0, -30, 0],
-        scale: [1, 1.2, 1],
-      }}
-      transition={{
-        duration: 12,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    />
-    <motion.div
-      className="absolute top-1/2 left-1/2 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"
-      animate={{
-        x: [-50, 50, -50],
-        y: [-30, 30, -30],
-        scale: [1, 1.15, 1],
-      }}
-      transition={{
-        duration: 15,
-        repeat: Infinity,
-        ease: "easeInOut"
-      }}
-    />
-    <Helmet>
-      <title>Matthew's Playbook</title>
-      <meta name="description" content="Welcome to Matthew's personal development playbook dashboard." />
-      <meta property="og:title" content="Matthew's Playbook" />
-      <meta property="og:description" content="Welcome to Matthew's personal development playbook dashboard." />
-    </Helmet>
-    <div className="relative z-10 text-center mb-16 max-w-4xl">
-      <motion.div
-        initial={{ opacity: 0, y: -30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="mb-6"
-      >
-        <h1 className="text-6xl md:text-7xl lg:text-8xl font-black tracking-tight mb-2">
-          <span className="bg-gradient-to-r from-white via-blue-100 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(255,255,255,0.3)]">
-            Matthew's Playbook
-          </span>
-        </h1>
-      </motion.div>
-      
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, delay: 0.2 }}
-        className="relative"
-      >
-        <div className="absolute inset-0 bg-white/5 blur-2xl rounded-full" />
-        <p className="relative text-lg md:text-xl lg:text-2xl text-white/90 font-light leading-relaxed tracking-wide">
-          Your space for mental clarity and resilience.
-          <br />
-          <span className="text-white/70">Pick where you would like to start.</span>
-        </p>
-      </motion.div>
-    </div>
-    
-    <motion.div
-      className="relative z-10 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 w-full max-w-7xl px-4"
-      initial="hidden"
-      animate="visible"
-      variants={{
-        visible: { transition: { staggerChildren: 0.1, delayChildren: 0.3 } },
-      }}
-    >
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Resilience Playbook"
-          description="Build a new step-by-step strategy for challenging situations."
-          icon={<BookOpen className="w-6 h-6 text-white" />}
-          to="/playbook"
-          className="bg-blue-500/30"
-        />
-      </motion.div>
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Playbook Library"
-          description="Review and manage your saved resilience playbooks."
-          icon={<Library className="w-6 h-6 text-white" />}
-          to="/library"
-          className="bg-yellow-500/30"
-        />
-      </motion.div>
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Achievements"
-          description="Track your progress and view your earned badges."
-          icon={<Trophy className="w-6 h-6 text-white" />}
-          to="/achievements"
-          className="bg-red-500/30"
-        />
-      </motion.div>
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Excuse Reframing"
-          description="Transform limiting beliefs into empowering perspectives with AI."
-          icon={<MessageSquareQuote className="w-6 h-6 text-white" />}
-          to="/reframe"
-          className="bg-purple-500/30"
-        />
-      </motion.div>
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Ryder Cup Yardage Book"
-          description="Your personal caddie to navigate the Ryder Cup with intention."
-          icon={<Golf className="w-6 h-6 text-white" />}
-          to="/yardage"
-          className="bg-green-500/30"
-        />
-      </motion.div>
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-            title="Enhanced Health Dashboard"
-            description="AI-powered health insights with real-time tracking, advanced analytics, and personalized recommendations."
-          icon={<Heart className="w-6 h-6 text-white" />}
-          to="/health"
-          className="bg-cyan-500/40"
-        />
-      </motion.div>
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Ketamine Journal"
-          description="A space for reflection and guided self-exploration."
-          icon={<BrainCircuit className="w-6 h-6 text-white" />}
-          to="/ketamine"
-          className="bg-indigo-500/30"
-        />
-      </motion.div>
-      <motion.div variants={{ visible: { opacity: 1, y: 0 }, hidden: { opacity: 0, y: 50 } }}>
-        <DashboardTile
-          title="Anxiety Tracker"
-          description="Track and manage anxiety symptoms and patterns with an interactive body map."
-          icon={<Activity className="w-6 h-6 text-white" />}
-          to="/anxiety"
-          className="bg-teal-500/30"
-        />
-      </motion.div>
-    </motion.div>
+    <div className="relative min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 overflow-hidden">
+      <Helmet>
+        <title>Matthew's Playbook</title>
+        <meta name="description" content="Your personal development companion." />
+      </Helmet>
 
-    <motion.div
-      className="relative z-10 w-full max-w-6xl mt-8"
-      initial={{ opacity: 0, y: 50 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: 0.8 }}
-    >
-      <AISuggestion onSelectScenario={handleSelectScenario} />
-    </motion.div>
-  </div>
+      {/* Decorative background elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <motion.div
+          className="absolute top-0 left-0 w-96 h-96 bg-blue-200/20 rounded-full blur-3xl"
+          animate={{
+            x: [0, 100, 0],
+            y: [0, 50, 0],
+          }}
+          transition={{
+            duration: 20,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+        <motion.div
+          className="absolute bottom-0 right-0 w-96 h-96 bg-purple-200/20 rounded-full blur-3xl"
+          animate={{
+            x: [0, -100, 0],
+            y: [0, -50, 0],
+          }}
+          transition={{
+            duration: 25,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
+      </div>
+
+      {/* Main content */}
+      <div className="relative z-10 min-h-screen flex flex-col items-center justify-center p-8">
+        {/* Welcome section */}
+        <motion.div
+          initial={{ opacity: 0, y: -30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8 }}
+          className="text-center mb-12"
+        >
+          <h1 className="text-5xl md:text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-purple-600 to-blue-600 mb-4">
+            Welcome, Matthew
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 font-light">
+            What would you like to work on today?
+          </p>
+        </motion.div>
+
+        {/* Character with thought bubbles */}
+        <div className="relative w-full max-w-6xl h-[600px] flex items-center justify-center">
+          {/* Central character image */}
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ 
+              delay: 0.3,
+              type: "spring",
+              stiffness: 200,
+              damping: 20
+            }}
+            className="relative z-20"
+          >
+            <div className="relative">
+              {/* Glow effect behind character */}
+              <div className="absolute inset-0 bg-gradient-to-br from-blue-300/40 to-purple-300/40 rounded-full blur-2xl transform scale-110" />
+              
+              {/* Character image */}
+              <img
+                src={matthewCharacter}
+                alt="Matthew"
+                className="relative w-64 h-64 md:w-80 md:h-80 rounded-full border-8 border-white shadow-2xl object-cover"
+              />
+              
+              {/* Pulsing ring animation */}
+              <motion.div
+                className="absolute inset-0 rounded-full border-4 border-blue-400/50"
+                animate={{
+                  scale: [1, 1.1, 1],
+                  opacity: [0.5, 0.2, 0.5]
+                }}
+                transition={{
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              />
+            </div>
+          </motion.div>
+
+          {/* Feature bubbles positioned around character */}
+          {features.map((feature, index) => (
+            <FeatureBubble
+              key={index}
+              title={feature.title}
+              description={feature.description}
+              icon={feature.icon}
+              to={feature.to}
+              position={feature.position}
+              delay={feature.delay}
+            />
+          ))}
+        </div>
+
+        {/* Helper text */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="text-center mt-12"
+        >
+          <p className="text-gray-500 text-lg font-light mb-2">
+            Click any bubble to get started
+          </p>
+          <p className="text-gray-400 text-sm">
+            Hover over each option to learn more
+          </p>
+        </motion.div>
+      </div>
+    </div>
   );
 };
 
