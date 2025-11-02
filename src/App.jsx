@@ -246,7 +246,7 @@ const Dashboard = () => {
             
             {/* Content - Horizontal flex layout */}
             <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-              {/* Character avatar on the side - Full photo */}
+              {/* Character avatar on the side - Full height photo */}
               <motion.div
                 initial={{ scale: 0, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
@@ -256,21 +256,21 @@ const Dashboard = () => {
                   stiffness: 200,
                   damping: 15
                 }}
-                className="relative flex-shrink-0"
+                className="relative flex-shrink-0 h-full flex items-center"
               >
                 {/* Glow effect behind character */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl" />
                 
-                {/* Full character image */}
+                {/* Full character image - top to bottom */}
                 <img
                   src={matthewAvatar}
                   alt="Matthew"
-                  className="relative w-28 h-28 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-2xl"
+                  className="relative h-full w-auto object-contain drop-shadow-2xl"
                 />
                 
                 {/* Sparkle effect */}
                 <motion.div
-                  className="absolute -top-1 -right-1 w-8 h-8 text-yellow-400 text-2xl"
+                  className="absolute top-2 right-0 w-8 h-8 text-yellow-400 text-2xl"
                   animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360],
@@ -286,16 +286,17 @@ const Dashboard = () => {
               </motion.div>
               
               {/* Title section - flex-1 to take remaining space */}
-              <div className="flex-1 text-center sm:text-left space-y-3 sm:space-y-4">
+              <div className="flex-1 text-center space-y-3 sm:space-y-4">
                 {/* Decorative flourish top */}
                 <motion.div
                   initial={{ opacity: 0, scaleX: 0 }}
                   animate={{ opacity: 1, scaleX: 1 }}
                   transition={{ delay: 0.4, duration: 0.8 }}
-                  className="hidden sm:flex items-center gap-2"
+                  className="hidden sm:flex items-center gap-2 justify-center"
                 >
-                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-400/50 to-gold-400/20" />
+                  <div className="h-px w-20 bg-gradient-to-r from-transparent via-gold-400/50 to-gold-400/20" />
                   <span className="text-gold-400/60 text-2xl">✦</span>
+                  <div className="h-px w-20 bg-gradient-to-l from-transparent via-gold-400/50 to-gold-400/20" />
                 </motion.div>
                 
                 {/* Main title with calligraphy font */}
@@ -342,10 +343,12 @@ const Dashboard = () => {
                   initial={{ opacity: 0, scaleX: 0 }}
                   animate={{ opacity: 1, scaleX: 1 }}
                   transition={{ delay: 0.65, duration: 0.6 }}
-                  className="flex items-center gap-3 justify-center sm:justify-start"
+                  className="flex items-center gap-3 justify-center"
                 >
                   <span className="text-amber-400/40 text-sm">◆</span>
                   <div className="h-px w-16 bg-gradient-to-r from-amber-400/40 via-amber-400/20 to-transparent" />
+                  <span className="text-amber-400/40 text-sm">◆</span>
+                  <div className="h-px w-16 bg-gradient-to-l from-amber-400/40 via-amber-400/20 to-transparent" />
                   <span className="text-amber-400/40 text-sm">◆</span>
                 </motion.div>
                 
