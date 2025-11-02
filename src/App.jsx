@@ -22,7 +22,7 @@ const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseRefra
 const KetamineJournalAdvanced = React.lazy(() => import('@/components/KetamineJournalAdvanced'));
 
 // Import character images
-import matthewAvatar from '@/assets/images/matthew-avatar.jpg';
+import matthewAvatar from '@/assets/images/matthew-main.png';
 import featurePlaybook from '@/assets/images/feature-playbook.png';
 import featureLibrary from '@/assets/images/feature-library.png';
 import featureAchievements from '@/assets/images/feature-achievements.png';
@@ -32,7 +32,7 @@ import featureHealth from '@/assets/images/feature-health.png';
 import featureKetamine from '@/assets/images/feature-ketamine.png';
 import featureAnxiety from '@/assets/images/feature-anxiety.png';
 
-// Sophisticated Mobile-First Tile Component with Character Images
+// Sophisticated Mobile-First Tile Component with Large Character Images
 const DashboardTile = ({ title, description, icon, to, gradient, delay, image }) => (
   <Link to={to} className="block w-full">
     <motion.div
@@ -41,7 +41,7 @@ const DashboardTile = ({ title, description, icon, to, gradient, delay, image })
       transition={{ delay, duration: 0.5 }}
       whileHover={{ scale: 1.02, y: -4 }}
       whileTap={{ scale: 0.98 }}
-      className="group relative overflow-hidden rounded-2xl cursor-pointer h-40 sm:h-44"
+      className="group relative overflow-hidden rounded-2xl cursor-pointer h-52 sm:h-56"
     >
       {/* Gradient background */}
       <div className={`absolute inset-0 ${gradient}`} />
@@ -58,12 +58,12 @@ const DashboardTile = ({ title, description, icon, to, gradient, delay, image })
       />
       
       {/* Content */}
-      <div className="relative h-full p-5 flex items-center gap-4">
-        {/* Character Image */}
+      <div className="relative h-full p-4 flex items-stretch gap-3">
+        {/* Character Image - Full Height */}
         {image && (
           <motion.div
-            className="relative flex-shrink-0 w-20 h-20 sm:w-24 sm:h-24"
-            whileHover={{ scale: 1.1, rotate: 5 }}
+            className="relative flex-shrink-0 w-32 sm:w-36"
+            whileHover={{ scale: 1.05, rotate: 3 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
             <img
@@ -74,19 +74,19 @@ const DashboardTile = ({ title, description, icon, to, gradient, delay, image })
           </motion.div>
         )}
         
-        {/* Text */}
-        <div className="flex-1 min-w-0">
-          <h3 className="text-lg sm:text-xl font-bold text-white mb-1 tracking-tight">
+        {/* Text Content */}
+        <div className="flex-1 min-w-0 flex flex-col justify-center py-2">
+          <h3 className="text-xl sm:text-2xl font-bold text-white mb-2 tracking-tight leading-tight">
             {title}
           </h3>
-          <p className="text-white/90 text-xs sm:text-sm line-clamp-2">
+          <p className="text-white/90 text-sm sm:text-base line-clamp-3 leading-relaxed">
             {description}
           </p>
         </div>
         
         {/* Arrow */}
-        <div className="flex-shrink-0 text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
+        <div className="flex-shrink-0 self-center text-white/80 group-hover:text-white group-hover:translate-x-1 transition-all">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
             <path d="M9 5L16 12L9 19" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
           </svg>
         </div>
@@ -299,22 +299,36 @@ const Dashboard = () => {
               </motion.div>
               
               {/* Title section - flex-1 to take remaining space */}
-              <div className="flex-1 text-center sm:text-left space-y-2 sm:space-y-3">
-                {/* Main title with gradient and effects */}
+              <div className="flex-1 text-center sm:text-left space-y-3 sm:space-y-4">
+                {/* Decorative flourish top */}
+                <motion.div
+                  initial={{ opacity: 0, scaleX: 0 }}
+                  animate={{ opacity: 1, scaleX: 1 }}
+                  transition={{ delay: 0.4, duration: 0.8 }}
+                  className="hidden sm:flex items-center gap-2"
+                >
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-gold-400/50 to-gold-400/20" />
+                  <span className="text-gold-400/60 text-2xl">✦</span>
+                </motion.div>
+                
+                {/* Main title with calligraphy font */}
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.5, duration: 0.8 }}
                 >
                   <h1 className="relative inline-block">
-                    {/* Glow effect behind text */}
-                    <span className="absolute inset-0 blur-2xl bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 opacity-50" aria-hidden="true">
+                    {/* Multiple glow layers for depth */}
+                    <span className="absolute inset-0 blur-3xl bg-gradient-to-r from-amber-300 via-rose-300 to-purple-300 opacity-40" aria-hidden="true">
+                      Matthew's Playbook
+                    </span>
+                    <span className="absolute inset-0 blur-xl bg-gradient-to-r from-amber-200 via-rose-200 to-purple-200 opacity-30" aria-hidden="true">
                       Matthew's Playbook
                     </span>
                     
-                    {/* Main text */}
-                    <span className="relative text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-black tracking-tight">
-                      <span className="bg-gradient-to-r from-blue-200 via-purple-200 to-pink-200 bg-clip-text text-transparent drop-shadow-2xl">
+                    {/* Main calligraphy text */}
+                    <span className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-wide" style={{ fontFamily: "'Great Vibes', cursive" }}>
+                      <span className="bg-gradient-to-r from-amber-100 via-rose-100 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_2px_20px_rgba(251,191,36,0.4)]">
                         Matthew's Playbook
                       </span>
                     </span>
@@ -324,7 +338,7 @@ const Dashboard = () => {
                       className="absolute inset-0 bg-gradient-to-r from-transparent via-white to-transparent opacity-0"
                       animate={{
                         x: ['-200%', '200%'],
-                        opacity: [0, 0.3, 0],
+                        opacity: [0, 0.4, 0],
                       }}
                       transition={{
                         duration: 3,
@@ -332,35 +346,48 @@ const Dashboard = () => {
                         repeatDelay: 2,
                         ease: "easeInOut"
                       }}
-                      style={{
-                        backgroundSize: '50% 100%',
-                      }}
                     />
                   </h1>
                 </motion.div>
                 
-                {/* Subtitle with elegant styling */}
+                {/* Decorative divider */}
+                <motion.div
+                  initial={{ opacity: 0, scaleX: 0 }}
+                  animate={{ opacity: 1, scaleX: 1 }}
+                  transition={{ delay: 0.65, duration: 0.6 }}
+                  className="flex items-center gap-3 justify-center sm:justify-start"
+                >
+                  <span className="text-amber-400/40 text-sm">◆</span>
+                  <div className="h-px w-16 bg-gradient-to-r from-amber-400/40 via-amber-400/20 to-transparent" />
+                  <span className="text-amber-400/40 text-sm">◆</span>
+                </motion.div>
+                
+                {/* Subtitle with elegant serif font */}
                 <motion.p
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.7, duration: 0.8 }}
-                  className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 font-light tracking-wide"
+                  transition={{ delay: 0.75, duration: 0.8 }}
+                  className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 tracking-wide leading-relaxed"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  <span className="inline-block">Your Personal Journey to</span>{' '}
-                  <span className="font-semibold bg-gradient-to-r from-blue-300 to-purple-300 bg-clip-text text-transparent">
+                  <span className="inline-block italic">Your Personal Journey to</span>{' '}
+                  <span className="font-bold bg-gradient-to-r from-amber-200 via-rose-200 to-purple-200 bg-clip-text text-transparent">
                     Mental Clarity & Resilience
                   </span>
                 </motion.p>
                 
-                {/* Call to action */}
-                <motion.p
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
+                {/* Decorative bottom flourish */}
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
-                  className="text-xs sm:text-sm text-white/70 font-light italic"
+                  className="flex items-center gap-2 text-xs sm:text-sm text-amber-200/60 italic"
+                  style={{ fontFamily: "'Playfair Display', serif" }}
                 >
-                  Choose your path below ↓
-                </motion.p>
+                  <span className="text-amber-400/40">✧</span>
+                  <span>Choose your path below</span>
+                  <span className="text-amber-400/40">✧</span>
+                </motion.div>
               </div>
             </div>
           </div>
