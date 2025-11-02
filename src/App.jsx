@@ -246,10 +246,10 @@ const Dashboard = () => {
             
             {/* Content - Horizontal flex layout */}
             <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-              {/* Character avatar on the side */}
+              {/* Character avatar on the side - Full photo */}
               <motion.div
-                initial={{ scale: 0, rotate: -180 }}
-                animate={{ scale: 1, rotate: 0 }}
+                initial={{ scale: 0, y: 20 }}
+                animate={{ scale: 1, y: 0 }}
                 transition={{ 
                   delay: 0.3,
                   type: "spring",
@@ -258,32 +258,19 @@ const Dashboard = () => {
                 }}
                 className="relative flex-shrink-0"
               >
-                {/* Outer glow ring */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400 via-purple-400 to-pink-400 rounded-full blur-2xl opacity-60 scale-110" />
+                {/* Glow effect behind character */}
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl scale-110" />
                 
-                {/* Rotating gradient ring */}
-                <motion.div
-                  className="absolute inset-0 rounded-full"
-                  style={{
-                    background: "conic-gradient(from 0deg, #3b82f6, #8b5cf6, #ec4899, #3b82f6)",
-                    padding: "3px",
-                  }}
-                  animate={{ rotate: 360 }}
-                  transition={{ duration: 4, repeat: Infinity, ease: "linear" }}
-                >
-                  <div className="w-full h-full rounded-full bg-slate-900" />
-                </motion.div>
-                
-                {/* Avatar image */}
+                {/* Full character image */}
                 <img
                   src={matthewAvatar}
                   alt="Matthew"
-                  className="relative w-24 h-24 sm:w-28 sm:h-28 lg:w-32 lg:h-32 rounded-full border-4 border-white/30 shadow-2xl object-cover"
+                  className="relative w-28 h-28 sm:w-32 sm:h-32 lg:w-40 lg:h-40 object-contain drop-shadow-2xl"
                 />
                 
                 {/* Sparkle effect */}
                 <motion.div
-                  className="absolute -top-2 -right-2 w-8 h-8 text-yellow-400 text-2xl"
+                  className="absolute -top-1 -right-1 w-8 h-8 text-yellow-400 text-2xl"
                   animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360],
