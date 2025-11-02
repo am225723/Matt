@@ -245,8 +245,8 @@ const Dashboard = () => {
             />
             
             {/* Content - Horizontal flex layout */}
-            <div className="relative z-10 flex flex-col sm:flex-row items-center gap-6 sm:gap-8">
-              {/* Character avatar on the side - Small size */}
+            <div className="relative z-10 flex flex-col sm:flex-row items-stretch gap-6 sm:gap-8 min-h-[200px] sm:min-h-[250px]">
+              {/* Character avatar on the side - Full div height */}
               <motion.div
                 initial={{ scale: 0, y: 20 }}
                 animate={{ scale: 1, y: 0 }}
@@ -256,21 +256,21 @@ const Dashboard = () => {
                   stiffness: 200,
                   damping: 15
                 }}
-                className="relative flex-shrink-0"
+                className="relative flex-shrink-0 flex items-center justify-center"
               >
                 {/* Glow effect behind character */}
-                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl scale-110" />
+                <div className="absolute inset-0 bg-gradient-to-br from-blue-400/40 via-purple-400/40 to-pink-400/40 blur-2xl" />
                 
-                {/* Character image - 20% of original size */}
+                {/* Character image - fills full height of header div */}
                 <img
                   src={matthewAvatar}
                   alt="Matthew"
-                  className="relative w-16 h-16 sm:w-20 sm:h-20 object-contain drop-shadow-2xl"
+                  className="relative h-[200px] sm:h-[250px] w-auto object-contain drop-shadow-2xl"
                 />
                 
                 {/* Sparkle effect */}
                 <motion.div
-                  className="absolute -top-1 -right-1 w-6 h-6 text-yellow-400 text-xl"
+                  className="absolute top-2 right-2 w-8 h-8 text-yellow-400 text-2xl"
                   animate={{
                     scale: [1, 1.2, 1],
                     rotate: [0, 180, 360],
