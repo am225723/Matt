@@ -53,7 +53,7 @@ const HealthDashboard = ({ onBack }) => {
 
   return (
     <div className="container mx-auto p-4 sm:p-8">
-      <Button onClick={onBack} className="mb-8">&larr; Back to Dashboard</Button>
+      <Button onClick={onBack} className="mb-8">&larr; Return to Dashboard</Button>
       <div className="max-w-4xl mx-auto bg-white rounded-2xl shadow-lg p-6 md:p-8">
         <div className="mb-6 text-gray-900">
           <h2 className="text-3xl font-bold">Health & Wellness Dashboard</h2>

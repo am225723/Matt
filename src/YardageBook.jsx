@@ -235,7 +235,7 @@ const YardageBook = ({ onBack }) => {
     setInsight('');
   };
 
-  // ✨ Hole-aware enhancement for Holes 1–3: ask a short, targeted question
+  // ✨ Hole-aware enhancement for all holes with specific insights
   const handleAIEnhance = async () => {
     if (!isInitialized) {
       toast({ title: "AI Not Ready", description: "The AI model is not initialized.", variant: "destructive" });
@@ -246,15 +246,34 @@ const YardageBook = ({ onBack }) => {
     try {
       const userText = responses[holeIndex] || '';
 
+      // Handle holes 1-3 with conversational follow-up
       if (holeIndex === 0 || holeIndex === 1 || holeIndex === 2) {
         const result = await enhanceHoleWithFollowup(holeIndex, userText);
         processAIResponse(setInsight, result, { markInsightThread: true });
-      } else {
-        // (Optional) keep your other behaviors for non 1–3 holes, or expand hole-aware later
-        setInsight(''); // no-op display for now
+      } 
+      // Handle hole-specific insights for holes 4-9
+      else if (holeIndex === 3) {
+        // Hole 4 - The Excuse Trap
+        const result = await yardageBookReframeExcuse(userText);
+        processAIResponse(setInsight, result, { markInsightThread: true });
+      } else if (holeIndex === 4) {
+        // Hole 5 - Power Phrase (already has specific button)
+        setInsight('Use the specific buttons below for this hole\'s insights.');
+      } else if (holeIndex === 5) {
+        // Hole 6 - Read the Green
+        const result = await simulateTomorrow(userText);
+        processAIResponse(setInsight, result, { markInsightThread: true });
+      } else if (holeIndex === 6) {
+        // Hole 7 - Mulligan Mindset
+        const result = await highlightTriggers(userText);
+        processAIResponse(setInsight, result, { markInsightThread: true });
+      } else if (holeIndex === 7 || holeIndex === 8) {
+        // Holes 8-9 (already have specific buttons)
+        setInsight('Use the specific buttons below for this hole\'s insights.');
       }
-    } catch {
-      setInsight('AI could not add more insight.');
+    } catch (error) {
+      console.error('AI Enhancement Error:', error);
+      setInsight('AI could not add more insight. Please try again.');
     }
     setLoading(false);
   };
@@ -336,6 +355,16 @@ const YardageBook = ({ onBack }) => {
 
   return (
     <div className="p-4 space-y-4 max-w-xl mx-auto">
+      <div className="flex items-center justify-between mb-4">
+        <Button
+          onClick={onBack}
+          variant="outline"
+          size="sm"
+        >
+          <ArrowLeft className="w-4 h-4 mr-2" />
+          Return to Dashboard
+        </Button>
+      </div>
       <h2 className="text-2xl font-bold text-primary text-center">⛳ Ryder Cup Yardage Caddie</h2>
       <h3 className="text-lg font-semibold text-center">{current.title}</h3>
       <p className="text-muted-foreground text-center">{current.prompt}</p>

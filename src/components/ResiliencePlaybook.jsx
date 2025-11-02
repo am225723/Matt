@@ -328,7 +328,7 @@ export default function ResiliencePlaybook({ plan, onBack }) {
         return (
           <div style={panelStyle} className="relative z-10 rounded-2xl p-4 shadow-2xl">
             <div className="flex justify-between items-center mb-4">
-              <Button variant="outline" onClick={onBack}>Back to Dashboard</Button>
+              <Button variant="outline" onClick={onBack}>Return to Dashboard</Button>
             </div>
             <div className="grid grid-cols-[auto_1fr_auto] gap-4 items-center mb-4 flex-wrap">
               <div className="text-sm font-medium text-black opacity-85">

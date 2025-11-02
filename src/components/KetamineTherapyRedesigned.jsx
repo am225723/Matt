@@ -441,7 +441,7 @@ const KetamineTherapyRedesigned = ({ onBack }) => {
                 className="hover:bg-indigo-100"
               >
                 <ChevronLeft className="w-4 h-4 mr-2" />
-                Back to Dashboard
+                Return to Dashboard
               </Button>
               <div>
                 <h1 className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">

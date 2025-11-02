@@ -141,42 +141,64 @@ Format your response as a JSON array with 4 objects, each containing:
 
 Return ONLY the JSON array, no other text.`;
 
-      const systemContext = "You are an expert cognitive behavioral therapist helping someone reframe limiting beliefs.";
+      const systemContext = "You are an expert cognitive behavioral therapist. Always return valid JSON.";
       const response = await generateContent(systemContext, prompt);
       
       if (response) {
         try {
           // Try to parse JSON from response
           let parsed;
-          const jsonMatch = response.match(/\[[\s\S]*\]/);
-          if (jsonMatch) {
-            parsed = JSON.parse(jsonMatch[0]);
-          } else {
-            throw new Error('No JSON array found');
+          // First try to parse the entire response
+          try {
+            parsed = JSON.parse(response);
+          } catch {
+            // If that fails, try to extract JSON array
+            const jsonMatch = response.match(/\[[\s\S]*\]/);
+            if (jsonMatch) {
+              parsed = JSON.parse(jsonMatch[0]);
+            } else {
+              throw new Error('No JSON array found in response');
+            }
           }
           
-          if (Array.isArray(parsed) && parsed.length > 0) {
+          if (Array.isArray(parsed) && parsed.length > 0 && parsed.every(item => item.title && item.reframe && item.action && item.insight)) {
             setAiReframes(parsed);
             setCurrentStep(3);
+            toast({
+              title: 'Reframes Generated!',
+              description: `Created ${parsed.length} empowering perspectives for you.`,
+            });
           } else {
-            throw new Error('Invalid response format');
+            console.warn('Invalid reframe format, using fallback. Response:', response);
+            throw new Error('Invalid response format - missing required fields');
           }
         } catch (parseError) {
           // Fallback: create manual reframes
-          console.error('Parse error:', parseError);
+          console.error('Parse error:', parseError, 'Response:', response);
+          toast({
+            title: 'Using Template Reframes',
+            description: 'AI response was invalid. Using proven reframe templates.',
+            variant: 'default',
+          });
           setAiReframes(generateFallbackReframes());
           setCurrentStep(3);
         }
       } else {
+        console.warn('Empty AI response, using fallback');
+        toast({
+          title: 'Using Template Reframes',
+          description: 'No AI response received. Using proven reframe templates.',
+          variant: 'default',
+        });
         setAiReframes(generateFallbackReframes());
         setCurrentStep(3);
       }
     } catch (error) {
       console.error('Error generating reframes:', error);
       toast({
-        title: 'Generation Error',
-        description: 'Using fallback reframes. Check your API key.',
-        variant: 'destructive',
+        title: 'Using Template Reframes',
+        description: 'AI unavailable. Using proven reframe templates.',
+        variant: 'default',
       });
       setAiReframes(generateFallbackReframes());
       setCurrentStep(3);
@@ -476,7 +498,7 @@ ${reframe.reframe.insight}`;
               className="bg-white"
             >
               <ChevronLeft className="w-4 h-4 mr-2" />
-              Back
+              Return to Dashboard
             </Button>
             <div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
@@ -547,12 +569,12 @@ ${reframe.reframe.insight}`;
                   <CardDescription>Select the area of life where you're experiencing this limiting belief</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                     {categories.map((category) => (
                       <motion.div
                         key={category.id}
-                        whileHover={{ scale: 1.05 }}
-                        whileTap={{ scale: 0.95 }}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
                       >
                         <Card
                           className={`cursor-pointer transition-all ${
@@ -562,15 +584,15 @@ ${reframe.reframe.insight}`;
                           }`}
                           onClick={() => setSelectedCategory(category)}
                         >
-                          <CardContent className="p-6">
-                            <div className={`w-16 h-16 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center text-white mb-4 mx-auto`}>
-                              {category.icon}
-                            </div>
-                            <h3 className="text-lg font-bold text-center mb-2">{category.name}</h3>
-                            <div className="space-y-1">
-                              {category.examples.slice(0, 2).map((example, i) => (
-                                <p key={i} className="text-xs text-gray-500 italic">"{example}"</p>
-                              ))}
+                          <CardContent className="p-4">
+                            <div className="flex items-center gap-4">
+                              <div className={`w-12 h-12 rounded-full bg-gradient-to-br ${category.color} flex items-center justify-center text-white flex-shrink-0`}>
+                                {React.cloneElement(category.icon, { className: 'w-6 h-6' })}
+                              </div>
+                              <div className="flex-1 min-w-0">
+                                <h3 className="text-base font-bold mb-1">{category.name}</h3>
+                                <p className="text-xs text-gray-500 italic truncate">"{category.examples[0]}"</p>
+                              </div>
                             </div>
                           </CardContent>
                         </Card>
@@ -686,7 +708,7 @@ ${reframe.reframe.insight}`;
                               <Check className="w-4 h-4 text-white" />
                             )}
                           </div>
-                          <span className="text-sm font-medium">{belief}</span>
+                          <span className="text-sm font-medium text-gray-900">{belief}</span>
                         </div>
                       </div>
                     ))}
@@ -783,13 +805,13 @@ ${reframe.reframe.insight}`;
                                   )}
                                 </div>
                                 <p className="text-sm text-gray-700">{reframe.reframe}</p>
-                                <div className="bg-purple-50 p-3 rounded-lg">
+                                <div className="bg-purple-100 p-3 rounded-lg border border-purple-200">
                                   <p className="text-xs font-semibold text-purple-900 mb-1">Next Action:</p>
-                                  <p className="text-sm text-purple-700">{reframe.action}</p>
+                                  <p className="text-sm text-gray-900">{reframe.action}</p>
                                 </div>
-                                <div className="bg-blue-50 p-3 rounded-lg">
+                                <div className="bg-blue-100 p-3 rounded-lg border border-blue-200">
                                   <p className="text-xs font-semibold text-blue-900 mb-1">Why This Works:</p>
-                                  <p className="text-sm text-blue-700">{reframe.insight}</p>
+                                  <p className="text-sm text-gray-900">{reframe.insight}</p>
                                 </div>
                               </CardContent>
                             </Card>

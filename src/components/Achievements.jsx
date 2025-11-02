@@ -22,7 +22,7 @@ const Achievements = ({ onBack }) => {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Achievements</h1>
-          <Button variant="outline" onClick={onBack}>Back to Dashboard</Button>
+          <Button variant="outline" onClick={onBack}>Return to Dashboard</Button>
         </div>
 
         <div className="mb-8 p-6 border rounded-lg text-center">

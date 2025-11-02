@@ -24,7 +24,7 @@ const PlaybookLibrary = ({ onSelectPlan, onBack }) => {
       <div className="max-w-4xl mx-auto">
         <div className="flex justify-between items-center mb-6">
           <h1 className="text-3xl font-bold">Playbook Library</h1>
-          <Button variant="outline" onClick={onBack}>Back to Dashboard</Button>
+          <Button variant="outline" onClick={onBack}>Return to Dashboard</Button>
         </div>
 
         {plans.length === 0 ? (
