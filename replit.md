@@ -134,6 +134,34 @@ Core technical implementations and features include:
   - Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
   - Functions: `saveResignation`, `getResignations`, `deleteResignation`
 
+#### December 04, 2025 - The Worry ROI (Cognitive Audit) Feature
+- ✅ **New Worry ROI Feature**: A fin-tech styled cognitive reframing tool that proves worry is a toxic asset class
+  - **Dark Fin-Tech Aesthetic**: Charcoal/midnight blue background with neon red and cyan accents
+  - **Clean Typography**: Sans-serif fonts with monospaced numbers for data
+  - **Color Coding**: Neon Red/Orange for worry/cost, Spring Green/Cyan for life/gain
+  - **Digital Sound Effects**: Sharp clicks for interactions, stamp sounds for verdicts
+  - **5-Phase Interactive Workflow**:
+    1. **Initial Public Offering** - Enter ticker symbol (e.g., $FIRED, $MOM, $HEALTH) with context
+    2. **Capital Injection** - Circular dial for time invested (0-4 hours), vertical slider for emotional volatility
+    3. **Trade Analysis** - Confirmation dialog asking if investment yielded tangible solution
+    4. **Market Crash Visualization** - Animated line chart showing crash, balance sheet table, TOXIC ASSET stamp
+    5. **Reallocation** - Drag frozen funds into life activity bubbles (Gaming, Coding, Walking, Sleep, Music)
+  - **Visual Components**:
+    - Circular time dial with drag interaction
+    - Volatility slider with color-coded levels (Low → Panic)
+    - Live energy cost calculation
+    - Animated crash chart with red gradient fill
+    - Balance sheet comparing Assets (returns=0) vs Liabilities (time lost, cortisol spike)
+    - TOXIC ASSET DETECTED stamp animation with sound effect
+    - Life activity bubbles with gradient backgrounds
+    - FUNDS TRANSFERRED success screen
+  - **Portfolio Tracking**:
+    - Weekly savings summary with mental liquidity percentage
+    - Reallocation breakdown by activity
+    - Recent audits history
+    - Persistent localStorage storage
+  - **Route**: `/worry-roi`
+
 #### Required Supabase SQL
 Run this in Supabase SQL Editor to create the resignations table:
 ```sql

@@ -14,9 +14,10 @@ import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializePerplexity } from '@/utils/perplexity.js';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature, TrendingDown } from 'lucide-react';
 import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
 import ResignationProtocol from '@/components/ResignationProtocol';
+import WorryROI from '@/components/WorryROI';
 
 // Import advanced components (lazy loaded to prevent blocking)
 const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseReframerAdvanced'));
@@ -33,6 +34,7 @@ import featureHealth from '@/assets/images/feature-health.png';
 import featureKetamine from '@/assets/images/feature-ketamine.png';
 import featureAnxiety from '@/assets/images/feature-anxiety.png';
 import featureResignation from '@/assets/images/feature-resignation.png';
+import featureWorryROI from '@/assets/images/feature-worry-roi.png';
 
 // Sophisticated Mobile-First Tile Component with Large Character Images
 const DashboardTile = ({ title, description, icon, to, gradient, delay, image }) => (
@@ -188,6 +190,15 @@ const Dashboard = () => {
       gradient: "bg-gradient-to-br from-amber-600 to-orange-700",
       image: featureResignation,
       delay: 0.5
+    },
+    {
+      title: "Worry ROI",
+      description: "Prove that worry is a toxic asset class with zero returns",
+      icon: <TrendingDown className="w-6 h-6" />,
+      to: "/worry-roi",
+      gradient: "bg-gradient-to-br from-slate-700 to-slate-900",
+      image: featureWorryROI,
+      delay: 0.55
     }
   ];
   
@@ -492,6 +503,11 @@ const ResignationProtocolWrapper = () => {
   return <ResignationProtocol onBack={() => navigate('/')} />;
 };
 
+const WorryROIWrapper = () => {
+  const navigate = useNavigate();
+  return <WorryROI onBack={() => navigate('/')} />;
+};
+
 const App = () => {
   useEffect(() => {
     const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
@@ -517,6 +533,7 @@ const App = () => {
           <Route path="/ketamine" element={<KetamineJournalWrapper />} />
           <Route path="/anxiety" element={<AnxietyTrackerWrapper />} />
           <Route path="/resignation" element={<ResignationProtocolWrapper />} />
+          <Route path="/worry-roi" element={<WorryROIWrapper />} />
         </Routes>
         <Toaster />
       </div>
