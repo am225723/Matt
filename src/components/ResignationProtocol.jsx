@@ -15,7 +15,11 @@ const ADDRESSEE_OPTIONS = [
   "The CEO of My Anxiety",
   "The Shareholders of My Self-Doubt",
   "The Inner Circle of Critics",
-  "Everyone I've Ever Disappointed (real or imagined)"
+  "Everyone I've Ever Disappointed (real or imagined)",
+  "The Audience That Doesn't Actually Exist",
+  "The Imaginary Judges in Every Room",
+  "The Panel of People Who Aren't Watching",
+  "The Spotlight That Only I Can See"
 ];
 
 const ROLE_OPTIONS = [
@@ -30,7 +34,13 @@ const ROLE_OPTIONS = [
   "President of the I'm Fine Foundation",
   "The Family Therapist (unlicensed, unpaid)",
   "Manager of Catastrophic Expectations",
-  "Supervisor of Walking on Eggshells"
+  "Supervisor of Walking on Eggshells",
+  "Director of the Spotlight Effect",
+  "Chief Performance Officer (for an audience of zero)",
+  "Head of Imaginary Judgment",
+  "Manager of What Everyone Thinks (spoiler: they don't)",
+  "VP of Living for Others' Opinions",
+  "Curator of Embarrassing Moments No One Remembers"
 ];
 
 const PAID_IN_OPTIONS = [
@@ -45,7 +55,15 @@ const PAID_IN_OPTIONS = [
   "Silent treatments",
   "Unreturned favors",
   "Broken promises",
-  "Toxic positivity"
+  "Toxic positivity",
+  "Constant performance anxiety",
+  "Replaying conversations at 3am",
+  "Rehearsing hypothetical arguments",
+  "Second-guessing every word I said",
+  "Assuming everyone's judging me",
+  "Social autopsy of every interaction",
+  "The fear of being 'too much'",
+  "Shrinking to make others comfortable"
 ];
 
 const INSTEAD_OF_OPTIONS = [
@@ -60,7 +78,15 @@ const INSTEAD_OF_OPTIONS = [
   "Actual gratitude",
   "Honest conversations",
   "Time for myself",
-  "My own dreams"
+  "My own dreams",
+  "The freedom to be imperfect",
+  "Permission to take up space",
+  "Living without an audience",
+  "Being gloriously unremarkable",
+  "The luxury of not caring",
+  "Main character energy (for myself only)",
+  "Existing without explanation",
+  "The peace of being forgotten sometimes"
 ];
 
 const CONDITION_OPTIONS = [
@@ -71,7 +97,12 @@ const CONDITION_OPTIONS = [
   "An open wound I keep picking",
   "A break room where I only break promises to myself",
   "A retirement plan with no return on investment",
-  "A performance review that only counts mistakes"
+  "A performance review that only counts mistakes",
+  "A stage with no audience but plenty of stage fright",
+  "A spotlight that only I can see shining on me",
+  "A theater where I'm the only one watching my own show",
+  "A standing ovation from people who weren't even looking",
+  "A viral moment that exists only in my head"
 ];
 
 const KEYS_OPTIONS = [
@@ -82,7 +113,12 @@ const KEYS_OPTIONS = [
   "The Corner Office of Imposter Syndrome",
   "The Parking Lot Where I Cry Before Work",
   "The Inbox of Unsent Boundaries",
-  "The Desk Drawer of Suppressed Feelings"
+  "The Desk Drawer of Suppressed Feelings",
+  "The Spotlight That Was Never Actually On",
+  "The Audience Seating (always empty)",
+  "The Recording Studio of Imaginary Judgment",
+  "The Gallery of Perceived Stares",
+  "The Archive of Conversations Nobody Remembers But Me"
 ];
 
 const RESPONSIBILITIES_TO_STRIKE = [
@@ -93,7 +129,15 @@ const RESPONSIBILITIES_TO_STRIKE = [
   "Making everyone comfortable at my own expense",
   "Keeping the peace at the cost of my sanity",
   "Carrying secrets that aren't mine to hold",
-  "Managing other adults' emotions"
+  "Managing other adults' emotions",
+  "Performing for an audience that doesn't exist",
+  "Rehearsing every conversation before and after it happens",
+  "Assuming everyone noticed that one awkward thing I did",
+  "Living as if someone is always watching and judging",
+  "Editing myself to be more palatable to strangers",
+  "Carrying the weight of opinions that were never spoken",
+  "Being the star of a show no one bought tickets to",
+  "Cringing at memories that others forgot 5 minutes later"
 ];
 
 const NEW_POSITION_OPTIONS = [
@@ -104,7 +148,15 @@ const NEW_POSITION_OPTIONS = [
   "Chief Officer of Self-Compassion",
   "Manager of My Own Happiness",
   "President of Saying No Without Guilt",
-  "Just Me (No Title Required)"
+  "Just Me (No Title Required)",
+  "Chief Officer of Not Caring What Others Think",
+  "Director of Living Without an Audience",
+  "VP of Remembering That Nobody's Watching",
+  "Head of 'They Forgot About It 5 Minutes Later'",
+  "Manager of Taking Up Space Unapologetically",
+  "President of the 'Nobody's Thinking About Me' Club",
+  "CEO of Main Character Energy (for myself only)",
+  "Someone Who Exists Without Performing"
 ];
 
 const playThudSound = () => {
