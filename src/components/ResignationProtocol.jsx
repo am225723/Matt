@@ -666,81 +666,91 @@ const EnvelopeAnimation = ({ onComplete }) => {
 
           {/* Bottom flap */}
           <motion.div
-            className="absolute w-64 h-32 bg-gradient-to-t from-amber-200 to-amber-100 origin-bottom"
+            className="absolute w-64 h-32 bg-gradient-to-t from-amber-200 via-amber-150 to-amber-100 origin-bottom shadow-lg"
             style={{
               left: 'calc(50% - 128px)',
               top: 'calc(50% - 160px)',
-              clipPath: 'polygon(0 100%, 0 0, 100% 0, 100% 100%)'
+              clipPath: 'polygon(0 100%, 0 0, 100% 0, 100% 100%)',
+              perspective: '1200px'
             }}
             initial={{ rotateX: 0, y: 0 }}
             animate={
               phase >= 4
-                ? { rotateX: -75, y: -10 }
+                ? { rotateX: -90, y: -25, scaleY: 0.95 }
                 : { rotateX: 0, y: 0 }
             }
-            transition={{ duration: 0.7, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut" }}
           />
 
           {/* Left flap */}
           <motion.div
-            className="absolute w-32 h-80 bg-gradient-to-r from-amber-200 to-amber-100 origin-left"
+            className="absolute w-32 h-80 bg-gradient-to-r from-amber-200 via-amber-150 to-amber-100 origin-left shadow-lg"
             style={{
               left: 'calc(50% - 128px)',
               top: 'calc(50% - 160px)',
-              clipPath: 'polygon(100% 0, 0 0, 0 100%, 100% 100%)'
+              clipPath: 'polygon(100% 0, 0 0, 0 100%, 100% 100%)',
+              perspective: '1200px'
             }}
             initial={{ rotateY: 0, x: 0 }}
             animate={
               phase >= 5
-                ? { rotateY: -80, x: 5 }
+                ? { rotateY: -95, x: -20, skewY: -3 }
                 : { rotateY: 0, x: 0 }
             }
-            transition={{ duration: 0.7, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut", delay: 0.1 }}
           />
 
           {/* Right flap */}
           <motion.div
-            className="absolute w-32 h-80 bg-gradient-to-l from-amber-200 to-amber-100 origin-right"
+            className="absolute w-32 h-80 bg-gradient-to-l from-amber-200 via-amber-150 to-amber-100 origin-right shadow-lg"
             style={{
               right: 'calc(50% - 128px)',
               top: 'calc(50% - 160px)',
-              clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+              clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)',
+              perspective: '1200px'
             }}
             initial={{ rotateY: 0, x: 0 }}
             animate={
               phase >= 5
-                ? { rotateY: 80, x: -5 }
+                ? { rotateY: 95, x: 20, skewY: -3 }
                 : { rotateY: 0, x: 0 }
             }
-            transition={{ duration: 0.7, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut", delay: 0.1 }}
           />
 
           {/* Top flap (triangular) */}
           <motion.div
-            className="absolute w-64 h-32 bg-gradient-to-b from-amber-200 to-amber-100 origin-top"
+            className="absolute w-64 h-32 bg-gradient-to-b from-amber-200 via-amber-150 to-amber-100 origin-top shadow-lg"
             style={{
               left: 'calc(50% - 128px)',
               top: 'calc(50% - 160px)',
-              clipPath: 'polygon(0 0, 50% 100%, 100% 0)'
+              clipPath: 'polygon(0 0, 50% 100%, 100% 0)',
+              perspective: '1200px'
             }}
             initial={{ rotateX: 0, y: 0 }}
             animate={
               phase >= 5
-                ? { rotateX: 75, y: 10 }
+                ? { rotateX: 90, y: -25, scaleZ: 0.9 }
                 : { rotateX: 0, y: 0 }
             }
-            transition={{ duration: 0.7, ease: "easeInOut" }}
+            transition={{ duration: 0.8, ease: "easeInOut", delay: 0.2 }}
           />
 
           {/* Sealed envelope front */}
-          {phase >= 5 && (
+          {phase >= 4 && (
             <motion.div
-              className="absolute w-64 h-80 bg-gradient-to-b from-amber-100 to-amber-200 rounded-lg shadow-2xl border-2 border-amber-300"
+              className="absolute w-64 h-80 bg-gradient-to-br from-amber-100 via-amber-150 to-amber-200 rounded-lg shadow-2xl border-2 border-amber-300 overflow-hidden"
               style={{ left: 'calc(50% - 128px)', top: 'calc(50% - 160px)' }}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 0.3 }}
-            />
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+            >
+              {/* Envelope flap crease */}
+              <div className="absolute top-1/3 left-0 w-full h-1 bg-gradient-to-r from-transparent via-amber-400/30 to-transparent" />
+              {/* Envelope corner folds */}
+              <div className="absolute top-0 right-0 w-0 h-0 border-l-8 border-r-0 border-t-8 border-b-0 border-l-transparent border-t-amber-300/50" />
+              <div className="absolute top-0 left-0 w-0 h-0 border-l-0 border-r-8 border-t-8 border-b-0 border-r-transparent border-t-amber-300/50" />
+            </motion.div>
           )}
 
           {/* Wax seal dripping effect */}
