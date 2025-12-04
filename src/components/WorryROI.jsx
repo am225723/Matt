@@ -4,9 +4,11 @@ import {
   TrendingDown, ArrowLeft, DollarSign, Clock, Activity, AlertTriangle,
   Check, X, Zap, Moon, Gamepad2, Code, Music, Dog, FileText, 
   BarChart3, PieChart, Briefcase, Flame, Target, RefreshCw,
-  ChevronDown, Plus, Minus, ArrowUpRight, ArrowDownRight, Wallet
+  ChevronDown, Plus, Minus, ArrowUpRight, ArrowDownRight, Wallet,
+  Scale, Brain, Loader2, Sparkles, ThumbsUp, ThumbsDown
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { supabase } from '@/lib/supabase';
 
 const playClickSound = () => {
   try {
@@ -634,6 +636,209 @@ const PortfolioView = ({ history, onBack, onNewAudit }) => {
   );
 };
 
+const FactsAnalysis = ({ ticker, context, factsFor, factsAgainst, onFactsForChange, onFactsAgainstChange, aiAnalysis, isAnalyzing, onAnalyze, onSkip, onContinue }) => {
+  const [newFactFor, setNewFactFor] = useState('');
+  const [newFactAgainst, setNewFactAgainst] = useState('');
+
+  const addFactFor = () => {
+    if (newFactFor.trim()) {
+      onFactsForChange([...factsFor, newFactFor.trim()]);
+      setNewFactFor('');
+      playClickSound();
+    }
+  };
+
+  const addFactAgainst = () => {
+    if (newFactAgainst.trim()) {
+      onFactsAgainstChange([...factsAgainst, newFactAgainst.trim()]);
+      setNewFactAgainst('');
+      playClickSound();
+    }
+  };
+
+  const removeFactFor = (index) => {
+    onFactsForChange(factsFor.filter((_, i) => i !== index));
+    playClickSound();
+  };
+
+  const removeFactAgainst = (index) => {
+    onFactsAgainstChange(factsAgainst.filter((_, i) => i !== index));
+    playClickSound();
+  };
+
+  return (
+    <motion.div
+      key="facts"
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -20 }}
+      className="space-y-6"
+    >
+      <div className="text-center mb-6">
+        <Scale className="w-16 h-16 text-cyan-400 mx-auto mb-4" />
+        <h2 className="text-2xl font-bold text-white mb-2">Evidence Review</h2>
+        <p className="text-slate-400">
+          Let's examine the facts about <span className="text-orange-400 font-mono">{ticker}</span>
+        </p>
+        <p className="text-slate-500 text-sm mt-1">{context}</p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-6">
+        {/* Facts Supporting the Worry */}
+        <div className="bg-gradient-to-br from-red-950/40 to-slate-900 rounded-2xl p-5 border border-red-900/30">
+          <div className="flex items-center gap-2 mb-4">
+            <ThumbsDown className="w-5 h-5 text-red-400" />
+            <h3 className="text-lg font-bold text-red-400">Evidence Supporting Worry</h3>
+          </div>
+          <p className="text-slate-500 text-sm mb-4">What facts suggest this worry is valid?</p>
+          
+          <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
+            {factsFor.map((fact, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-start gap-2 bg-red-950/30 rounded-lg p-3 group"
+              >
+                <span className="text-red-400 font-mono text-sm">•</span>
+                <p className="text-slate-300 text-sm flex-1">{fact}</p>
+                <button
+                  onClick={() => removeFactFor(index)}
+                  className="text-red-400/50 hover:text-red-400 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newFactFor}
+              onChange={(e) => setNewFactFor(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addFactFor()}
+              placeholder="Add supporting evidence..."
+              className="flex-1 bg-slate-800/50 border border-red-900/30 rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-red-500"
+            />
+            <Button
+              onClick={addFactFor}
+              disabled={!newFactFor.trim()}
+              className="bg-red-600 hover:bg-red-700 text-white px-3"
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+
+        {/* Facts Against the Worry */}
+        <div className="bg-gradient-to-br from-green-950/40 to-slate-900 rounded-2xl p-5 border border-green-900/30">
+          <div className="flex items-center gap-2 mb-4">
+            <ThumbsUp className="w-5 h-5 text-green-400" />
+            <h3 className="text-lg font-bold text-green-400">Evidence Against Worry</h3>
+          </div>
+          <p className="text-slate-500 text-sm mb-4">What facts suggest this worry is unfounded?</p>
+          
+          <div className="space-y-2 mb-4 max-h-40 overflow-y-auto">
+            {factsAgainst.map((fact, index) => (
+              <motion.div
+                key={index}
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="flex items-start gap-2 bg-green-950/30 rounded-lg p-3 group"
+              >
+                <span className="text-green-400 font-mono text-sm">•</span>
+                <p className="text-slate-300 text-sm flex-1">{fact}</p>
+                <button
+                  onClick={() => removeFactAgainst(index)}
+                  className="text-green-400/50 hover:text-green-400 transition-colors opacity-0 group-hover:opacity-100"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </motion.div>
+            ))}
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={newFactAgainst}
+              onChange={(e) => setNewFactAgainst(e.target.value)}
+              onKeyPress={(e) => e.key === 'Enter' && addFactAgainst()}
+              placeholder="Add counter evidence..."
+              className="flex-1 bg-slate-800/50 border border-green-900/30 rounded-lg px-3 py-2 text-white text-sm placeholder-slate-500 focus:outline-none focus:border-green-500"
+            />
+            <Button
+              onClick={addFactAgainst}
+              disabled={!newFactAgainst.trim()}
+              className="bg-green-600 hover:bg-green-700 text-white px-3"
+            >
+              <Plus className="w-4 h-4" />
+            </Button>
+          </div>
+        </div>
+      </div>
+
+      {/* AI Analysis Section */}
+      {aiAnalysis && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-gradient-to-br from-cyan-950/40 to-slate-900 rounded-2xl p-6 border border-cyan-900/30"
+        >
+          <div className="flex items-center gap-2 mb-4">
+            <Sparkles className="w-5 h-5 text-cyan-400" />
+            <h3 className="text-lg font-bold text-cyan-400">AI Analysis</h3>
+          </div>
+          <div className="prose prose-invert prose-sm max-w-none">
+            <p className="text-slate-300 whitespace-pre-wrap leading-relaxed">{aiAnalysis}</p>
+          </div>
+        </motion.div>
+      )}
+
+      {/* Action Buttons */}
+      <div className="flex flex-col sm:flex-row gap-3">
+        {!aiAnalysis ? (
+          <>
+            <Button
+              onClick={onAnalyze}
+              disabled={isAnalyzing || (factsFor.length === 0 && factsAgainst.length === 0)}
+              className="flex-1 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white py-6 text-lg disabled:opacity-50"
+            >
+              {isAnalyzing ? (
+                <>
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  Analyzing Evidence...
+                </>
+              ) : (
+                <>
+                  <Brain className="w-5 h-5 mr-2" />
+                  Analyze with AI
+                </>
+              )}
+            </Button>
+            <Button
+              onClick={onSkip}
+              variant="outline"
+              className="flex-1 border-slate-600 text-slate-400 hover:bg-slate-800 py-6 text-lg"
+            >
+              Skip Analysis
+            </Button>
+          </>
+        ) : (
+          <Button
+            onClick={onContinue}
+            className="w-full bg-gradient-to-r from-green-500 to-emerald-600 hover:from-green-600 hover:to-emerald-700 text-white py-6 text-lg"
+          >
+            <Check className="w-5 h-5 mr-2" />
+            Continue to Reallocation
+          </Button>
+        )}
+      </div>
+    </motion.div>
+  );
+};
+
 const WorryROI = ({ onBack }) => {
   const [phase, setPhase] = useState('ticker');
   const [ticker, setTicker] = useState('');
@@ -642,6 +847,10 @@ const WorryROI = ({ onBack }) => {
   const [volatility, setVolatility] = useState(1);
   const [showStamp, setShowStamp] = useState(false);
   const [selectedActivity, setSelectedActivity] = useState(null);
+  const [factsFor, setFactsFor] = useState([]);
+  const [factsAgainst, setFactsAgainst] = useState([]);
+  const [aiAnalysis, setAiAnalysis] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [history, setHistory] = useState(() => {
     try {
       return JSON.parse(localStorage.getItem('worryROI_history') || '[]');
@@ -686,6 +895,85 @@ const WorryROI = ({ onBack }) => {
 
   const handleStampComplete = () => {
     setShowStamp(false);
+    setPhase('facts');
+  };
+
+  const handleFactsAnalyze = async () => {
+    if (factsFor.length === 0 && factsAgainst.length === 0) return;
+    
+    setAiAnalysis('');
+    setIsAnalyzing(true);
+    playClickSound();
+    
+    try {
+      const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+      
+      if (!supabaseUrl) {
+        throw new Error('Supabase not configured');
+      }
+
+      const systemContext = `You are a cognitive behavioral therapy assistant helping users analyze their worries objectively. 
+Your role is to provide balanced, compassionate analysis of the evidence they've gathered about their worry.
+Keep responses concise (3-4 paragraphs max), warm but professional, and focus on helping them see their situation more clearly.
+Use the fin-tech metaphor: treat worries as "investments" and help them see if this worry is worth their "emotional capital".`;
+
+      const userPrompt = `The user is worried about: "${ticker}" - ${context}
+
+Evidence they've gathered SUPPORTING the worry (reasons to be concerned):
+${factsFor.length > 0 ? factsFor.map((f, i) => `${i + 1}. ${f}`).join('\n') : 'None provided'}
+
+Evidence they've gathered AGAINST the worry (reasons not to be concerned):
+${factsAgainst.length > 0 ? factsAgainst.map((f, i) => `${i + 1}. ${f}`).join('\n') : 'None provided'}
+
+Please analyze this evidence and help them:
+1. Objectively weigh the evidence on both sides
+2. Identify any cognitive distortions or biases in their thinking
+3. Suggest a more balanced perspective
+4. Give a brief "investment recommendation" - is this worry worth their emotional capital?`;
+
+      const response = await fetch(`${supabaseUrl}/functions/v1/perplexity-ai`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${import.meta.env.VITE_SUPABASE_ANON_KEY}`
+        },
+        body: JSON.stringify({
+          systemContext,
+          userPrompt,
+          temperature: 0.3
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error('AI analysis failed');
+      }
+
+      const data = await response.json();
+      setAiAnalysis(data.content);
+      playSuccessSound();
+    } catch (error) {
+      console.error('AI Analysis error:', error);
+      setAiAnalysis(`Unable to connect to AI service. Here's a self-reflection prompt instead:
+
+Looking at your evidence, consider:
+• Does the supporting evidence represent facts or fears?
+• Are the counter-points being minimized?
+• What would you tell a friend in this situation?
+• Is the worry proportional to the actual risk?
+
+Remember: Most worries never materialize, and even when challenges arise, you've handled difficult situations before.`);
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
+
+  const handleFactsSkip = () => {
+    playClickSound();
+    setPhase('reallocation');
+  };
+
+  const handleFactsContinue = () => {
+    playClickSound();
     setPhase('reallocation');
   };
 
@@ -696,6 +984,9 @@ const WorryROI = ({ onBack }) => {
       context,
       timeInvested,
       volatility,
+      factsFor,
+      factsAgainst,
+      aiAnalysis,
       reallocatedTo: activity.id,
       date: new Date().toISOString()
     });
@@ -708,6 +999,10 @@ const WorryROI = ({ onBack }) => {
     setTimeInvested(30);
     setVolatility(1);
     setSelectedActivity(null);
+    setFactsFor([]);
+    setFactsAgainst([]);
+    setAiAnalysis('');
+    setIsAnalyzing(false);
     setPhase('ticker');
   };
 
@@ -977,6 +1272,22 @@ const WorryROI = ({ onBack }) => {
                     Verify Verdict
                   </Button>
                 </motion.div>
+              )}
+
+              {phase === 'facts' && (
+                <FactsAnalysis
+                  ticker={ticker}
+                  context={context}
+                  factsFor={factsFor}
+                  factsAgainst={factsAgainst}
+                  onFactsForChange={setFactsFor}
+                  onFactsAgainstChange={setFactsAgainst}
+                  aiAnalysis={aiAnalysis}
+                  isAnalyzing={isAnalyzing}
+                  onAnalyze={handleFactsAnalyze}
+                  onSkip={handleFactsSkip}
+                  onContinue={handleFactsContinue}
+                />
               )}
 
               {phase === 'reallocation' && (

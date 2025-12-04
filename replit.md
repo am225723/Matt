@@ -1,186 +1,40 @@
 ## Overview
-Matthew's Playbook is a comprehensive React + Vite web application designed for personal development, mental wellness, and resilience building. It offers a suite of tools for anxiety tracking, health monitoring, ketamine therapy journaling, resilience playbook creation, and AI-powered insights. The project aims to provide users with a personal journey towards mental clarity and resilience through interactive and AI-enhanced features.
+Matthew's Playbook is a React + Vite web application focused on personal development, mental wellness, and resilience. It provides tools for anxiety tracking, health monitoring, ketamine therapy journaling, resilience playbook creation, and AI-powered insights, aiming to guide users towards mental clarity and resilience through interactive and AI-enhanced features.
 
 ## User Preferences
 No specific user preferences recorded yet
 
 ## System Architecture
-The application is built with React and Vite for the frontend, utilizing a component-based architecture with modular components, utility functions, and dedicated service files. Styling is managed with Tailwind CSS, incorporating a dark sophisticated theme, glass morphism effects, and smooth Framer Motion animations. Key UI/UX decisions include a mobile-first responsive design, animated elements like rotating gradient rings and sparkle effects for avatars, sophisticated gradient tiles with character images, and a horizontal header layout. Data persistence is handled via Supabase (with localStorage fallback). The application uses React Router v6 for URL-based navigation, allowing direct links and browser history management for all features.
+The application uses React and Vite, featuring a component-based architecture, Tailwind CSS for styling (dark sophisticated theme, glass morphism, Framer Motion animations), and a mobile-first responsive design. UI/UX includes animated elements, gradient tiles with character images, and a horizontal header. Data is persisted using Supabase (with localStorage fallback) and navigation is managed by React Router v6.
 
-**Vercel Deployment Architecture**: The application is designed to deploy on Vercel with:
-- **Supabase Edge Functions** for AI API proxying (Perplexity, OpenAI Whisper)
-- **Supabase Database** for persistent data storage (resignations, etc.)
-- **Frontend-only deployment** on Vercel (no Express backend needed)
+The application is designed for Vercel deployment, utilizing:
+- **Supabase Edge Functions** for AI API proxying (Perplexity, OpenAI Whisper).
+- **Supabase Database** for data storage.
+- **Frontend-only deployment** on Vercel.
 
-Core technical implementations and features include:
-- **Resilience Playbook & Library**: Tools for creating and managing step-by-step strategies.
-- **Achievements**: Progress tracking and badging system.
-- **Excuse Reframing**: AI-powered transformation of limiting beliefs via a guided wizard with multiple suggestions and psychological insights.
-- **Ryder Cup Yardage Book**: A personal guidance system.
-- **Enhanced Health Dashboard**: AI-powered insights and tracking.
-- **Ketamine Journal**: A sophisticated session-based workflow with curated question banks, segmented audio recording, real-time transcription, AI follow-up questions, and mood tracking.
-- **Anxiety Tracker**: An interactive body map visualization with a detailed calibration overlay, supporting comprehensive tracking of sensations across numerous body parts with individual questioning and intensity sliders.
-- **Resignation Protocol**: A therapeutic digital ritual allowing users to formally resign from unpaid emotional roles (e.g., "General Manager of the Universe", "Chief Worrier"). Features typewriter-style text on cream paper background, interactive Mad Libs-style form, signature canvas with haptic feedback, and two release options (Burn for catharsis or File for boundary-setting).
-- **AI Integration**: AI capabilities are central to features like excuse reframing, health insights, and ketamine journal follow-ups.
-- **Audio Transcription**: Securely handled via an Express backend server proxying requests to the OpenAI Whisper API.
-- **Character-Based UI**: Custom cartoon avatars for each feature, displayed on tiles with hover animations.
+Key features and technical implementations include:
+- **Resilience Playbook & Library**: Strategy creation and management.
+- **Achievements**: Progress tracking and badging.
+- **Excuse Reframing**: AI-powered reframing of limiting beliefs.
+- **Ryder Cup Yardage Book**: Personal guidance system.
+- **Enhanced Health Dashboard**: AI-powered health insights.
+- **Ketamine Journal**: Session-based workflow with audio recording, transcription, AI follow-ups, and mood tracking.
+- **Anxiety Tracker**: Interactive body map visualization for tracking sensations.
+- **Resignation Protocol**: A therapeutic digital ritual for releasing emotional burdens, featuring typewriter effects, Mad Libs-style forms, signature canvas, and dual release options (Burn/File) with Supabase integration.
+- **Worry ROI**: A fin-tech styled cognitive reframing tool to audit the cost of worry, including a 7-phase workflow, AI-powered facts analysis (CBT approach), and portfolio tracking.
+- **AI Integration**: Central to excuse reframing, health insights, ketamine journal, and worry ROI.
+- **Audio Transcription**: Handled via OpenAI Whisper API proxied through Supabase Edge Functions.
+- **Character-Based UI**: Custom cartoon avatars for each feature tile with hover animations.
 
 ## External Dependencies
-- **Perplexity API**: Powers AI insights, excuse reframing, and yardage book features. Accessed via Supabase Edge Functions for Vercel deployment.
-- **OpenAI API (Whisper-1)**: Used for audio transcription in Ketamine Journal and AI follow-up questions. Accessed via Supabase Edge Functions for secure key handling.
+- **Perplexity API**: Used for AI insights, excuse reframing, yardage book, and Worry ROI's cognitive behavioral therapy analysis, accessed via Supabase Edge Functions.
+- **OpenAI API (Whisper-1)**: For audio transcription in the Ketamine Journal and AI follow-up questions, accessed via Supabase Edge Functions.
 - **Google Gemini API**: An alternative AI provider for enhanced features.
-- **Supabase**: 
-  - Database storage for resignations with full CRUD operations
-  - Edge Functions for AI API proxying (perplexity-ai, transcribe)
-  - Storage bucket for images (bg-main.jpg, 1530.png, 1531.png) for dashboard backgrounds and anxiety tracker body map
+- **Supabase**:
+  - Database for resignations with CRUD operations.
+  - Edge Functions for AI API proxying (Perplexity-AI, transcribe).
+  - Storage bucket for images used in dashboard backgrounds and the anxiety tracker body map.
 - **Framer Motion**: For animations.
 - **Tailwind CSS**: For styling.
 - **Lucide React**: For icons.
 - **Chart.js & Recharts**: For data visualizations.
-
-### Recent Changes
-
-#### November 02, 2025 - Mobile-First Dashboard with Character Tiles & Horizontal Header
-- ✅ **Mobile-First Responsive Design**: Completely rebuilt dashboard with mobile as priority
-  - **Single Column Mobile**: Perfect touch-friendly layout on phones
-  - **2-Column Tablet/Desktop**: Expands beautifully on larger screens
-  - **Cartoon Avatar Integration**: Professional cartoon character with rotating gradient ring
-  - **Rotating Gradient Ring**: Animated conic gradient border around avatar
-  - **Sparkle Effect**: Animated sparkle emoji on avatar for visual delight
-  - **Sophisticated Gradient Tiles**: Each feature has unique vibrant gradient
-  - **Glass Morphism Effects**: Frosted glass overlays with backdrop blur
-  - **Touch-Optimized**: Large tap targets (176px height for tiles)
-  - **Smooth Animations**: Staggered tile entrance with spring physics
-  - **Shine Effect**: Diagonal shine animation on tile hover
-  - **Bottom Highlight**: Gradient border at bottom of each tile
-  - **Dark Sophisticated Theme**: Slate-900 background with ambient orbs
-  - **Accessible**: High contrast white text on vibrant gradients
-- ✅ **Horizontal Header Layout**: Redesigned header with character on the side
-  - **Side-by-Side Layout**: Avatar on left, title on right (responsive to stack on mobile)
-  - **Large Gradient Title**: 3xl-6xl responsive text with blue→purple→pink gradient
-  - **Glow Effect Behind Text**: Blurred gradient backdrop for depth
-  - **Animated Shimmer**: Periodic shine sweep across title text
-  - **Elegant Subtitle**: "Your Personal Journey to Mental Clarity & Resilience"
-  - **Sophisticated Typography**: Mix of font weights and gradient text effects
-  - **Layered Animations**: Staggered entrance with slide-in from left
-  - **Call to Action**: "Choose your path below ↓" with arrow
-- ✅ **Character Images on Tiles**: Each feature tile now includes custom character artwork
-  - **Playbook**: Character holding shield with book icon
-  - **Library**: Character with magical glowing book and robot companion
-  - **Achievements**: Character holding gold medal and golf club
-  - **Reframing**: Character with tablet showing positive/negative thoughts
-  - **Yardage**: Character in golf visor studying yardage book
-  - **Health**: Character in doctor's coat with health dashboard
-  - **Ketamine**: Character relaxing on cloud with thought spiral
-  - **Anxiety**: Character presenting body map visualization
-  - **Hover Effects**: Characters scale and rotate on hover for interactivity
-- ✅ **Back Button Navigation**: All feature pages have return to dashboard buttons
-  - All wrapper components include `onBack={() => navigate('/')}` functionality
-  - Users can easily return to dashboard from any feature
-  - "Back to Dashboard" button visible at top of each feature page
-- ✅ **Complete Body Map Visualization**: Added all 14 body part circles to calibration overlay
-  - Added visible circles for: Face, Neck, Left Arm, Left Hand, Right Hand, Back, Left Leg, Right Leg, Left Foot, Right Foot
-  - All body parts now have adjustable SVG ellipses positioned on the photo
-  - Users can see, select, and calibrate all 14 body parts instead of just 4
-  - Each circle is clickable, draggable, and fully customizable (position, scale, rotation)
-- ✅ **Audio Transcription Fix**: Migrated from Perplexity to OpenAI Whisper API with secure backend proxy
-  - Created Express backend server (`server.js`) to securely handle API keys
-  - Backend endpoint `/api/transcribe` proxies requests to OpenAI Whisper-1 model
-  - Prevents API key exposure on client-side (security best practice)
-  - Users can record and transcribe audio in Ketamine Journal feature
-- ✅ **React Router v6 Integration**: URL-based navigation for all features
-  - Each feature has dedicated route (/, /playbook, /library, /achievements, /reframe, /yardage, /health, /ketamine, /anxiety, /resignation)
-  - Browser back/forward buttons work naturally
-  - Features can be bookmarked and shared via direct URLs
-  - Link components in tiles prevent page reload for smooth transitions
-
-#### December 04, 2025 - Resignation Protocol Feature, Satirical Style & Vercel Deployment
-- ✅ **New Resignation Protocol Feature**: A therapeutic ritual for releasing emotional burdens
-  - **Cream Paper Aesthetic**: Warm textured background with subtle paper grain
-  - **Typewriter Typography**: Courier Prime monospace font for official document feel
-  - **Handwritten Input Style**: Caveat cursive font for user selections in deep indigo
-  - **Satirical/Dark Humor Style**: Inspired by user's example document with clever, self-deprecating metaphors:
-    - "Lowering standards so far they could win a limbo contest with a crumb"
-    - "The server at the banquet where I eat myself alive"
-    - "Grown continuously—like bacteria"
-    - "Break rooms that are for resting, not breaking promises"
-    - "Two weeks notice, but I've only got two minutes"
-  - **5-Phase Interactive Workflow**:
-    1. Header - Choose who to address (e.g., "The Board of Self-Sabotage", "To Whom It Definitely Concerns")
-    2. Role - Select the unpaid position (e.g., "My Own Representative", "CEO of Everyone's Problems But My Own")
-    3. Grievances - Define working conditions and what you've been paid in vs what you deserve
-    4. Surrender of Assets - Return keys and strike through responsibilities
-    5. New Appointment - Accept a new, empowering position (e.g., "Just Matt (No Title Required)")
-  - **Signature Canvas**: Touch-enabled signing with haptic vibration feedback
-  - **Dual Release Options**:
-    - The Burn: Dramatic fire animation with floating embers and cathartic release
-    - The File: Filing cabinet animation with reference number generation
-  - **Supabase Integration**: Resignations saved to Supabase database (with localStorage fallback)
-  - **Enhanced Visual Effects**:
-    - Floating ambient particles
-    - Wax seal stamp animation on completion
-    - Glowing progress dots with pulse animation
-    - Animated dropdown menus with staggered entry
-    - Pulsing cursor during typewriter effect
-    - Gradient glow effects on signature canvas
-  - **Consistent Navigation**: "Return to Dashboard" button following app-wide pattern
-- ✅ **Supabase Edge Functions for Vercel Deployment**: Created edge functions to replace Express backend
-  - `supabase/functions/perplexity-ai/index.ts` - Proxies Perplexity API for AI features
-  - `supabase/functions/transcribe/index.ts` - Proxies OpenAI Whisper API for audio transcription
-  - Frontend `perplexity.js` auto-detects and calls edge functions when Supabase env vars are present
-  - Falls back to local Express backend for development
-  - See `supabase/README.md` for deployment instructions
-- ✅ **Supabase Client Setup**: Created `src/lib/supabase.js` utility
-  - Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
-  - Functions: `saveResignation`, `getResignations`, `deleteResignation`
-
-#### December 04, 2025 - The Worry ROI (Cognitive Audit) Feature
-- ✅ **New Worry ROI Feature**: A fin-tech styled cognitive reframing tool that proves worry is a toxic asset class
-  - **Dark Fin-Tech Aesthetic**: Charcoal/midnight blue background with neon red and cyan accents
-  - **Clean Typography**: Sans-serif fonts with monospaced numbers for data
-  - **Color Coding**: Neon Red/Orange for worry/cost, Spring Green/Cyan for life/gain
-  - **Digital Sound Effects**: Sharp clicks for interactions, stamp sounds for verdicts
-  - **5-Phase Interactive Workflow**:
-    1. **Initial Public Offering** - Enter ticker symbol (e.g., $FIRED, $MOM, $HEALTH) with context
-    2. **Capital Injection** - Circular dial for time invested (0-4 hours), vertical slider for emotional volatility
-    3. **Trade Analysis** - Confirmation dialog asking if investment yielded tangible solution
-    4. **Market Crash Visualization** - Animated line chart showing crash, balance sheet table, TOXIC ASSET stamp
-    5. **Reallocation** - Drag frozen funds into life activity bubbles (Gaming, Coding, Walking, Sleep, Music)
-  - **Visual Components**:
-    - Circular time dial with drag interaction
-    - Volatility slider with color-coded levels (Low → Panic)
-    - Live energy cost calculation
-    - Animated crash chart with red gradient fill
-    - Balance sheet comparing Assets (returns=0) vs Liabilities (time lost, cortisol spike)
-    - TOXIC ASSET DETECTED stamp animation with sound effect
-    - Life activity bubbles with gradient backgrounds
-    - FUNDS TRANSFERRED success screen
-  - **Portfolio Tracking**:
-    - Weekly savings summary with mental liquidity percentage
-    - Reallocation breakdown by activity
-    - Recent audits history
-    - Persistent localStorage storage
-  - **Route**: `/worry-roi`
-
-#### Required Supabase SQL
-Run this in Supabase SQL Editor to create the resignations table:
-```sql
-CREATE TABLE resignations (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  created_at TIMESTAMPTZ DEFAULT NOW(),
-  addressee TEXT NOT NULL,
-  role TEXT NOT NULL,
-  condition TEXT NOT NULL,
-  paid_in TEXT NOT NULL,
-  instead_of TEXT NOT NULL,
-  returning_keys TEXT NOT NULL,
-  struck_responsibilities TEXT[] DEFAULT '{}',
-  new_position TEXT NOT NULL,
-  signature_data TEXT,
-  release_type TEXT NOT NULL CHECK (release_type IN ('burn', 'file')),
-  reference_number TEXT
-);
-
-ALTER TABLE resignations ENABLE ROW LEVEL SECURITY;
-CREATE POLICY "Allow all operations" ON resignations FOR ALL USING (true) WITH CHECK (true);
-```
