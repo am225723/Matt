@@ -11,7 +11,7 @@ const port = process.env.PORT || 3000;
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' }));
 
 // CORS middleware
 app.use((req, res, next) => {
@@ -28,6 +28,58 @@ app.use((req, res, next) => {
 // Health check endpoint
 app.get('/api/health', (req, res) => {
   res.json({ status: 'ok', message: 'Backend server is running' });
+});
+
+// Perplexity AI proxy endpoint
+app.post('/api/perplexity', async (req, res) => {
+  try {
+    const apiKey = process.env.PERPLEXITY_API_KEY;
+    
+    if (!apiKey) {
+      return res.status(500).json({ 
+        error: 'Perplexity API key is not configured on the server' 
+      });
+    }
+
+    const { systemContext, userPrompt, temperature = 0.2 } = req.body;
+
+    if (!systemContext || !userPrompt) {
+      return res.status(400).json({ error: 'Missing systemContext or userPrompt' });
+    }
+
+    const response = await fetch('https://api.perplexity.ai/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${apiKey}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        model: 'llama-3.1-sonar-small-128k-chat',
+        messages: [
+          { role: 'system', content: systemContext },
+          { role: 'user', content: userPrompt }
+        ],
+        temperature: temperature,
+        top_p: 0.9,
+        stream: false
+      })
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}));
+      throw new Error(`Perplexity API error: ${errorData.error?.message || response.statusText}`);
+    }
+
+    const data = await response.json();
+    res.json({ content: data.choices[0].message.content });
+
+  } catch (error) {
+    console.error('Perplexity API error:', error);
+    res.status(500).json({ 
+      error: 'AI request failed', 
+      message: error.message 
+    });
+  }
 });
 
 // Transcription proxy endpoint
