@@ -615,12 +615,15 @@ const EnvelopeAnimation = ({ onComplete }) => {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 600),    // Bottom flap folds
-      setTimeout(() => setPhase(2), 1200),   // Left & right flaps fold
-      setTimeout(() => setPhase(3), 1800),   // Top flap folds
-      setTimeout(() => setPhase(4), 2400),   // Wax seal drips
-      setTimeout(() => setPhase(5), 3600),   // Wax seal solidifies
-      setTimeout(() => onComplete(), 4400)
+      setTimeout(() => setPhase(1), 400),    // Letter appears
+      setTimeout(() => setPhase(2), 1000),   // Letter folds
+      setTimeout(() => setPhase(3), 1800),   // Letter slides into envelope
+      setTimeout(() => setPhase(4), 2400),   // Bottom flap folds
+      setTimeout(() => setPhase(3), 3000),   // Left & right flaps fold
+      setTimeout(() => setPhase(5), 3600),   // Top flap folds
+      setTimeout(() => setPhase(6), 4400),   // Wax seal drips
+      setTimeout(() => setPhase(7), 5800),   // Wax seal solidifies
+      setTimeout(() => onComplete(), 7000)
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, [onComplete]);
@@ -633,10 +636,32 @@ const EnvelopeAnimation = ({ onComplete }) => {
     >
       <div className="relative w-96 h-full flex items-center justify-center">
         <div className="relative w-80 h-96">
+          {/* Letter - appears, folds, then slides into envelope */}
+          {phase >= 1 && phase < 4 && (
+            <motion.div
+              className="absolute w-32 h-40 bg-gradient-to-b from-amber-50 to-white rounded-sm shadow-xl"
+              style={{ left: 'calc(50% - 64px)', top: 'calc(50% - 100px)' }}
+              initial={{ opacity: 0, y: -80 }}
+              animate={
+                phase === 1
+                  ? { opacity: 1, y: 0 }
+                  : phase === 2
+                  ? { scaleY: 0.3, z: 100 }
+                  : { x: -200, y: 80, opacity: 0 }
+              }
+              transition={{ duration: 0.6 }}
+            >
+              <div className="p-2 text-[6px] font-mono text-slate-600">
+                <p className="font-bold">RESIGNATION</p>
+              </div>
+            </motion.div>
+          )}
+
           {/* Envelope back */}
           <motion.div
             className="absolute w-64 h-80 bg-gradient-to-br from-amber-100 to-amber-150 rounded-lg shadow-2xl"
             style={{ left: 'calc(50% - 128px)', top: 'calc(50% - 160px)' }}
+            animate={{ opacity: phase >= 3 ? 1 : 0.3 }}
           />
 
           {/* Bottom flap */}
@@ -649,7 +674,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
             }}
             initial={{ rotateX: 0, y: 0 }}
             animate={
-              phase >= 1 
+              phase >= 4
                 ? { rotateX: -75, y: -10 }
                 : { rotateX: 0, y: 0 }
             }
@@ -666,7 +691,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
             }}
             initial={{ rotateY: 0, x: 0 }}
             animate={
-              phase >= 2
+              phase >= 5
                 ? { rotateY: -80, x: 5 }
                 : { rotateY: 0, x: 0 }
             }
@@ -683,7 +708,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
             }}
             initial={{ rotateY: 0, x: 0 }}
             animate={
-              phase >= 2
+              phase >= 5
                 ? { rotateY: 80, x: -5 }
                 : { rotateY: 0, x: 0 }
             }
@@ -700,7 +725,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
             }}
             initial={{ rotateX: 0, y: 0 }}
             animate={
-              phase >= 3
+              phase >= 5
                 ? { rotateX: 75, y: 10 }
                 : { rotateX: 0, y: 0 }
             }
@@ -708,7 +733,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
           />
 
           {/* Sealed envelope front */}
-          {phase >= 3 && (
+          {phase >= 5 && (
             <motion.div
               className="absolute w-64 h-80 bg-gradient-to-b from-amber-100 to-amber-200 rounded-lg shadow-2xl border-2 border-amber-300"
               style={{ left: 'calc(50% - 128px)', top: 'calc(50% - 160px)' }}
@@ -719,9 +744,8 @@ const EnvelopeAnimation = ({ onComplete }) => {
           )}
 
           {/* Wax seal dripping effect */}
-          {phase >= 4 && (
+          {phase >= 6 && (
             <>
-              {/* Dripping wax drops */}
               {[...Array(5)].map((_, i) => (
                 <motion.div
                   key={`drip-${i}`}
@@ -744,7 +768,6 @@ const EnvelopeAnimation = ({ onComplete }) => {
                 />
               ))}
 
-              {/* Main wax seal blob forming */}
               <motion.div
                 className="absolute w-20 h-20 bg-gradient-to-br from-red-600 to-red-900 rounded-full shadow-lg"
                 style={{
@@ -752,7 +775,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
                   top: 'calc(50% - 90px)'
                 }}
                 initial={{ scale: 0, opacity: 0 }}
-                animate={phase >= 4 ? { scale: 1, opacity: 1 } : {}}
+                animate={phase >= 6 ? { scale: 1, opacity: 1 } : {}}
                 transition={{
                   duration: 0.6,
                   delay: 0.3,
@@ -765,7 +788,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
           )}
 
           {/* Wax seal final state */}
-          {phase >= 5 && (
+          {phase >= 7 && (
             <motion.div
               className="absolute w-20 h-20 flex items-center justify-center"
               style={{
@@ -778,10 +801,6 @@ const EnvelopeAnimation = ({ onComplete }) => {
             >
               <div className="relative w-full h-full">
                 <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-900 rounded-full shadow-2xl" />
-                <div className="absolute inset-3 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
-                  <Stamp className="w-10 h-10 text-red-100 drop-shadow-lg" />
-                </div>
-                {/* Wax shine effect */}
                 <motion.div
                   className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent rounded-full"
                   animate={{ opacity: [0.3, 0.6, 0.3] }}
@@ -792,7 +811,7 @@ const EnvelopeAnimation = ({ onComplete }) => {
           )}
 
           {/* Completion message */}
-          {phase >= 5 && (
+          {phase >= 7 && (
             <motion.div
               className="absolute inset-0 flex flex-col items-center justify-end pb-12 pointer-events-none"
               initial={{ opacity: 0, y: 20 }}
@@ -819,17 +838,17 @@ const BurnAnimation = ({ onComplete, formData }) => {
   
   useEffect(() => {
     playFireSound();
-    const timer = setTimeout(() => setCanFlick(true), 1000);
+    const timer = setTimeout(() => setCanFlick(true), 1200);
     return () => clearTimeout(timer);
   }, []);
 
   useEffect(() => {
     if (flicked) {
       const timers = [
-        setTimeout(() => setPhase(1), 300),
-        setTimeout(() => setPhase(2), 1500),
-        setTimeout(() => setPhase(3), 3000),
-        setTimeout(() => onComplete(), 5000)
+        setTimeout(() => setPhase(1), 400),
+        setTimeout(() => setPhase(2), 2000),
+        setTimeout(() => setPhase(3), 4200),
+        setTimeout(() => onComplete(), 6800)
       ];
       return () => timers.forEach(t => clearTimeout(t));
     }
@@ -1128,10 +1147,10 @@ const FileAnimation = ({ onComplete, referenceNumber, formData }) => {
     if (filed) {
       playDrawerSound();
       const timers = [
-        setTimeout(() => setPhase(2), 500),
-        setTimeout(() => setPhase(3), 1500),
-        setTimeout(() => setPhase(4), 2500),
-        setTimeout(() => onComplete(), 4000)
+        setTimeout(() => setPhase(2), 800),
+        setTimeout(() => setPhase(3), 2200),
+        setTimeout(() => setPhase(4), 3800),
+        setTimeout(() => onComplete(), 5600)
       ];
       return () => timers.forEach(t => clearTimeout(t));
     }
@@ -1217,8 +1236,11 @@ const FileAnimation = ({ onComplete, referenceNumber, formData }) => {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
               <div className="w-24 h-24 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center flex-col shadow-2xl border-2 border-red-500">
-                <Stamp className="w-12 h-12 text-red-100" />
-                <span className="text-red-100 text-[10px] font-bold mt-1">SEALED</span>
+                <motion.div
+                  animate={{ opacity: [0.3, 0.7, 0.3] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                  className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent rounded-full"
+                />
               </div>
             </motion.div>
           )}
