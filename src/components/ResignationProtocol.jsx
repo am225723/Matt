@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useMotionValue, useTransform } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Check, Flame, FileText, X, Sparkles, Award, Stamp, Archive, Trash2, Eye, Calendar } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Flame, FileText, X, Sparkles, Award, Stamp, Archive, Trash2, Eye, Calendar, Mail, Send } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
 import { saveResignation, getResignations, deleteResignation } from '@/lib/supabase';
 
@@ -190,6 +190,108 @@ const playThudSound = () => {
   }
 };
 
+const playFireSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    const bufferSize = audioContext.sampleRate * 2;
+    const noiseBuffer = audioContext.createBuffer(1, bufferSize, audioContext.sampleRate);
+    const output = noiseBuffer.getChannelData(0);
+    
+    for (let i = 0; i < bufferSize; i++) {
+      output[i] = (Math.random() * 2 - 1) * 0.3;
+    }
+    
+    const whiteNoise = audioContext.createBufferSource();
+    whiteNoise.buffer = noiseBuffer;
+    
+    const lowpass = audioContext.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.setValueAtTime(200, audioContext.currentTime);
+    lowpass.frequency.linearRampToValueAtTime(100, audioContext.currentTime + 2);
+    
+    const gainNode = audioContext.createGain();
+    gainNode.gain.setValueAtTime(0.4, audioContext.currentTime);
+    gainNode.gain.linearRampToValueAtTime(0, audioContext.currentTime + 2);
+    
+    whiteNoise.connect(lowpass);
+    lowpass.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    whiteNoise.start();
+    whiteNoise.stop(audioContext.currentTime + 2);
+    
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100, 50, 200, 100, 300]);
+    }
+  } catch (e) {
+    if (navigator.vibrate) {
+      navigator.vibrate([100, 50, 100, 50, 200, 100, 300]);
+    }
+  }
+};
+
+const playDrawerSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(150, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(50, audioContext.currentTime + 0.1);
+    
+    oscillator.type = 'square';
+    
+    gainNode.gain.setValueAtTime(0.8, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.3);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.3);
+    
+    if (navigator.vibrate) {
+      navigator.vibrate([80, 30, 150]);
+    }
+  } catch (e) {
+    if (navigator.vibrate) {
+      navigator.vibrate([80, 30, 150]);
+    }
+  }
+};
+
+const playSealSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(400, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(200, audioContext.currentTime + 0.1);
+    
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.15);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.15);
+    
+    if (navigator.vibrate) {
+      navigator.vibrate([50]);
+    }
+  } catch (e) {
+    if (navigator.vibrate) {
+      navigator.vibrate([50]);
+    }
+  }
+};
+
 const FloatingParticle = ({ delay }) => (
   <motion.div
     className="absolute w-1 h-1 bg-amber-400/30 rounded-full"
@@ -216,111 +318,310 @@ const FloatingParticle = ({ delay }) => (
   />
 );
 
-const WaxSeal = ({ signed }) => (
-  <motion.div
-    initial={{ scale: 0, rotate: -180 }}
-    animate={signed ? { scale: 1, rotate: 0 } : { scale: 0 }}
-    transition={{ type: "spring", stiffness: 200, damping: 15 }}
-    className="absolute -bottom-8 right-8 w-20 h-20"
-  >
-    <div className="relative w-full h-full">
-      <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-lg" />
-      <div className="absolute inset-2 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
-        <Stamp className="w-8 h-8 text-red-200/80" />
-      </div>
-      <motion.div
-        className="absolute inset-0 bg-white/20 rounded-full"
-        animate={{ opacity: [0.3, 0, 0.3] }}
-        transition={{ duration: 2, repeat: Infinity }}
-      />
-    </div>
-  </motion.div>
-);
+const SealOfApproval = ({ onComplete }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      playSealSound();
+      if (navigator.vibrate) {
+        navigator.vibrate([100, 50, 100]);
+      }
+    }, 300);
+    
+    const completeTimer = setTimeout(onComplete, 2000);
+    return () => {
+      clearTimeout(timer);
+      clearTimeout(completeTimer);
+    };
+  }, [onComplete]);
 
-const BurnAnimation = ({ onComplete }) => {
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/80"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <motion.div
+        className="relative"
+        initial={{ scale: 3, opacity: 0, rotate: -45 }}
+        animate={{ scale: 1, opacity: 1, rotate: 0 }}
+        transition={{ 
+          type: "spring", 
+          stiffness: 300, 
+          damping: 20,
+          delay: 0.2 
+        }}
+      >
+        <motion.div
+          className="w-48 h-48 relative"
+          animate={{ 
+            boxShadow: ['0 0 0 0 rgba(220, 38, 38, 0.4)', '0 0 60px 30px rgba(220, 38, 38, 0.2)', '0 0 0 0 rgba(220, 38, 38, 0)']
+          }}
+          transition={{ duration: 1, delay: 0.5 }}
+        >
+          <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-2xl" />
+          <div className="absolute inset-4 bg-gradient-to-br from-red-500 to-red-700 rounded-full" />
+          <div className="absolute inset-0 flex items-center justify-center flex-col">
+            <Stamp className="w-16 h-16 text-red-200 mb-1" />
+            <span className="text-red-100 font-mono text-xs font-bold tracking-wider">APPROVED</span>
+          </div>
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-t from-transparent via-white/30 to-transparent rounded-full"
+            initial={{ opacity: 0, rotate: -45 }}
+            animate={{ opacity: [0, 0.5, 0], rotate: 45 }}
+            transition={{ duration: 0.8, delay: 0.3 }}
+          />
+        </motion.div>
+        
+        <motion.p
+          className="text-center text-white font-mono text-xl mt-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.8 }}
+        >
+          Your resignation is official.
+        </motion.p>
+      </motion.div>
+    </motion.div>
+  );
+};
+
+const FullLetterDisplay = ({ formData, signatureData, onContinue }) => {
+  const [showSeal, setShowSeal] = useState(false);
+  const [sealComplete, setSealComplete] = useState(false);
+
+  useEffect(() => {
+    const timer = setTimeout(() => setShowSeal(true), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-auto py-8 px-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <div className="max-w-3xl mx-auto">
+        <motion.div
+          className="bg-gradient-to-b from-amber-50 to-white rounded-lg shadow-2xl p-8 sm:p-12 relative"
+          initial={{ y: 50, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.2 }}
+          style={{
+            backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.03) 31px, rgba(0,0,0,0.03) 32px)'
+          }}
+        >
+          <div className="text-center mb-8 pb-4 border-b-2 border-slate-300">
+            <h1 className="font-mono text-3xl sm:text-4xl text-slate-900 font-bold tracking-wide">
+              LETTER OF RESIGNATION
+            </h1>
+            <p className="font-mono text-sm text-slate-600 mt-2">
+              {new Date().toLocaleDateString('en-US', { 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+              })}
+            </p>
+          </div>
+
+          <div className="space-y-6 font-mono text-slate-800 text-lg leading-relaxed">
+            <p>
+              <span className="font-bold">TO:</span>{' '}
+              <span className="font-caveat text-2xl text-indigo-900">{formData.addressee}</span>
+            </p>
+
+            <p className="mt-6">
+              Please accept this letter as formal notification that I am resigning from my position as{' '}
+              <span className="font-caveat text-2xl text-indigo-900">{formData.role}</span>, effective immediately.
+            </p>
+
+            <p>
+              After careful consideration, I have concluded that this role no longer serves my well-being, my growth, or my fundamental right to exist without constant self-surveillance.
+            </p>
+
+            <p>
+              The working conditions have become{' '}
+              <span className="font-caveat text-2xl text-indigo-900">{formData.condition}</span>.
+            </p>
+
+            <p>
+              For too long, I have been compensated exclusively in{' '}
+              <span className="font-caveat text-2xl text-indigo-900">{formData.paidIn}</span>, when what I truly deserved was{' '}
+              <span className="font-caveat text-2xl text-indigo-900">{formData.insteadOf}</span>. This is an unacceptable return on investment for a position I never actually applied for.
+            </p>
+
+            <p>
+              I understand it's customary to give two weeks notice, but I've only got two minutes. The urgency of my departure cannot be overstated.
+            </p>
+
+            <p>
+              Effective immediately, I am returning the keys to{' '}
+              <span className="font-caveat text-2xl text-indigo-900">{formData.returningKeys}</span>. I will not be taking any work home with me, as I have been doing so unconsciously for far too long already.
+            </p>
+
+            {formData.struckResponsibilities.length > 0 && (
+              <div className="my-6">
+                <p className="font-bold mb-3">Furthermore, I will no longer be responsible for:</p>
+                <ul className="list-none space-y-2 pl-4">
+                  {formData.struckResponsibilities.map((item, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-1" />
+                      <span className="line-through text-red-600 decoration-red-500 decoration-2">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            <p>
+              It is my strong suggestion that this position be eliminated altogether. It should never have existed in the first place, and I refuse to train my replacement.
+            </p>
+
+            <p>
+              Moving forward, I will be accepting a new position as{' '}
+              <span className="font-caveat text-2xl text-indigo-900">{formData.newPosition}</span>. This new role comes with significantly better benefits, including but not limited to: peace of mind, self-acceptance, and the radical freedom of being imperfect.
+            </p>
+
+            <p>
+              Please do not contact me regarding this matter. My inbox is now reserved for things that actually matter.
+            </p>
+
+            <p className="mt-8">
+              Respectfully (but not apologetically),
+            </p>
+
+            <div className="mt-6 relative">
+              {signatureData && (
+                <img 
+                  src={signatureData} 
+                  alt="Signature" 
+                  className="h-24 object-contain"
+                />
+              )}
+              <div className="border-b-2 border-slate-400 w-64 mt-2" />
+              <p className="text-sm text-slate-600 mt-1">The Undersigned</p>
+            </div>
+          </div>
+
+          {sealComplete && (
+            <motion.div
+              className="absolute bottom-8 right-8 w-24 h-24"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 200, damping: 15 }}
+            >
+              <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-lg" />
+              <div className="absolute inset-2 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center flex-col">
+                <Stamp className="w-8 h-8 text-red-200" />
+                <span className="text-red-100 text-[8px] font-bold">APPROVED</span>
+              </div>
+            </motion.div>
+          )}
+        </motion.div>
+
+        {sealComplete && (
+          <motion.div
+            className="text-center mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.3 }}
+          >
+            <Button
+              onClick={onContinue}
+              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-lg px-8 py-6"
+            >
+              <Mail className="w-5 h-5 mr-2" />
+              Seal & Send
+            </Button>
+          </motion.div>
+        )}
+      </div>
+
+      <AnimatePresence>
+        {showSeal && !sealComplete && (
+          <SealOfApproval onComplete={() => setSealComplete(true)} />
+        )}
+      </AnimatePresence>
+    </motion.div>
+  );
+};
+
+const EnvelopeAnimation = ({ onComplete }) => {
   const [phase, setPhase] = useState(0);
-  
+
   useEffect(() => {
     const timers = [
       setTimeout(() => setPhase(1), 500),
       setTimeout(() => setPhase(2), 1500),
-      setTimeout(() => setPhase(3), 3000),
-      setTimeout(() => onComplete(), 4500)
+      setTimeout(() => setPhase(3), 2500),
+      setTimeout(() => onComplete(), 3500)
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, [onComplete]);
 
   return (
-    <motion.div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
-      <div className="relative">
+    <motion.div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-gradient-to-br from-slate-900 to-slate-800"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <div className="relative w-80 h-96 flex items-center justify-center">
         <motion.div
-          className="w-64 h-80 bg-cream-100 rounded-lg relative overflow-hidden"
-          animate={phase >= 2 ? { 
-            scale: [1, 1.02, 0.98, 1],
-            rotate: [0, -1, 1, 0]
-          } : {}}
-          transition={{ duration: 0.5, repeat: phase >= 2 ? Infinity : 0 }}
-        >
-          {phase >= 1 && (
-            <>
+          className="absolute w-64 h-80 bg-gradient-to-b from-amber-50 to-white rounded-lg shadow-xl origin-bottom"
+          initial={{ rotateX: 0, y: 0 }}
+          animate={
+            phase >= 1 
+              ? { rotateX: 90, y: 50, scaleY: 0.1 }
+              : {}
+          }
+          transition={{ duration: 0.8, ease: "easeInOut" }}
+        />
+
+        {phase >= 1 && (
+          <motion.div
+            className="absolute w-72 h-48"
+            initial={{ opacity: 0, y: 100 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, delay: 0.3 }}
+          >
+            <div className="relative w-full h-full">
+              <div className="absolute inset-0 bg-gradient-to-b from-amber-100 to-amber-200 rounded-lg shadow-2xl" />
+              
               <motion.div
-                className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-orange-500 via-red-500 to-transparent"
-                initial={{ height: 0 }}
-                animate={{ height: phase >= 2 ? "100%" : "30%" }}
-                transition={{ duration: 1.5 }}
+                className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-amber-200 to-amber-300 origin-top"
+                initial={{ rotateX: 180 }}
+                animate={phase >= 2 ? { rotateX: 0 } : { rotateX: 180 }}
+                transition={{ duration: 0.6 }}
+                style={{ 
+                  clipPath: 'polygon(0 0, 50% 100%, 100% 0)',
+                  transformStyle: 'preserve-3d'
+                }}
               />
-              {[...Array(20)].map((_, i) => (
+              
+              {phase >= 2 && (
                 <motion.div
-                  key={i}
-                  className="absolute w-3 h-3 bg-orange-400 rounded-full blur-sm"
-                  initial={{ bottom: 0, left: `${10 + Math.random() * 80}%`, opacity: 0 }}
-                  animate={{ 
-                    bottom: [0, 100, 200],
-                    opacity: [0, 1, 0],
-                    scale: [0.5, 1.5, 0.5]
-                  }}
-                  transition={{
-                    duration: 1 + Math.random(),
-                    delay: i * 0.1,
-                    repeat: Infinity
-                  }}
-                />
-              ))}
-            </>
-          )}
-          {phase >= 2 && (
-            <motion.div
-              className="absolute inset-0 bg-gradient-to-t from-black/80 via-orange-900/50 to-transparent"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}
-            />
-          )}
-        </motion.div>
-        
+                  className="absolute top-12 left-1/2 -translate-x-1/2"
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 300, delay: 0.3 }}
+                >
+                  <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg">
+                    <Stamp className="w-8 h-8 text-red-200" />
+                  </div>
+                </motion.div>
+              )}
+            </div>
+          </motion.div>
+        )}
+
         {phase >= 3 && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
+            className="absolute text-center"
+            initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="absolute inset-0 flex items-center justify-center"
           >
-            <motion.div
-              className="text-center"
-              initial={{ y: 20 }}
-              animate={{ y: 0 }}
-            >
-              <motion.div
-                animate={{ 
-                  scale: [1, 1.2, 1],
-                  opacity: [0.8, 1, 0.8]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <Sparkles className="w-16 h-16 text-amber-400 mx-auto mb-4" />
-              </motion.div>
-              <h2 className="text-3xl font-bold text-white mb-2">RELEASED</h2>
-              <p className="text-amber-200">The burden has turned to ash</p>
-            </motion.div>
+            <Send className="w-16 h-16 text-amber-400 mx-auto mb-4" />
+            <h2 className="text-2xl font-bold text-white mb-2">Letter Sealed</h2>
+            <p className="text-amber-200">Choose how to process your resignation...</p>
           </motion.div>
         )}
       </div>
@@ -328,72 +629,439 @@ const BurnAnimation = ({ onComplete }) => {
   );
 };
 
-const FileAnimation = ({ onComplete, referenceNumber }) => {
+const BurnAnimation = ({ onComplete, formData }) => {
   const [phase, setPhase] = useState(0);
+  const [canFlick, setCanFlick] = useState(false);
+  const [flicked, setFlicked] = useState(false);
+  const ballY = useMotionValue(0);
+  const ballX = useMotionValue(0);
   
   useEffect(() => {
-    const timers = [
-      setTimeout(() => setPhase(1), 500),
-      setTimeout(() => setPhase(2), 1500),
-      setTimeout(() => setPhase(3), 2500),
-      setTimeout(() => onComplete(), 4000)
-    ];
-    return () => timers.forEach(t => clearTimeout(t));
-  }, [onComplete]);
+    playFireSound();
+    const timer = setTimeout(() => setCanFlick(true), 1000);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (flicked) {
+      const timers = [
+        setTimeout(() => setPhase(1), 300),
+        setTimeout(() => setPhase(2), 1500),
+        setTimeout(() => setPhase(3), 3000),
+        setTimeout(() => onComplete(), 5000)
+      ];
+      return () => timers.forEach(t => clearTimeout(t));
+    }
+  }, [flicked, onComplete]);
+
+  const handleFlick = () => {
+    if (!canFlick || flicked) return;
+    setFlicked(true);
+    if (navigator.vibrate) {
+      navigator.vibrate([50, 30, 100, 50, 200]);
+    }
+  };
 
   return (
-    <motion.div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
-      <div className="relative">
+    <motion.div 
+      className="fixed inset-0 z-50 flex flex-col items-center justify-between bg-gradient-to-b from-slate-900 via-orange-950/30 to-slate-900 py-12 px-4"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <motion.div
+        className="relative w-48 h-48"
+        initial={{ y: -100, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3 }}
+      >
         <motion.div
-          className="w-64 h-80 bg-cream-100 rounded-lg shadow-xl relative"
-          animate={phase >= 1 ? {
-            rotateX: [0, -10, 0],
-            y: [0, -20, 0],
-            scale: [1, 0.9, 0.8]
-          } : {}}
-          transition={{ duration: 1 }}
+          className="absolute inset-0 bg-gradient-to-t from-orange-500 via-red-500 to-yellow-400 rounded-full blur-2xl"
+          animate={{ 
+            scale: [1, 1.2, 1],
+            opacity: [0.6, 0.9, 0.6]
+          }}
+          transition={{ duration: 0.5, repeat: Infinity }}
         />
-        
-        {phase >= 2 && (
+        {[...Array(15)].map((_, i) => (
           <motion.div
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 w-72 h-48 bg-gradient-to-b from-amber-700 to-amber-900 rounded-lg shadow-2xl"
-            initial={{ y: 100, opacity: 0 }}
-            animate={{ y: 0, opacity: 1 }}
-          >
-            <div className="absolute top-0 left-0 right-0 h-8 bg-amber-600 rounded-t-lg flex items-center justify-center">
-              <div className="w-16 h-2 bg-amber-400 rounded" />
+            key={i}
+            className="absolute w-4 h-6 bg-gradient-to-t from-orange-500 to-yellow-300 rounded-full blur-sm"
+            style={{
+              left: `${30 + Math.random() * 40}%`,
+              bottom: '20%'
+            }}
+            animate={{
+              y: [0, -80 - Math.random() * 60],
+              x: [0, (Math.random() - 0.5) * 60],
+              opacity: [1, 0],
+              scale: [1, 0.3]
+            }}
+            transition={{
+              duration: 0.8 + Math.random() * 0.5,
+              repeat: Infinity,
+              delay: Math.random() * 0.5
+            }}
+          />
+        ))}
+        <div className="absolute inset-8 bg-gradient-to-t from-orange-600 via-red-500 to-yellow-400 rounded-full" />
+        <motion.p
+          className="absolute -bottom-8 left-1/2 -translate-x-1/2 text-orange-300 font-mono text-sm whitespace-nowrap"
+          animate={{ opacity: [0.5, 1, 0.5] }}
+          transition={{ duration: 1, repeat: Infinity }}
+        >
+          The Fire Pit
+        </motion.p>
+      </motion.div>
+
+      {!flicked && (
+        <motion.p
+          className="text-white/70 font-mono text-center"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: canFlick ? 1 : 0.3 }}
+        >
+          {canFlick ? '↑ Flick the paper toward the fire ↑' : 'Preparing the flame...'}
+        </motion.p>
+      )}
+
+      {!flicked ? (
+        <motion.div
+          className="relative cursor-grab active:cursor-grabbing"
+          drag={canFlick}
+          dragConstraints={{ top: -300, bottom: 0, left: -50, right: 50 }}
+          dragElastic={0.1}
+          onDragEnd={(e, info) => {
+            if (info.offset.y < -150) {
+              handleFlick();
+            }
+          }}
+          whileDrag={{ scale: 0.95 }}
+          style={{ y: ballY, x: ballX }}
+          initial={{ scale: 0 }}
+          animate={{ 
+            scale: 1,
+            rotate: [0, 5, -5, 3, -3, 0]
+          }}
+          transition={{ 
+            scale: { type: "spring", stiffness: 200 },
+            rotate: { duration: 0.5, delay: 0.5 }
+          }}
+        >
+          <div className="w-32 h-32 bg-gradient-to-br from-amber-100 to-amber-200 rounded-lg shadow-2xl transform rotate-12 relative overflow-hidden">
+            <div className="absolute inset-0 opacity-50">
+              {[...Array(8)].map((_, i) => (
+                <div 
+                  key={i}
+                  className="absolute w-full h-px bg-slate-300"
+                  style={{ top: `${12 + i * 12}%` }}
+                />
+              ))}
             </div>
-            <div className="absolute bottom-4 left-4 right-4 h-32 bg-amber-800/50 rounded" />
-          </motion.div>
-        )}
-        
-        {phase >= 3 && (
+            <div className="absolute inset-4 text-[6px] font-mono text-slate-600 overflow-hidden leading-tight">
+              TO: {formData.addressee?.substring(0, 20)}...
+              <br />I resign from {formData.role?.substring(0, 15)}...
+            </div>
+          </div>
           <motion.div
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="absolute inset-0 flex items-center justify-center"
+            className="absolute -inset-4 border-2 border-dashed border-orange-400/50 rounded-xl"
+            animate={{ opacity: [0.3, 0.7, 0.3] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+        </motion.div>
+      ) : (
+        <motion.div
+          className="relative"
+          initial={{ y: 200, scale: 1, rotate: 12 }}
+          animate={{ 
+            y: phase >= 1 ? -200 : 0,
+            scale: phase >= 1 ? 0.6 : 1,
+            rotate: phase >= 1 ? [12, -30, 45, -20, 30] : 12
+          }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.div
+            className="w-32 h-32 rounded-lg relative overflow-hidden"
+            animate={{
+              backgroundColor: phase >= 2 
+                ? ['#fef3c7', '#92400e', '#1c1917', '#0c0a09']
+                : '#fef3c7'
+            }}
+            transition={{ duration: 2 }}
           >
-            <motion.div
-              className="text-center"
-              initial={{ y: 20 }}
-              animate={{ y: 0 }}
-            >
+            {phase >= 1 && phase < 3 && (
+              <>
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-t from-orange-500 via-red-500 to-transparent"
+                  initial={{ height: '0%' }}
+                  animate={{ height: '100%' }}
+                  transition={{ duration: 1.5 }}
+                />
+                {[...Array(20)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-2 h-2 bg-orange-400 rounded-full"
+                    style={{ left: `${Math.random() * 100}%` }}
+                    initial={{ bottom: 0, opacity: 0 }}
+                    animate={{ 
+                      bottom: [0, 150],
+                      opacity: [0, 1, 0],
+                      scale: [0.5, 1.5, 0.5]
+                    }}
+                    transition={{
+                      duration: 1 + Math.random() * 0.5,
+                      delay: i * 0.08,
+                      repeat: 2
+                    }}
+                  />
+                ))}
+              </>
+            )}
+            
+            {phase >= 2 && (
               <motion.div
-                className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg"
-                animate={{ 
-                  scale: [1, 1.1, 1],
-                  rotate: [0, 5, -5, 0]
-                }}
-                transition={{ duration: 2, repeat: Infinity }}
+                className="absolute inset-0"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
               >
-                <Stamp className="w-12 h-12 text-red-200" />
+                {[...Array(12)].map((_, i) => (
+                  <motion.div
+                    key={i}
+                    className="absolute w-3 h-3 bg-slate-600 rounded-sm"
+                    style={{ 
+                      left: `${Math.random() * 80 + 10}%`,
+                      top: `${Math.random() * 80 + 10}%`
+                    }}
+                    initial={{ scale: 0, rotate: 0 }}
+                    animate={{ 
+                      scale: [0, 1, 0],
+                      rotate: [0, 180],
+                      y: [0, -20, -60],
+                      x: [(Math.random() - 0.5) * 40]
+                    }}
+                    transition={{
+                      duration: 2,
+                      delay: 0.5 + i * 0.15
+                    }}
+                  />
+                ))}
               </motion.div>
-              <h2 className="text-3xl font-bold text-white mb-2">CASE CLOSED</h2>
-              <p className="text-amber-200 font-mono text-sm">{referenceNumber}</p>
-            </motion.div>
+            )}
           </motion.div>
-        )}
-      </div>
+        </motion.div>
+      )}
+      
+      {phase >= 3 && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5, y: 50 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <div className="text-center">
+            <motion.div
+              animate={{ 
+                scale: [1, 1.2, 1],
+                opacity: [0.8, 1, 0.8]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <Sparkles className="w-20 h-20 text-amber-400 mx-auto mb-6" />
+            </motion.div>
+            <motion.h2 
+              className="text-5xl font-bold text-white mb-4 tracking-widest"
+              style={{ textShadow: '0 0 40px rgba(251, 191, 36, 0.5)' }}
+            >
+              RELEASED
+            </motion.h2>
+            <motion.p 
+              className="text-amber-200 text-lg"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              The burden has turned to ash and blown away
+            </motion.p>
+            
+            {[...Array(30)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-1 h-1 bg-slate-400 rounded-full"
+                style={{
+                  left: `${20 + Math.random() * 60}%`,
+                  top: '50%'
+                }}
+                animate={{
+                  y: [0, -200 - Math.random() * 200],
+                  x: [(Math.random() - 0.5) * 300],
+                  opacity: [0.8, 0],
+                  scale: [1, 0.5]
+                }}
+                transition={{
+                  duration: 3 + Math.random() * 2,
+                  delay: Math.random() * 2,
+                  repeat: Infinity
+                }}
+              />
+            ))}
+          </div>
+        </motion.div>
+      )}
+    </motion.div>
+  );
+};
+
+const FileAnimation = ({ onComplete, referenceNumber, formData }) => {
+  const [phase, setPhase] = useState(0);
+  const [dragging, setDragging] = useState(false);
+  const [filed, setFiled] = useState(false);
+  const letterY = useMotionValue(0);
+  
+  useEffect(() => {
+    const timer = setTimeout(() => setPhase(1), 500);
+    return () => clearTimeout(timer);
+  }, []);
+
+  useEffect(() => {
+    if (filed) {
+      playDrawerSound();
+      const timers = [
+        setTimeout(() => setPhase(2), 500),
+        setTimeout(() => setPhase(3), 1500),
+        setTimeout(() => setPhase(4), 2500),
+        setTimeout(() => onComplete(), 4000)
+      ];
+      return () => timers.forEach(t => clearTimeout(t));
+    }
+  }, [filed, onComplete]);
+
+  const handleDragEnd = (e, info) => {
+    if (info.offset.y < -100) {
+      setFiled(true);
+    }
+  };
+
+  return (
+    <motion.div 
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gradient-to-b from-slate-900 via-amber-950/20 to-slate-900"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+    >
+      <motion.div
+        className="relative mb-8"
+        initial={{ y: -200, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ delay: 0.3, type: "spring", damping: 20 }}
+      >
+        <div className="w-72 h-48 bg-gradient-to-b from-amber-700 to-amber-900 rounded-lg shadow-2xl relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-10 bg-amber-600 rounded-t-lg flex items-center justify-center">
+            <div className="w-20 h-3 bg-amber-400 rounded" />
+          </div>
+          
+          <motion.div
+            className="absolute top-10 left-2 right-2 h-32 bg-amber-800 rounded-b-lg origin-top"
+            initial={{ scaleY: 0 }}
+            animate={{ scaleY: phase >= 1 && !filed ? 1 : filed ? 0 : 0 }}
+            transition={{ duration: 0.5 }}
+          >
+            <div className="absolute inset-2 border-2 border-amber-600/30 rounded" />
+            <p className="absolute bottom-2 left-0 right-0 text-center text-amber-400/60 font-mono text-xs">
+              PAST CONTRACTS
+            </p>
+          </motion.div>
+          
+          {phase >= 3 && (
+            <motion.div
+              className="absolute top-12 left-1/2 -translate-x-1/2"
+              initial={{ scale: 0, rotate: -180 }}
+              animate={{ scale: 1, rotate: 0 }}
+              transition={{ type: "spring", stiffness: 200 }}
+            >
+              <div className="w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center flex-col shadow-xl">
+                <Stamp className="w-10 h-10 text-red-200" />
+              </div>
+            </motion.div>
+          )}
+        </div>
+        
+        <motion.p
+          className="text-amber-300/70 font-mono text-sm text-center mt-4"
+          animate={{ opacity: phase >= 1 && !filed ? [0.5, 1, 0.5] : 0 }}
+          transition={{ duration: 1.5, repeat: Infinity }}
+        >
+          ↑ Drag your letter into the drawer ↑
+        </motion.p>
+      </motion.div>
+
+      {!filed && phase >= 1 && (
+        <motion.div
+          className="cursor-grab active:cursor-grabbing"
+          drag
+          dragConstraints={{ top: -200, bottom: 50, left: -50, right: 50 }}
+          dragElastic={0.1}
+          onDragStart={() => setDragging(true)}
+          onDragEnd={handleDragEnd}
+          style={{ y: letterY }}
+          whileDrag={{ scale: 0.95, rotate: [-2, 2] }}
+          initial={{ y: 100, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.8 }}
+        >
+          <div className="relative">
+            <div className="w-48 h-64 bg-gradient-to-b from-amber-50 to-white rounded-lg shadow-xl relative overflow-hidden">
+              <div className="p-3">
+                <div className="text-[8px] font-mono text-slate-600 leading-relaxed">
+                  <p className="font-bold border-b border-slate-200 pb-1 mb-2">LETTER OF RESIGNATION</p>
+                  <p>TO: {formData.addressee?.substring(0, 25)}...</p>
+                  <p className="mt-1">I resign from: {formData.role?.substring(0, 20)}...</p>
+                  <p className="mt-1">New position: {formData.newPosition?.substring(0, 20)}...</p>
+                </div>
+              </div>
+              
+              <div className="absolute bottom-3 right-3 w-12 h-12 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center opacity-80">
+                <Stamp className="w-6 h-6 text-red-200" />
+              </div>
+            </div>
+            
+            <motion.div
+              className="absolute -inset-2 border-2 border-dashed border-amber-400/50 rounded-xl pointer-events-none"
+              animate={{ opacity: [0.3, 0.7, 0.3] }}
+              transition={{ duration: 1.5, repeat: Infinity }}
+            />
+          </div>
+        </motion.div>
+      )}
+      
+      {phase >= 4 && (
+        <motion.div
+          initial={{ opacity: 0, scale: 0.5 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="absolute inset-0 flex items-center justify-center"
+        >
+          <div className="text-center">
+            <motion.div
+              className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-2xl"
+              animate={{ 
+                scale: [1, 1.1, 1],
+                rotate: [0, 5, -5, 0]
+              }}
+              transition={{ duration: 2, repeat: Infinity }}
+            >
+              <div className="text-center">
+                <Stamp className="w-12 h-12 text-red-200 mx-auto" />
+                <span className="text-red-100 text-xs font-bold block mt-1">SEALED</span>
+              </div>
+            </motion.div>
+            <h2 className="text-4xl font-bold text-white mb-3">CASE CLOSED</h2>
+            <p className="text-amber-200 font-mono text-sm mb-6">{referenceNumber}</p>
+            <motion.p
+              className="text-slate-400 text-sm max-w-xs mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.5 }}
+            >
+              This resignation has been filed. If you find yourself slipping back, we'll remind you of your contract.
+            </motion.p>
+          </div>
+        </motion.div>
+      )}
     </motion.div>
   );
 };
@@ -463,26 +1131,39 @@ const PastLettersView = ({ resignations, onBack, onDelete, onView }) => {
             <div className="space-y-4 font-mono text-slate-800">
               <p><span className="font-bold">TO:</span> <span className="font-caveat text-xl text-indigo-900">{viewingLetter.addressee}</span></p>
               
-              <p className="mt-4">Please accept this letter as formal notification that I am resigning from my position as <span className="font-caveat text-xl text-indigo-900">{viewingLetter.role}</span>.</p>
+              <p className="mt-4">Please accept this letter as formal notification that I am resigning from my position as <span className="font-caveat text-xl text-indigo-900">{viewingLetter.role}</span>, effective immediately.</p>
+              
+              <p>After careful consideration, I have concluded that this role no longer serves my well-being, my growth, or my fundamental right to exist without constant self-surveillance.</p>
               
               <p className="mt-4">The working conditions have become <span className="font-caveat text-xl text-indigo-900">{viewingLetter.condition}</span>.</p>
               
-              <p className="mt-4">For too long, I have been paid in <span className="font-caveat text-xl text-indigo-900">{viewingLetter.paid_in}</span> when I deserved <span className="font-caveat text-xl text-indigo-900">{viewingLetter.instead_of}</span>.</p>
+              <p className="mt-4">For too long, I have been compensated exclusively in <span className="font-caveat text-xl text-indigo-900">{viewingLetter.paid_in}</span>, when what I truly deserved was <span className="font-caveat text-xl text-indigo-900">{viewingLetter.instead_of}</span>. This is an unacceptable return on investment for a position I never actually applied for.</p>
               
-              <p className="mt-4">I am returning the keys to <span className="font-caveat text-xl text-indigo-900">{viewingLetter.returning_keys}</span>.</p>
+              <p>I understand it's customary to give two weeks notice, but I've only got two minutes. The urgency of my departure cannot be overstated.</p>
+              
+              <p className="mt-4">Effective immediately, I am returning the keys to <span className="font-caveat text-xl text-indigo-900">{viewingLetter.returning_keys}</span>. I will not be taking any work home with me, as I have been doing so unconsciously for far too long already.</p>
               
               {viewingLetter.struck_responsibilities && viewingLetter.struck_responsibilities.length > 0 && (
                 <div className="mt-4">
-                  <p className="font-bold mb-2">I will no longer be responsible for:</p>
-                  <ul className="list-disc pl-6 space-y-1">
+                  <p className="font-bold mb-2">Furthermore, I will no longer be responsible for:</p>
+                  <ul className="list-none space-y-1 pl-4">
                     {viewingLetter.struck_responsibilities.map((item, idx) => (
-                      <li key={idx} className="line-through text-red-600">{item}</li>
+                      <li key={idx} className="flex items-start gap-2">
+                        <X className="w-4 h-4 text-red-500 flex-shrink-0 mt-1" />
+                        <span className="line-through text-red-600">{item}</span>
+                      </li>
                     ))}
                   </ul>
                 </div>
               )}
               
-              <p className="mt-4">Moving forward, I will be accepting a new position as <span className="font-caveat text-xl text-indigo-900">{viewingLetter.new_position}</span>.</p>
+              <p>It is my strong suggestion that this position be eliminated altogether. It should never have existed in the first place, and I refuse to train my replacement.</p>
+              
+              <p className="mt-4">Moving forward, I will be accepting a new position as <span className="font-caveat text-xl text-indigo-900">{viewingLetter.new_position}</span>. This new role comes with significantly better benefits, including but not limited to: peace of mind, self-acceptance, and the radical freedom of being imperfect.</p>
+              
+              <p>Please do not contact me regarding this matter. My inbox is now reserved for things that actually matter.</p>
+              
+              <p className="mt-6">Respectfully (but not apologetically),</p>
               
               <div className="mt-8 pt-4 border-t border-slate-200">
                 <p className="text-sm text-slate-600">
@@ -522,15 +1203,15 @@ const PastLettersView = ({ resignations, onBack, onDelete, onView }) => {
         >
           <div className="text-center mb-8">
             <Archive className="w-12 h-12 text-amber-600 mx-auto mb-4" />
-            <h1 className="font-mono text-2xl text-slate-900 font-bold">Past Resignations</h1>
-            <p className="text-slate-600 mt-2">Your filed letters and released burdens</p>
+            <h2 className="font-mono text-2xl text-slate-900 font-bold">Past Contracts</h2>
+            <p className="text-slate-600 mt-2">Your filed resignations for future reference</p>
           </div>
 
           {resignations.length === 0 ? (
             <div className="text-center py-12">
               <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
-              <p className="text-slate-500 font-mono">No resignations filed yet</p>
-              <p className="text-slate-400 text-sm mt-2">Your letters will appear here after you complete them</p>
+              <p className="text-slate-500">No resignations filed yet.</p>
+              <p className="text-slate-400 text-sm mt-2">Your boundary-setting letters will appear here.</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -540,37 +1221,38 @@ const PastLettersView = ({ resignations, onBack, onDelete, onView }) => {
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: idx * 0.1 }}
-                  className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:border-amber-300 transition-all"
+                  className="p-4 border-2 border-slate-200 rounded-xl hover:border-amber-400/50 transition-all"
                 >
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-2">
-                        {letter.release_type === 'burn' ? (
-                          <Flame className="w-4 h-4 text-orange-500" />
-                        ) : (
-                          <FileText className="w-4 h-4 text-amber-600" />
-                        )}
-                        <span className="font-mono text-sm text-slate-500">
-                          {formatDate(letter.created_at)}
-                        </span>
-                      </div>
-                      <h3 className="font-bold text-slate-900">
-                        Resigned from: <span className="font-caveat text-xl text-indigo-900">{letter.role}</span>
-                      </h3>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <p className="font-mono text-sm text-slate-500 flex items-center gap-2">
+                        <Calendar className="w-4 h-4" />
+                        {formatDate(letter.created_at)}
+                      </p>
+                      <p className="font-caveat text-xl text-indigo-900 mt-1 truncate">
+                        Resigned from: {letter.role}
+                      </p>
                       <p className="text-sm text-slate-600 mt-1">
-                        Now serving as: <span className="font-caveat text-lg text-emerald-700">{letter.new_position}</span>
+                        New position: <span className="text-emerald-700">{letter.new_position}</span>
                       </p>
                       {letter.reference_number && (
-                        <p className="font-mono text-xs text-slate-400 mt-2">
-                          Ref: {letter.reference_number}
+                        <p className="text-xs text-slate-400 font-mono mt-1">
+                          {letter.reference_number}
                         </p>
                       )}
+                      <span className={`inline-block mt-2 text-xs px-2 py-1 rounded-full ${
+                        letter.release_type === 'burn' 
+                          ? 'bg-orange-100 text-orange-700' 
+                          : 'bg-amber-100 text-amber-700'
+                      }`}>
+                        {letter.release_type === 'burn' ? 'Burned' : 'Filed'}
+                      </span>
                     </div>
-                    <div className="flex gap-2 ml-4">
+                    <div className="flex gap-2">
                       <Button
                         size="sm"
                         variant="ghost"
-                        className="text-slate-600 hover:text-indigo-600 hover:bg-indigo-50"
+                        className="text-slate-600 hover:text-amber-600 hover:bg-amber-50"
                         onClick={() => setViewingLetter(letter)}
                       >
                         <Eye className="w-4 h-4" />
@@ -618,6 +1300,8 @@ export default function ResignationProtocol({ onBack }) {
   const [referenceNumber, setReferenceNumber] = useState('');
   const [showPastLetters, setShowPastLetters] = useState(false);
   const [lockedFields, setLockedFields] = useState({});
+  const [showFullLetter, setShowFullLetter] = useState(false);
+  const [showEnvelope, setShowEnvelope] = useState(false);
   
   const [formData, setFormData] = useState({
     addressee: '',
@@ -734,7 +1418,7 @@ export default function ResignationProtocol({ onBack }) {
   };
 
   useEffect(() => {
-    if (currentPhase && !isSigningMode && !showPostSubmission) {
+    if (currentPhase && !isSigningMode && !showPostSubmission && !showFullLetter) {
       typewriterEffect(currentPhase.staticText);
     }
   }, [phase]);
@@ -869,11 +1553,22 @@ export default function ResignationProtocol({ onBack }) {
     const dataUrl = canvas.toDataURL();
     setSignatureData(dataUrl);
     setIsSigningMode(false);
+    setShowFullLetter(true);
+  };
+
+  const handleLetterContinue = () => {
+    setShowFullLetter(false);
+    setShowEnvelope(true);
+  };
+
+  const handleEnvelopeComplete = () => {
+    setShowEnvelope(false);
     setShowPostSubmission(true);
   };
 
   const handleBurn = async () => {
     setIsSaving(true);
+    setShowPostSubmission(false);
     try {
       const ref = `RES-${Date.now().toString(36).toUpperCase()}`;
       setReferenceNumber(ref);
@@ -904,6 +1599,7 @@ export default function ResignationProtocol({ onBack }) {
 
   const handleFile = async () => {
     setIsSaving(true);
+    setShowPostSubmission(false);
     const ref = `RES-${Date.now().toString(36).toUpperCase()}`;
     setReferenceNumber(ref);
     
@@ -957,8 +1653,11 @@ export default function ResignationProtocol({ onBack }) {
     });
     setIsComplete(false);
     setShowPostSubmission(false);
+    setShowFullLetter(false);
+    setShowEnvelope(false);
     setSignatureData(null);
     setLockedFields({});
+    setIsSaving(false);
   };
 
   const renderDropdown = (options, field, allowCustom = false) => {
@@ -1220,69 +1919,66 @@ export default function ResignationProtocol({ onBack }) {
       className="flex flex-col items-center gap-8 py-8"
     >
       <motion.div
-        className="w-32 h-32 relative"
-        initial={{ scale: 0, rotate: -180 }}
-        animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: "spring", stiffness: 200, damping: 15 }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-xl" />
-        <div className="absolute inset-3 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
-          <Stamp className="w-12 h-12 text-red-200" />
-        </div>
-      </motion.div>
-      
-      <motion.div 
         className="text-center space-y-2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5 }}
       >
-        <h2 className="font-mono text-3xl text-slate-900 font-bold">Resignation Complete</h2>
+        <h2 className="font-mono text-3xl text-slate-900 font-bold">Choose Your Release</h2>
         <p className="text-slate-600 max-w-md font-medium">
-          You have formally resigned from your unpaid position as{' '}
-          <strong className="text-indigo-900 font-caveat text-xl">{formData.role}</strong>.
+          How would you like to process this resignation?
         </p>
       </motion.div>
       
       <motion.div 
-        className="text-center space-y-2"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 0.7 }}
-      >
-        <p className="font-mono text-lg text-slate-700 font-medium">How would you like to process this resignation?</p>
-      </motion.div>
-      
-      <motion.div 
-        className="flex flex-col sm:flex-row gap-6 w-full max-w-lg"
+        className="flex flex-col sm:flex-row gap-6 w-full max-w-2xl"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.9 }}
+        transition={{ delay: 0.3 }}
       >
         <motion.button
-          whileHover={{ scale: 1.02 }}
+          whileHover={{ scale: 1.02, y: -4 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleBurn}
           disabled={isSaving}
-          className="flex-1 p-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl text-white shadow-lg hover:shadow-xl transition-all"
+          className="flex-1 p-8 bg-gradient-to-br from-orange-500 via-red-500 to-red-600 rounded-2xl text-white shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
         >
-          <Flame className="w-10 h-10 mx-auto mb-3" />
-          <h3 className="font-bold text-lg">The Burn</h3>
-          <p className="text-sm text-orange-100 mt-2">Cathartic Release</p>
-          <p className="text-xs text-orange-200 mt-1">Let go of anger & trauma</p>
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-t from-yellow-500/20 to-transparent"
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ duration: 1.5, repeat: Infinity }}
+          />
+          <Flame className="w-14 h-14 mx-auto mb-4 relative z-10" />
+          <h3 className="font-bold text-2xl relative z-10">The Burn</h3>
+          <p className="text-lg text-orange-100 mt-2 relative z-10">Cathartic Release</p>
+          <p className="text-sm text-orange-200 mt-3 relative z-10">
+            Best for: Letting go of anger, trauma, or heavy burdens
+          </p>
+          <p className="text-xs text-orange-300 mt-2 relative z-10 italic">
+            Flick the letter into the fire and watch it turn to ash
+          </p>
         </motion.button>
         
         <motion.button
-          whileHover={{ scale: 1.02 }}
+          whileHover={{ scale: 1.02, y: -4 }}
           whileTap={{ scale: 0.98 }}
           onClick={handleFile}
           disabled={isSaving}
-          className="flex-1 p-6 bg-gradient-to-br from-amber-600 to-amber-800 rounded-2xl text-white shadow-lg hover:shadow-xl transition-all"
+          className="flex-1 p-8 bg-gradient-to-br from-amber-600 via-amber-700 to-amber-800 rounded-2xl text-white shadow-xl hover:shadow-2xl transition-all relative overflow-hidden"
         >
-          <FileText className="w-10 h-10 mx-auto mb-3" />
-          <h3 className="font-bold text-lg">The File</h3>
-          <p className="text-sm text-amber-100 mt-2">Set a Boundary</p>
-          <p className="text-xs text-amber-200 mt-1">Save for future reference</p>
+          <motion.div
+            className="absolute inset-0 bg-gradient-to-t from-amber-400/20 to-transparent"
+            animate={{ opacity: [0.3, 0.5, 0.3] }}
+            transition={{ duration: 2, repeat: Infinity }}
+          />
+          <FileText className="w-14 h-14 mx-auto mb-4 relative z-10" />
+          <h3 className="font-bold text-2xl relative z-10">The File</h3>
+          <p className="text-lg text-amber-100 mt-2 relative z-10">Set a Boundary</p>
+          <p className="text-sm text-amber-200 mt-3 relative z-10">
+            Best for: Establishing new rules or stopping people-pleasing
+          </p>
+          <p className="text-xs text-amber-300 mt-2 relative z-10 italic">
+            Save for future reference - we'll remind you if you slip
+          </p>
         </motion.button>
       </motion.div>
     </motion.div>
@@ -1342,11 +2038,19 @@ export default function ResignationProtocol({ onBack }) {
   );
 
   if (showBurnAnimation) {
-    return <BurnAnimation onComplete={handleAnimationComplete} />;
+    return <BurnAnimation onComplete={handleAnimationComplete} formData={formData} />;
   }
 
   if (showFileAnimation) {
-    return <FileAnimation onComplete={handleAnimationComplete} referenceNumber={referenceNumber} />;
+    return <FileAnimation onComplete={handleAnimationComplete} referenceNumber={referenceNumber} formData={formData} />;
+  }
+
+  if (showFullLetter) {
+    return <FullLetterDisplay formData={formData} signatureData={signatureData} onContinue={handleLetterContinue} />;
+  }
+
+  if (showEnvelope) {
+    return <EnvelopeAnimation onComplete={handleEnvelopeComplete} />;
   }
 
   if (showPastLetters) {
