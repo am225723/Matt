@@ -611,21 +611,21 @@ const ResignationProtocol = ({ onBack }) => {
   const renderDropdown = (options, field, allowCustom = false) => (
     <div className="relative mt-4">
       <motion.div 
-        className="border-b-2 border-dashed border-amber-800/40 pb-2 cursor-pointer min-h-[40px] flex items-end group"
+        className="border-b-2 border-dashed border-slate-400 pb-2 cursor-pointer min-h-[40px] flex items-end group"
         onClick={() => openDropdown(field)}
-        whileHover={{ borderColor: 'rgba(146, 64, 14, 0.6)' }}
+        whileHover={{ borderColor: 'rgba(71, 85, 105, 0.8)' }}
         whileTap={{ scale: 0.995 }}
       >
         {formData[field] ? (
           <motion.span 
-            className="font-caveat text-2xl text-indigo-800"
+            className="font-caveat text-2xl text-indigo-900 font-semibold"
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
           >
             {formData[field]}
           </motion.span>
         ) : (
-          <span className="text-amber-800/50 italic group-hover:text-amber-800/70 transition-colors">
+          <span className="text-slate-500 italic group-hover:text-slate-700 transition-colors font-medium">
             tap to select...
           </span>
         )}
@@ -634,7 +634,7 @@ const ResignationProtocol = ({ onBack }) => {
           animate={{ y: [0, -3, 0] }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          <ChevronRight className="w-4 h-4 text-amber-800/40" />
+          <ChevronRight className="w-4 h-4 text-slate-500" />
         </motion.div>
       </motion.div>
       
@@ -644,7 +644,7 @@ const ResignationProtocol = ({ onBack }) => {
             initial={{ opacity: 0, y: -10, scale: 0.95 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute z-50 mt-2 w-full bg-cream-100 border border-amber-800/20 rounded-xl shadow-2xl max-h-72 overflow-y-auto backdrop-blur-sm"
+            className="absolute z-50 mt-2 w-full bg-white border border-slate-300 rounded-xl shadow-2xl max-h-72 overflow-y-auto"
           >
             {options.map((option, idx) => (
               <motion.div
@@ -652,7 +652,7 @@ const ResignationProtocol = ({ onBack }) => {
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: idx * 0.03 }}
-                className="px-4 py-3 hover:bg-amber-100 cursor-pointer font-caveat text-xl text-indigo-800 border-b border-amber-800/10 last:border-b-0 transition-all hover:pl-6"
+                className="px-4 py-3 hover:bg-amber-50 cursor-pointer font-caveat text-xl text-slate-800 border-b border-slate-200 last:border-b-0 transition-all hover:pl-6"
                 onClick={() => handleSelect(field, option)}
               >
                 {option}
@@ -660,7 +660,7 @@ const ResignationProtocol = ({ onBack }) => {
             ))}
             {allowCustom && (
               <motion.div 
-                className="p-3 border-t-2 border-amber-800/20 bg-amber-50/50"
+                className="p-3 border-t-2 border-slate-200 bg-slate-50"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.2 }}
@@ -675,7 +675,7 @@ const ResignationProtocol = ({ onBack }) => {
                       handleSelect(field, customInput.trim());
                     }
                   }}
-                  className="w-full px-3 py-2 bg-white border border-amber-800/20 rounded-lg font-caveat text-xl text-indigo-800 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-caveat text-xl text-slate-800 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
                   autoFocus
                 />
               </motion.div>
@@ -697,11 +697,11 @@ const ResignationProtocol = ({ onBack }) => {
         exit={{ opacity: 0, x: -50 }}
         className="space-y-6"
       >
-        <p className="font-mono text-lg text-amber-900 leading-relaxed whitespace-pre-wrap">
+        <p className="font-mono text-xl text-slate-800 leading-relaxed whitespace-pre-wrap font-medium">
           {typedText}
           {isTyping && (
             <motion.span 
-              className="inline-block w-0.5 h-5 bg-amber-800 ml-0.5"
+              className="inline-block w-0.5 h-5 bg-slate-700 ml-0.5"
               animate={{ opacity: [1, 0] }}
               transition={{ duration: 0.5, repeat: Infinity }}
             />
@@ -724,7 +724,7 @@ const ResignationProtocol = ({ onBack }) => {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.3 + idx * 0.1 }}
               >
-                <p className="font-mono text-lg text-amber-900">{sub.text}</p>
+                <p className="font-mono text-xl text-slate-800 font-medium">{sub.text}</p>
                 {renderDropdown(sub.options, sub.field)}
               </motion.div>
             ))}
@@ -736,10 +736,10 @@ const ResignationProtocol = ({ onBack }) => {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.4 }}
               >
-                <p className="font-mono text-lg text-amber-900 mb-4">
+                <p className="font-mono text-xl text-slate-800 mb-4 font-medium">
                   And I will no longer be responsible for:
                 </p>
-                <p className="text-sm text-amber-700 mb-4 italic">
+                <p className="text-sm text-slate-600 mb-4 italic font-medium">
                   (Tap to strike through - you must release at least one)
                 </p>
                 {currentPhase.checklistItems.map((item, idx) => (
@@ -754,13 +754,13 @@ const ResignationProtocol = ({ onBack }) => {
                     className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
                       formData.struckResponsibilities.includes(item)
                         ? 'bg-gradient-to-r from-red-50 to-red-100 border-red-300 shadow-inner'
-                        : 'bg-white border-amber-800/20 hover:bg-amber-50 hover:border-amber-400/50 shadow-sm'
+                        : 'bg-white border-slate-300 hover:bg-amber-50 hover:border-amber-400/50 shadow-sm'
                     }`}
                   >
-                    <span className={`font-mono text-base flex items-center ${
+                    <span className={`font-mono text-base flex items-center font-medium ${
                       formData.struckResponsibilities.includes(item)
                         ? 'line-through text-red-600 decoration-red-500 decoration-[3px]'
-                        : 'text-amber-900'
+                        : 'text-slate-800'
                     }`}>
                       {formData.struckResponsibilities.includes(item) && (
                         <motion.span
@@ -803,8 +803,8 @@ const ResignationProtocol = ({ onBack }) => {
         >
           <Award className="w-16 h-16 text-amber-600 mx-auto mb-4" />
         </motion.div>
-        <h2 className="font-mono text-2xl text-amber-900">Sign Your Resignation</h2>
-        <p className="text-amber-700 max-w-md">
+        <h2 className="font-mono text-2xl text-slate-900 font-bold">Sign Your Resignation</h2>
+        <p className="text-slate-600 max-w-md font-medium">
           Use your finger to sign below. This makes your commitment binding.
         </p>
       </motion.div>
@@ -887,10 +887,10 @@ const ResignationProtocol = ({ onBack }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
       >
-        <h2 className="font-mono text-3xl text-amber-900">Resignation Complete</h2>
-        <p className="text-amber-700 max-w-md">
+        <h2 className="font-mono text-3xl text-slate-900 font-bold">Resignation Complete</h2>
+        <p className="text-slate-600 max-w-md font-medium">
           You have formally resigned from your unpaid position as{' '}
-          <strong className="text-indigo-800 font-caveat text-xl">{formData.role}</strong>.
+          <strong className="text-indigo-900 font-caveat text-xl">{formData.role}</strong>.
         </p>
       </motion.div>
       
@@ -900,7 +900,7 @@ const ResignationProtocol = ({ onBack }) => {
         animate={{ opacity: 1 }}
         transition={{ delay: 0.7 }}
       >
-        <p className="font-mono text-lg text-amber-800">How would you like to process this resignation?</p>
+        <p className="font-mono text-lg text-slate-700 font-medium">How would you like to process this resignation?</p>
       </motion.div>
       
       <motion.div 
@@ -999,7 +999,7 @@ const ResignationProtocol = ({ onBack }) => {
           <Button
             onClick={onBack}
             variant="ghost"
-            className="text-amber-800 hover:bg-amber-100 transition-all hover:pl-4"
+            className="text-slate-700 hover:bg-slate-100 transition-all hover:pl-4"
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Return to Dashboard
@@ -1009,7 +1009,7 @@ const ResignationProtocol = ({ onBack }) => {
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-cream-100/90 backdrop-blur-md rounded-3xl p-6 sm:p-8 shadow-2xl border border-amber-800/10 relative"
+          className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200 relative"
         >
           <motion.div
             className="absolute -top-1 left-1/2 -translate-x-1/2 w-32 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent rounded-full"
@@ -1017,9 +1017,9 @@ const ResignationProtocol = ({ onBack }) => {
             transition={{ duration: 2, repeat: Infinity }}
           />
           
-          <div className="text-center mb-8 pb-6 border-b-2 border-amber-800/20">
+          <div className="text-center mb-8 pb-6 border-b-2 border-slate-200">
             <motion.h1 
-              className="font-mono text-3xl sm:text-4xl text-amber-900 tracking-wider"
+              className="font-mono text-3xl sm:text-4xl text-slate-900 tracking-wider font-bold"
               initial={{ letterSpacing: '0.05em' }}
               animate={{ letterSpacing: ['0.05em', '0.1em', '0.05em'] }}
               transition={{ duration: 4, repeat: Infinity }}
@@ -1027,7 +1027,7 @@ const ResignationProtocol = ({ onBack }) => {
               LETTER OF RESIGNATION
             </motion.h1>
             <motion.p 
-              className="font-mono text-sm text-amber-700 mt-2"
+              className="font-mono text-sm text-slate-600 mt-2 font-medium"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.5 }}
@@ -1052,7 +1052,7 @@ const ResignationProtocol = ({ onBack }) => {
           
           {!isSigningMode && !showPostSubmission && !isTyping && (
             <motion.div 
-              className="flex justify-between mt-10 pt-6 border-t-2 border-amber-800/20"
+              className="flex justify-between mt-10 pt-6 border-t-2 border-slate-200"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3 }}
@@ -1061,7 +1061,7 @@ const ResignationProtocol = ({ onBack }) => {
                 onClick={handlePrevious}
                 variant="outline"
                 disabled={phase === 0}
-                className="border-amber-800/30 text-amber-800 hover:bg-amber-100 disabled:opacity-40"
+                className="border-slate-300 text-slate-700 hover:bg-slate-100 disabled:opacity-40"
               >
                 <ChevronLeft className="w-4 h-4 mr-2" />
                 Previous
