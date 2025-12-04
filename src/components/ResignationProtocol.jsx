@@ -156,19 +156,24 @@ const ResignationProtocol = ({ onBack }) => {
   const currentPhase = phases[phase];
 
   const typewriterEffect = (text, callback) => {
+    if (!text) return;
     setIsTyping(true);
     setTypedText('');
-    let i = 0;
+    let currentIndex = 0;
+    const chars = text.split('');
+    
     const interval = setInterval(() => {
-      if (i < text.length) {
-        setTypedText(prev => prev + text[i]);
-        i++;
+      if (currentIndex < chars.length) {
+        setTypedText(text.substring(0, currentIndex + 1));
+        currentIndex++;
       } else {
         clearInterval(interval);
         setIsTyping(false);
         if (callback) callback();
       }
     }, 30);
+    
+    return () => clearInterval(interval);
   };
 
   useEffect(() => {

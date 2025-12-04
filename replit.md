@@ -15,6 +15,7 @@ Core technical implementations and features include:
 - **Enhanced Health Dashboard**: AI-powered insights and tracking.
 - **Ketamine Journal**: A sophisticated session-based workflow with curated question banks, segmented audio recording, real-time transcription, AI follow-up questions, and mood tracking.
 - **Anxiety Tracker**: An interactive body map visualization with a detailed calibration overlay, supporting comprehensive tracking of sensations across numerous body parts with individual questioning and intensity sliders.
+- **Resignation Protocol**: A therapeutic digital ritual allowing users to formally resign from unpaid emotional roles (e.g., "General Manager of the Universe", "Chief Worrier"). Features typewriter-style text on cream paper background, interactive Mad Libs-style form, signature canvas with haptic feedback, and two release options (Burn for catharsis or File for boundary-setting).
 - **AI Integration**: AI capabilities are central to features like excuse reframing, health insights, and ketamine journal follow-ups.
 - **Audio Transcription**: Securely handled via an Express backend server proxying requests to the OpenAI Whisper API.
 - **Character-Based UI**: Custom cartoon avatars for each feature, displayed on tiles with hover animations.
@@ -80,7 +81,25 @@ Core technical implementations and features include:
   - Prevents API key exposure on client-side (security best practice)
   - Users can record and transcribe audio in Ketamine Journal feature
 - ✅ **React Router v6 Integration**: URL-based navigation for all features
-  - Each feature has dedicated route (/, /playbook, /library, /achievements, /reframe, /yardage, /health, /ketamine, /anxiety)
+  - Each feature has dedicated route (/, /playbook, /library, /achievements, /reframe, /yardage, /health, /ketamine, /anxiety, /resignation)
   - Browser back/forward buttons work naturally
   - Features can be bookmarked and shared via direct URLs
   - Link components in tiles prevent page reload for smooth transitions
+
+#### December 04, 2025 - Resignation Protocol Feature
+- ✅ **New Resignation Protocol Feature**: A therapeutic ritual for releasing emotional burdens
+  - **Cream Paper Aesthetic**: Warm textured background with subtle paper grain
+  - **Typewriter Typography**: Courier Prime monospace font for official document feel
+  - **Handwritten Input Style**: Caveat cursive font for user selections in deep indigo
+  - **5-Phase Interactive Workflow**:
+    1. Header - Choose who to address the resignation to
+    2. Role - Select the unpaid position you're resigning from
+    3. Grievances - Define working conditions, what you've been paid in, and what you deserve instead
+    4. Surrender of Assets - Return keys and strike through responsibilities
+    5. New Appointment - Accept a new, empowering position
+  - **Signature Canvas**: Touch-enabled signing with haptic vibration feedback
+  - **Dual Release Options**:
+    - The Burn: Cathartic release for heavy burdens
+    - The File: Save for boundary reinforcement with reference number
+  - **LocalStorage Persistence**: Filed resignations are saved and can be referenced
+  - **Consistent Navigation**: "Return to Dashboard" button following app-wide pattern
