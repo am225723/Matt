@@ -1306,7 +1306,7 @@ const FileAnimation = ({ onComplete, referenceNumber, formData }) => {
             </motion.div>
 
             <motion.h2 
-              className="text-5xl font-black text-white mb-4 tracking-widest"
+              className="text-5xl font-black text-white mb-8 tracking-widest"
               initial={{ opacity: 0, y: -20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.2 }}
@@ -1314,21 +1314,12 @@ const FileAnimation = ({ onComplete, referenceNumber, formData }) => {
             >
               BOUNDARY SET
             </motion.h2>
-            
-            <motion.p 
-              className="text-amber-300 font-mono text-base mb-6 font-bold tracking-wide"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.4 }}
-            >
-              Reference: {referenceNumber}
-            </motion.p>
 
             <motion.div
               className="max-w-sm mx-auto"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.6 }}
+              transition={{ delay: 0.4 }}
             >
               <p className="text-slate-300 text-sm leading-relaxed mb-6">
                 Your resignation is now on record. This boundary is permanent and non-negotiable.
