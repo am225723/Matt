@@ -5,7 +5,12 @@ Matthew's Playbook is a comprehensive React + Vite web application designed for 
 No specific user preferences recorded yet
 
 ## System Architecture
-The application is built with React and Vite for the frontend, utilizing a component-based architecture with modular components, utility functions, and dedicated service files. Styling is managed with Tailwind CSS, incorporating a dark sophisticated theme, glass morphism effects, and smooth Framer Motion animations. Key UI/UX decisions include a mobile-first responsive design, animated elements like rotating gradient rings and sparkle effects for avatars, sophisticated gradient tiles with character images, and a horizontal header layout. Data persistence is handled via LocalStorage. The application uses React Router v6 for URL-based navigation, allowing direct links and browser history management for all features.
+The application is built with React and Vite for the frontend, utilizing a component-based architecture with modular components, utility functions, and dedicated service files. Styling is managed with Tailwind CSS, incorporating a dark sophisticated theme, glass morphism effects, and smooth Framer Motion animations. Key UI/UX decisions include a mobile-first responsive design, animated elements like rotating gradient rings and sparkle effects for avatars, sophisticated gradient tiles with character images, and a horizontal header layout. Data persistence is handled via Supabase (with localStorage fallback). The application uses React Router v6 for URL-based navigation, allowing direct links and browser history management for all features.
+
+**Vercel Deployment Architecture**: The application is designed to deploy on Vercel with:
+- **Supabase Edge Functions** for AI API proxying (Perplexity, OpenAI Whisper)
+- **Supabase Database** for persistent data storage (resignations, etc.)
+- **Frontend-only deployment** on Vercel (no Express backend needed)
 
 Core technical implementations and features include:
 - **Resilience Playbook & Library**: Tools for creating and managing step-by-step strategies.
@@ -21,10 +26,13 @@ Core technical implementations and features include:
 - **Character-Based UI**: Custom cartoon avatars for each feature, displayed on tiles with hover animations.
 
 ## External Dependencies
-- **Perplexity API**: Powers AI insights, excuse reframing, and yardage book features.
-- **OpenAI API (Whisper)**: Used for audio transcription and AI follow-up questions, accessed securely via a backend Express proxy.
+- **Perplexity API**: Powers AI insights, excuse reframing, and yardage book features. Accessed via Supabase Edge Functions for Vercel deployment.
+- **OpenAI API (Whisper-1)**: Used for audio transcription in Ketamine Journal and AI follow-up questions. Accessed via Supabase Edge Functions for secure key handling.
 - **Google Gemini API**: An alternative AI provider for enhanced features.
-- **Supabase**: Utilized for storing background images (e.g., `bg-main.jpg`, `1530.png`, `1531.png`) for dashboard backgrounds and the anxiety tracker's body map. Images are publicly accessible through a storage bucket URL.
+- **Supabase**: 
+  - Database storage for resignations with full CRUD operations
+  - Edge Functions for AI API proxying (perplexity-ai, transcribe)
+  - Storage bucket for images (bg-main.jpg, 1530.png, 1531.png) for dashboard backgrounds and anxiety tracker body map
 - **Framer Motion**: For animations.
 - **Tailwind CSS**: For styling.
 - **Lucide React**: For icons.
@@ -86,17 +94,23 @@ Core technical implementations and features include:
   - Features can be bookmarked and shared via direct URLs
   - Link components in tiles prevent page reload for smooth transitions
 
-#### December 04, 2025 - Resignation Protocol Feature & AI Fix
+#### December 04, 2025 - Resignation Protocol Feature, Satirical Style & Vercel Deployment
 - ✅ **New Resignation Protocol Feature**: A therapeutic ritual for releasing emotional burdens
   - **Cream Paper Aesthetic**: Warm textured background with subtle paper grain
   - **Typewriter Typography**: Courier Prime monospace font for official document feel
   - **Handwritten Input Style**: Caveat cursive font for user selections in deep indigo
+  - **Satirical/Dark Humor Style**: Inspired by user's example document with clever, self-deprecating metaphors:
+    - "Lowering standards so far they could win a limbo contest with a crumb"
+    - "The server at the banquet where I eat myself alive"
+    - "Grown continuously—like bacteria"
+    - "Break rooms that are for resting, not breaking promises"
+    - "Two weeks notice, but I've only got two minutes"
   - **5-Phase Interactive Workflow**:
-    1. Header - Choose who to address the resignation to
-    2. Role - Select the unpaid position you're resigning from
-    3. Grievances - Define working conditions, what you've been paid in, and what you deserve instead
+    1. Header - Choose who to address (e.g., "The Board of Self-Sabotage", "To Whom It Definitely Concerns")
+    2. Role - Select the unpaid position (e.g., "My Own Representative", "CEO of Everyone's Problems But My Own")
+    3. Grievances - Define working conditions and what you've been paid in vs what you deserve
     4. Surrender of Assets - Return keys and strike through responsibilities
-    5. New Appointment - Accept a new, empowering position
+    5. New Appointment - Accept a new, empowering position (e.g., "Just Matt (No Title Required)")
   - **Signature Canvas**: Touch-enabled signing with haptic vibration feedback
   - **Dual Release Options**:
     - The Burn: Dramatic fire animation with floating embers and cathartic release
@@ -110,11 +124,12 @@ Core technical implementations and features include:
     - Pulsing cursor during typewriter effect
     - Gradient glow effects on signature canvas
   - **Consistent Navigation**: "Return to Dashboard" button following app-wide pattern
-- ✅ **Perplexity AI Proxy Fix**: Fixed CORS issues for Excuse Reframer
-  - Added `/api/perplexity` endpoint to backend server
-  - Perplexity API calls now proxied through Express server
-  - Frontend `perplexity.js` updated to call backend instead of direct API
-  - Secure API key handling on server-side only
+- ✅ **Supabase Edge Functions for Vercel Deployment**: Created edge functions to replace Express backend
+  - `supabase/functions/perplexity-ai/index.ts` - Proxies Perplexity API for AI features
+  - `supabase/functions/transcribe/index.ts` - Proxies OpenAI Whisper API for audio transcription
+  - Frontend `perplexity.js` auto-detects and calls edge functions when Supabase env vars are present
+  - Falls back to local Express backend for development
+  - See `supabase/README.md` for deployment instructions
 - ✅ **Supabase Client Setup**: Created `src/lib/supabase.js` utility
   - Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
   - Functions: `saveResignation`, `getResignations`, `deleteResignation`
