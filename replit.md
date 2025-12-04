@@ -86,7 +86,7 @@ Core technical implementations and features include:
   - Features can be bookmarked and shared via direct URLs
   - Link components in tiles prevent page reload for smooth transitions
 
-#### December 04, 2025 - Resignation Protocol Feature
+#### December 04, 2025 - Resignation Protocol Feature & AI Fix
 - ✅ **New Resignation Protocol Feature**: A therapeutic ritual for releasing emotional burdens
   - **Cream Paper Aesthetic**: Warm textured background with subtle paper grain
   - **Typewriter Typography**: Courier Prime monospace font for official document feel
@@ -99,7 +99,45 @@ Core technical implementations and features include:
     5. New Appointment - Accept a new, empowering position
   - **Signature Canvas**: Touch-enabled signing with haptic vibration feedback
   - **Dual Release Options**:
-    - The Burn: Cathartic release for heavy burdens
-    - The File: Save for boundary reinforcement with reference number
-  - **LocalStorage Persistence**: Filed resignations are saved and can be referenced
+    - The Burn: Dramatic fire animation with floating embers and cathartic release
+    - The File: Filing cabinet animation with reference number generation
+  - **Supabase Integration**: Resignations saved to Supabase database (with localStorage fallback)
+  - **Enhanced Visual Effects**:
+    - Floating ambient particles
+    - Wax seal stamp animation on completion
+    - Glowing progress dots with pulse animation
+    - Animated dropdown menus with staggered entry
+    - Pulsing cursor during typewriter effect
+    - Gradient glow effects on signature canvas
   - **Consistent Navigation**: "Return to Dashboard" button following app-wide pattern
+- ✅ **Perplexity AI Proxy Fix**: Fixed CORS issues for Excuse Reframer
+  - Added `/api/perplexity` endpoint to backend server
+  - Perplexity API calls now proxied through Express server
+  - Frontend `perplexity.js` updated to call backend instead of direct API
+  - Secure API key handling on server-side only
+- ✅ **Supabase Client Setup**: Created `src/lib/supabase.js` utility
+  - Environment variables: `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`
+  - Functions: `saveResignation`, `getResignations`, `deleteResignation`
+
+#### Required Supabase SQL
+Run this in Supabase SQL Editor to create the resignations table:
+```sql
+CREATE TABLE resignations (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  addressee TEXT NOT NULL,
+  role TEXT NOT NULL,
+  condition TEXT NOT NULL,
+  paid_in TEXT NOT NULL,
+  instead_of TEXT NOT NULL,
+  returning_keys TEXT NOT NULL,
+  struck_responsibilities TEXT[] DEFAULT '{}',
+  new_position TEXT NOT NULL,
+  signature_data TEXT,
+  release_type TEXT NOT NULL CHECK (release_type IN ('burn', 'file')),
+  reference_number TEXT
+);
+
+ALTER TABLE resignations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow all operations" ON resignations FOR ALL USING (true) WITH CHECK (true);
+```
