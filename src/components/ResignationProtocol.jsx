@@ -159,6 +159,61 @@ const NEW_POSITION_OPTIONS = [
   "Someone Who Exists Without Performing"
 ];
 
+const DURATION_OPTIONS = [
+  "far too long",
+  "my entire adult life",
+  "since before I can remember",
+  "approximately forever",
+  "longer than any reasonable person should",
+  "since I learned to put others first",
+  "since childhood",
+  "decades of thankless service"
+];
+
+const HARM_OPTIONS = [
+  "my mental health",
+  "my sense of self",
+  "my relationships",
+  "my sleep",
+  "my nervous system",
+  "my ability to relax",
+  "my capacity for joy",
+  "my physical wellbeing",
+  "my self-esteem",
+  "my peace of mind"
+];
+
+const DISCOVERY_OPTIONS = [
+  "nobody actually cares as much as I thought",
+  "the spotlight was never really on me",
+  "I was the only one keeping score",
+  "most people are too busy with their own lives to judge mine",
+  "perfection was never the requirement I thought it was",
+  "I've been performing for an empty theater",
+  "the criticism I feared was mostly in my head"
+];
+
+const REGRET_OPTIONS = [
+  "shrinking myself to fit into spaces that were never meant for me",
+  "apologizing for existing",
+  "putting everyone else's needs before my own",
+  "believing I wasn't enough",
+  "living according to someone else's expectations",
+  "waiting for permission to be myself",
+  "letting fear make my decisions"
+];
+
+const BENEFIT_OPTIONS = [
+  "peace of mind",
+  "actual rest",
+  "self-acceptance",
+  "authentic connections",
+  "the freedom to be imperfect",
+  "time for what truly matters",
+  "the ability to say no",
+  "guilt-free boundaries"
+];
+
 const playThudSound = () => {
   try {
     const audioContext = new (window.AudioContext || window.webkitAudioContext)();
@@ -394,27 +449,30 @@ const FullLetterDisplay = ({ formData, signatureData, onContinue }) => {
     return () => clearTimeout(timer);
   }, []);
 
+  const FilledText = ({ children }) => (
+    <span className="font-caveat text-2xl sm:text-3xl text-indigo-800 font-semibold underline decoration-indigo-300 decoration-2 underline-offset-4 bg-indigo-50 px-1 rounded">
+      {children}
+    </span>
+  );
+
   return (
     <motion.div
-      className="fixed inset-0 z-40 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-auto py-8 px-4"
+      className="fixed inset-0 z-40 bg-slate-100 overflow-auto py-6 px-3 sm:py-8 sm:px-4"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
       <div className="max-w-3xl mx-auto">
         <motion.div
-          className="bg-gradient-to-b from-amber-50 to-white rounded-lg shadow-2xl p-8 sm:p-12 relative"
+          className="bg-white rounded-xl shadow-2xl p-6 sm:p-10 relative border-2 border-slate-200"
           initial={{ y: 50, opacity: 0 }}
           animate={{ y: 0, opacity: 1 }}
           transition={{ delay: 0.2 }}
-          style={{
-            backgroundImage: 'repeating-linear-gradient(transparent, transparent 31px, rgba(0,0,0,0.03) 31px, rgba(0,0,0,0.03) 32px)'
-          }}
         >
-          <div className="text-center mb-8 pb-4 border-b-2 border-slate-300">
-            <h1 className="font-mono text-3xl sm:text-4xl text-slate-900 font-bold tracking-wide">
-              LETTER OF RESIGNATION
+          <div className="text-center mb-8 pb-6 border-b-4 border-slate-900">
+            <h1 className="font-mono text-2xl sm:text-4xl text-slate-900 font-black tracking-widest uppercase">
+              Letter of Resignation
             </h1>
-            <p className="font-mono text-sm text-slate-600 mt-2">
+            <p className="font-mono text-base text-slate-700 mt-3 font-semibold">
               {new Date().toLocaleDateString('en-US', { 
                 year: 'numeric', 
                 month: 'long', 
@@ -423,15 +481,17 @@ const FullLetterDisplay = ({ formData, signatureData, onContinue }) => {
             </p>
           </div>
 
-          <div className="space-y-6 font-mono text-slate-800 text-lg leading-relaxed">
-            <p>
-              <span className="font-bold">TO:</span>{' '}
-              <span className="font-caveat text-2xl text-indigo-900">{formData.addressee}</span>
+          <div className="space-y-6 text-slate-900 text-lg sm:text-xl leading-loose">
+            <p className="font-bold text-xl sm:text-2xl">
+              TO: <FilledText>{formData.addressee}</FilledText>
             </p>
 
-            <p className="mt-6">
-              Please accept this letter as formal notification that I am resigning from my position as{' '}
-              <span className="font-caveat text-2xl text-indigo-900">{formData.role}</span>, effective immediately.
+            <p className="mt-8">
+              Please accept this letter as formal notification that I am resigning from my position as <FilledText>{formData.role}</FilledText>, effective immediately.
+            </p>
+
+            <p>
+              I have held this position for <FilledText>{formData.duration}</FilledText>. During this time, the role has caused significant damage to <FilledText>{formData.harm}</FilledText>.
             </p>
 
             <p>
@@ -439,33 +499,29 @@ const FullLetterDisplay = ({ formData, signatureData, onContinue }) => {
             </p>
 
             <p>
-              The working conditions have become{' '}
-              <span className="font-caveat text-2xl text-indigo-900">{formData.condition}</span>.
+              The working conditions have become <FilledText>{formData.condition}</FilledText>.
             </p>
 
             <p>
-              For too long, I have been compensated exclusively in{' '}
-              <span className="font-caveat text-2xl text-indigo-900">{formData.paidIn}</span>, when what I truly deserved was{' '}
-              <span className="font-caveat text-2xl text-indigo-900">{formData.insteadOf}</span>. This is an unacceptable return on investment for a position I never actually applied for.
+              For too long, I have been compensated exclusively in <FilledText>{formData.paidIn}</FilledText>, when what I truly deserved was <FilledText>{formData.insteadOf}</FilledText>. This is an unacceptable return on investment for a position I never actually applied for.
             </p>
 
-            <p>
+            <p className="font-semibold italic border-l-4 border-amber-500 pl-4 bg-amber-50 py-2">
               I understand it's customary to give two weeks notice, but I've only got two minutes. The urgency of my departure cannot be overstated.
             </p>
 
             <p>
-              Effective immediately, I am returning the keys to{' '}
-              <span className="font-caveat text-2xl text-indigo-900">{formData.returningKeys}</span>. I will not be taking any work home with me, as I have been doing so unconsciously for far too long already.
+              Effective immediately, I am returning the keys to <FilledText>{formData.returningKeys}</FilledText>. I will not be taking any work home with me, as I have been doing so unconsciously for far too long already.
             </p>
 
             {formData.struckResponsibilities.length > 0 && (
-              <div className="my-6">
-                <p className="font-bold mb-3">Furthermore, I will no longer be responsible for:</p>
-                <ul className="list-none space-y-2 pl-4">
+              <div className="my-8 p-4 bg-red-50 border-2 border-red-200 rounded-lg">
+                <p className="font-bold mb-4 text-red-900 text-xl">Furthermore, I will NO LONGER be responsible for:</p>
+                <ul className="list-none space-y-3">
                   {formData.struckResponsibilities.map((item, idx) => (
-                    <li key={idx} className="flex items-start gap-2">
-                      <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-1" />
-                      <span className="line-through text-red-600 decoration-red-500 decoration-2">{item}</span>
+                    <li key={idx} className="flex items-start gap-3">
+                      <X className="w-6 h-6 text-red-600 flex-shrink-0 mt-1" strokeWidth={3} />
+                      <span className="line-through text-red-700 decoration-red-600 decoration-[3px] text-lg">{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -473,46 +529,55 @@ const FullLetterDisplay = ({ formData, signatureData, onContinue }) => {
             )}
 
             <p>
+              Through this resignation, I have come to realize that <FilledText>{formData.discovery}</FilledText>.
+            </p>
+
+            <p>
+              My only regret is <FilledText>{formData.regret}</FilledText>. But I am choosing to forgive myself and move forward.
+            </p>
+
+            <p className="font-semibold">
               It is my strong suggestion that this position be eliminated altogether. It should never have existed in the first place, and I refuse to train my replacement.
             </p>
 
             <p>
-              Moving forward, I will be accepting a new position as{' '}
-              <span className="font-caveat text-2xl text-indigo-900">{formData.newPosition}</span>. This new role comes with significantly better benefits, including but not limited to: peace of mind, self-acceptance, and the radical freedom of being imperfect.
+              Moving forward, I will be accepting a new position as <FilledText>{formData.newPosition}</FilledText>. This new role comes with <FilledText>{formData.benefit}</FilledText>, and the radical freedom of being imperfect.
             </p>
 
-            <p>
+            <p className="font-medium italic text-slate-700">
               Please do not contact me regarding this matter. My inbox is now reserved for things that actually matter.
             </p>
 
-            <p className="mt-8">
-              Respectfully (but not apologetically),
-            </p>
+            <div className="mt-10 pt-6 border-t-2 border-slate-300">
+              <p className="font-bold text-xl mb-6">
+                Respectfully (but not apologetically),
+              </p>
 
-            <div className="mt-6 relative">
-              {signatureData && (
-                <img 
-                  src={signatureData} 
-                  alt="Signature" 
-                  className="h-24 object-contain"
-                />
-              )}
-              <div className="border-b-2 border-slate-400 w-64 mt-2" />
-              <p className="text-sm text-slate-600 mt-1">The Undersigned</p>
+              <div className="relative">
+                {signatureData && (
+                  <img 
+                    src={signatureData} 
+                    alt="Signature" 
+                    className="h-28 object-contain"
+                  />
+                )}
+                <div className="border-b-4 border-slate-900 w-72 mt-2" />
+                <p className="text-base text-slate-700 mt-2 font-semibold">The Undersigned</p>
+              </div>
             </div>
           </div>
 
           {sealComplete && (
             <motion.div
-              className="absolute bottom-8 right-8 w-24 h-24"
+              className="absolute bottom-6 right-6 w-28 h-28"
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
               transition={{ type: "spring", stiffness: 200, damping: 15 }}
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-lg" />
-              <div className="absolute inset-2 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center flex-col">
-                <Stamp className="w-8 h-8 text-red-200" />
-                <span className="text-red-100 text-[8px] font-bold">APPROVED</span>
+              <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-xl" />
+              <div className="absolute inset-3 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center flex-col">
+                <Stamp className="w-10 h-10 text-red-200" />
+                <span className="text-red-100 text-[10px] font-bold tracking-wider">APPROVED</span>
               </div>
             </motion.div>
           )}
@@ -520,16 +585,16 @@ const FullLetterDisplay = ({ formData, signatureData, onContinue }) => {
 
         {sealComplete && (
           <motion.div
-            className="text-center mt-8"
+            className="text-center mt-8 pb-8"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
           >
             <Button
               onClick={onContinue}
-              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-lg px-8 py-6"
+              className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white text-xl px-10 py-7 shadow-xl"
             >
-              <Mail className="w-5 h-5 mr-2" />
+              <Mail className="w-6 h-6 mr-3" />
               Seal & Send
             </Button>
           </motion.div>
@@ -1306,12 +1371,17 @@ export default function ResignationProtocol({ onBack }) {
   const [formData, setFormData] = useState({
     addressee: '',
     role: '',
+    duration: '',
+    harm: '',
     condition: '',
     paidIn: '',
     insteadOf: '',
     returningKeys: '',
     struckResponsibilities: [],
-    newPosition: ''
+    discovery: '',
+    regret: '',
+    newPosition: '',
+    benefit: ''
   });
   
   const [isComplete, setIsComplete] = useState(false);
@@ -1367,8 +1437,8 @@ export default function ResignationProtocol({ onBack }) {
       options: ROLE_OPTIONS,
       allowCustom: true,
       subFields: [
-        { text: 'For too long, I have been paid in...', field: 'paidIn', options: PAID_IN_OPTIONS },
-        { text: '...instead of...', field: 'insteadOf', options: INSTEAD_OF_OPTIONS }
+        { text: 'I have held this position for...', field: 'duration', options: DURATION_OPTIONS },
+        { text: 'This role has caused significant damage to...', field: 'harm', options: HARM_OPTIONS }
       ]
     },
     {
@@ -1376,7 +1446,11 @@ export default function ResignationProtocol({ onBack }) {
       staticText: "The working conditions have become...",
       field: 'condition',
       options: CONDITION_OPTIONS,
-      allowCustom: true
+      allowCustom: true,
+      subFields: [
+        { text: 'For too long, I have been paid in...', field: 'paidIn', options: PAID_IN_OPTIONS },
+        { text: '...when I deserved...', field: 'insteadOf', options: INSTEAD_OF_OPTIONS }
+      ]
     },
     {
       id: 'surrender',
@@ -1387,11 +1461,24 @@ export default function ResignationProtocol({ onBack }) {
       checklistItems: RESPONSIBILITIES_TO_STRIKE
     },
     {
+      id: 'discovery',
+      staticText: "Through this resignation, I have come to realize that...",
+      field: 'discovery',
+      options: DISCOVERY_OPTIONS,
+      allowCustom: true,
+      subFields: [
+        { text: 'My only regret is...', field: 'regret', options: REGRET_OPTIONS }
+      ]
+    },
+    {
       id: 'newPosition',
       staticText: "It is my suggestion that this position be eliminated altogether.\n\nMoving forward, I will be accepting a new position as...",
       field: 'newPosition',
       options: NEW_POSITION_OPTIONS,
-      allowCustom: true
+      allowCustom: true,
+      subFields: [
+        { text: 'This new role comes with...', field: 'benefit', options: BENEFIT_OPTIONS }
+      ]
     }
   ];
 
@@ -1456,13 +1543,15 @@ export default function ResignationProtocol({ onBack }) {
       case 'header':
         return !!formData.addressee;
       case 'role':
-        return !!formData.role && !!formData.paidIn && !!formData.insteadOf;
+        return !!formData.role && !!formData.duration && !!formData.harm;
       case 'grievances':
-        return !!formData.condition;
+        return !!formData.condition && !!formData.paidIn && !!formData.insteadOf;
       case 'surrender':
         return !!formData.returningKeys && formData.struckResponsibilities.length > 0;
+      case 'discovery':
+        return !!formData.discovery && !!formData.regret;
       case 'newPosition':
-        return !!formData.newPosition;
+        return !!formData.newPosition && !!formData.benefit;
       default:
         return false;
     }
@@ -1644,12 +1733,17 @@ export default function ResignationProtocol({ onBack }) {
     setFormData({
       addressee: '',
       role: '',
+      duration: '',
+      harm: '',
       condition: '',
       paidIn: '',
       insteadOf: '',
       returningKeys: '',
       struckResponsibilities: [],
-      newPosition: ''
+      discovery: '',
+      regret: '',
+      newPosition: '',
+      benefit: ''
     });
     setIsComplete(false);
     setShowPostSubmission(false);
