@@ -615,10 +615,12 @@ const EnvelopeAnimation = ({ onComplete }) => {
 
   useEffect(() => {
     const timers = [
-      setTimeout(() => setPhase(1), 500),
-      setTimeout(() => setPhase(2), 1500),
-      setTimeout(() => setPhase(3), 2500),
-      setTimeout(() => onComplete(), 3500)
+      setTimeout(() => setPhase(1), 600),    // Bottom flap folds
+      setTimeout(() => setPhase(2), 1200),   // Left & right flaps fold
+      setTimeout(() => setPhase(3), 1800),   // Top flap folds
+      setTimeout(() => setPhase(4), 2400),   // Wax seal drips
+      setTimeout(() => setPhase(5), 3600),   // Wax seal solidifies
+      setTimeout(() => onComplete(), 4400)
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, [onComplete]);
@@ -629,66 +631,180 @@ const EnvelopeAnimation = ({ onComplete }) => {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
     >
-      <div className="relative w-80 h-96 flex items-center justify-center">
-        <motion.div
-          className="absolute w-64 h-80 bg-gradient-to-b from-amber-50 to-white rounded-lg shadow-xl origin-bottom"
-          initial={{ rotateX: 0, y: 0 }}
-          animate={
-            phase >= 1 
-              ? { rotateX: 90, y: 50, scaleY: 0.1 }
-              : {}
-          }
-          transition={{ duration: 0.8, ease: "easeInOut" }}
-        />
-
-        {phase >= 1 && (
+      <div className="relative w-96 h-full flex items-center justify-center">
+        <div className="relative w-80 h-96">
+          {/* Envelope back */}
           <motion.div
-            className="absolute w-72 h-48"
-            initial={{ opacity: 0, y: 100 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <div className="relative w-full h-full">
-              <div className="absolute inset-0 bg-gradient-to-b from-amber-100 to-amber-200 rounded-lg shadow-2xl" />
-              
+            className="absolute w-64 h-80 bg-gradient-to-br from-amber-100 to-amber-150 rounded-lg shadow-2xl"
+            style={{ left: 'calc(50% - 128px)', top: 'calc(50% - 160px)' }}
+          />
+
+          {/* Bottom flap */}
+          <motion.div
+            className="absolute w-64 h-32 bg-gradient-to-t from-amber-200 to-amber-100 origin-bottom"
+            style={{
+              left: 'calc(50% - 128px)',
+              top: 'calc(50% - 160px)',
+              clipPath: 'polygon(0 100%, 0 0, 100% 0, 100% 100%)'
+            }}
+            initial={{ rotateX: 0, y: 0 }}
+            animate={
+              phase >= 1 
+                ? { rotateX: -75, y: -10 }
+                : { rotateX: 0, y: 0 }
+            }
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+          />
+
+          {/* Left flap */}
+          <motion.div
+            className="absolute w-32 h-80 bg-gradient-to-r from-amber-200 to-amber-100 origin-left"
+            style={{
+              left: 'calc(50% - 128px)',
+              top: 'calc(50% - 160px)',
+              clipPath: 'polygon(100% 0, 0 0, 0 100%, 100% 100%)'
+            }}
+            initial={{ rotateY: 0, x: 0 }}
+            animate={
+              phase >= 2
+                ? { rotateY: -80, x: 5 }
+                : { rotateY: 0, x: 0 }
+            }
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+          />
+
+          {/* Right flap */}
+          <motion.div
+            className="absolute w-32 h-80 bg-gradient-to-l from-amber-200 to-amber-100 origin-right"
+            style={{
+              right: 'calc(50% - 128px)',
+              top: 'calc(50% - 160px)',
+              clipPath: 'polygon(0 0, 100% 0, 100% 100%, 0 100%)'
+            }}
+            initial={{ rotateY: 0, x: 0 }}
+            animate={
+              phase >= 2
+                ? { rotateY: 80, x: -5 }
+                : { rotateY: 0, x: 0 }
+            }
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+          />
+
+          {/* Top flap (triangular) */}
+          <motion.div
+            className="absolute w-64 h-32 bg-gradient-to-b from-amber-200 to-amber-100 origin-top"
+            style={{
+              left: 'calc(50% - 128px)',
+              top: 'calc(50% - 160px)',
+              clipPath: 'polygon(0 0, 50% 100%, 100% 0)'
+            }}
+            initial={{ rotateX: 0, y: 0 }}
+            animate={
+              phase >= 3
+                ? { rotateX: 75, y: 10 }
+                : { rotateX: 0, y: 0 }
+            }
+            transition={{ duration: 0.7, ease: "easeInOut" }}
+          />
+
+          {/* Sealed envelope front */}
+          {phase >= 3 && (
+            <motion.div
+              className="absolute w-64 h-80 bg-gradient-to-b from-amber-100 to-amber-200 rounded-lg shadow-2xl border-2 border-amber-300"
+              style={{ left: 'calc(50% - 128px)', top: 'calc(50% - 160px)' }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.3 }}
+            />
+          )}
+
+          {/* Wax seal dripping effect */}
+          {phase >= 4 && (
+            <>
+              {/* Dripping wax drops */}
+              {[...Array(5)].map((_, i) => (
+                <motion.div
+                  key={`drip-${i}`}
+                  className="absolute w-3 h-3 bg-gradient-to-b from-red-500 to-red-700 rounded-full"
+                  style={{
+                    left: 'calc(50% - 6px + ' + (Math.random() * 20 - 10) + 'px)',
+                    top: 'calc(50% - 120px)'
+                  }}
+                  initial={{ opacity: 0, y: 0, scale: 0.5 }}
+                  animate={{
+                    opacity: [1, 0.8, 0],
+                    y: [0, 40, 80],
+                    scale: [0.5, 1, 0.8]
+                  }}
+                  transition={{
+                    duration: 0.8,
+                    delay: i * 0.1,
+                    ease: "easeIn"
+                  }}
+                />
+              ))}
+
+              {/* Main wax seal blob forming */}
               <motion.div
-                className="absolute top-0 left-0 right-0 h-24 bg-gradient-to-b from-amber-200 to-amber-300 origin-top"
-                initial={{ rotateX: 180 }}
-                animate={phase >= 2 ? { rotateX: 0 } : { rotateX: 180 }}
-                transition={{ duration: 0.6 }}
-                style={{ 
-                  clipPath: 'polygon(0 0, 50% 100%, 100% 0)',
-                  transformStyle: 'preserve-3d'
+                className="absolute w-20 h-20 bg-gradient-to-br from-red-600 to-red-900 rounded-full shadow-lg"
+                style={{
+                  left: 'calc(50% - 40px)',
+                  top: 'calc(50% - 90px)'
+                }}
+                initial={{ scale: 0, opacity: 0 }}
+                animate={phase >= 4 ? { scale: 1, opacity: 1 } : {}}
+                transition={{
+                  duration: 0.6,
+                  delay: 0.3,
+                  type: "spring",
+                  stiffness: 200,
+                  damping: 20
                 }}
               />
-              
-              {phase >= 2 && (
-                <motion.div
-                  className="absolute top-12 left-1/2 -translate-x-1/2"
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ type: "spring", stiffness: 300, delay: 0.3 }}
-                >
-                  <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg">
-                    <Stamp className="w-8 h-8 text-red-200" />
-                  </div>
-                </motion.div>
-              )}
-            </div>
-          </motion.div>
-        )}
+            </>
+          )}
 
-        {phase >= 3 && (
-          <motion.div
-            className="absolute text-center"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-          >
-            <Send className="w-16 h-16 text-amber-400 mx-auto mb-4" />
-            <h2 className="text-2xl font-bold text-white mb-2">Letter Sealed</h2>
-            <p className="text-amber-200">Choose how to process your resignation...</p>
-          </motion.div>
-        )}
+          {/* Wax seal final state */}
+          {phase >= 5 && (
+            <motion.div
+              className="absolute w-20 h-20 flex items-center justify-center"
+              style={{
+                left: 'calc(50% - 40px)',
+                top: 'calc(50% - 90px)'
+              }}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              transition={{ duration: 0.4 }}
+            >
+              <div className="relative w-full h-full">
+                <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-900 rounded-full shadow-2xl" />
+                <div className="absolute inset-3 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
+                  <Stamp className="w-10 h-10 text-red-100 drop-shadow-lg" />
+                </div>
+                {/* Wax shine effect */}
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-br from-white/30 to-transparent rounded-full"
+                  animate={{ opacity: [0.3, 0.6, 0.3] }}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              </div>
+            </motion.div>
+          )}
+
+          {/* Completion message */}
+          {phase >= 5 && (
+            <motion.div
+              className="absolute inset-0 flex flex-col items-center justify-end pb-12 pointer-events-none"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 }}
+            >
+              <Send className="w-16 h-16 text-amber-400 mb-4" />
+              <h2 className="text-2xl font-bold text-white mb-2">Sealed with Wax</h2>
+              <p className="text-amber-200 font-mono text-sm">Your resignation is official...</p>
+            </motion.div>
+          )}
+        </div>
       </div>
     </motion.div>
   );
