@@ -953,43 +953,52 @@ const BurnAnimation = ({ onComplete, formData }) => {
           className="relative"
           initial={{ y: 200, scale: 1, rotate: 12 }}
           animate={{ 
-            y: phase >= 1 ? -200 : 0,
-            scale: phase >= 1 ? 0.6 : 1,
-            rotate: phase >= 1 ? [12, -30, 45, -20, 30] : 12
+            y: phase >= 1 ? -250 : 0,
+            scale: phase >= 1 ? 0.4 : 1,
+            rotate: phase >= 1 ? [12, -45, 60, -30, 45] : 12
           }}
-          transition={{ duration: 0.8 }}
+          transition={{ duration: 0.6 }}
         >
           <motion.div
-            className="w-32 h-32 rounded-lg relative overflow-hidden"
+            className="w-32 h-32 rounded-lg relative overflow-hidden shadow-2xl"
             animate={{
               backgroundColor: phase >= 2 
-                ? ['#fef3c7', '#92400e', '#1c1917', '#0c0a09']
+                ? ['#fef3c7', '#f59e0b', '#b45309', '#92400e', '#1c1917', '#0c0a09']
                 : '#fef3c7'
             }}
-            transition={{ duration: 2 }}
+            transition={{ duration: 2.5 }}
           >
+            {/* Intense flame layers */}
             {phase >= 1 && phase < 3 && (
               <>
                 <motion.div
-                  className="absolute inset-0 bg-gradient-to-t from-orange-500 via-red-500 to-transparent"
+                  className="absolute inset-0 bg-gradient-to-t from-yellow-400 via-orange-500 to-transparent"
+                  initial={{ height: '0%' }}
+                  animate={{ height: '120%' }}
+                  transition={{ duration: 1 }}
+                />
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-t from-red-600 via-orange-400 to-transparent"
                   initial={{ height: '0%' }}
                   animate={{ height: '100%' }}
-                  transition={{ duration: 1.5 }}
+                  transition={{ duration: 1.2, delay: 0.1 }}
                 />
-                {[...Array(20)].map((_, i) => (
+                {/* Flame flickers */}
+                {[...Array(30)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="absolute w-2 h-2 bg-orange-400 rounded-full"
+                    className="absolute w-2 h-3 bg-orange-300 rounded-full blur-sm"
                     style={{ left: `${Math.random() * 100}%` }}
                     initial={{ bottom: 0, opacity: 0 }}
                     animate={{ 
-                      bottom: [0, 150],
-                      opacity: [0, 1, 0],
-                      scale: [0.5, 1.5, 0.5]
+                      bottom: [0, 160],
+                      opacity: [0, 1, 0.5, 0],
+                      scale: [0.3, 1.2, 0.5],
+                      x: [(Math.random() - 0.5) * 40]
                     }}
                     transition={{
-                      duration: 1 + Math.random() * 0.5,
-                      delay: i * 0.08,
+                      duration: 1.2 + Math.random() * 0.6,
+                      delay: i * 0.05,
                       repeat: 2
                     }}
                   />
@@ -997,30 +1006,45 @@ const BurnAnimation = ({ onComplete, formData }) => {
               </>
             )}
             
+            {/* Bright flash before ash */}
+            {phase >= 1 && phase < 2 && (
+              <motion.div
+                className="absolute inset-0 bg-white"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: [0, 0.8, 0] }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              />
+            )}
+            
+            {/* Ash and embers falling */}
             {phase >= 2 && (
               <motion.div
                 className="absolute inset-0"
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
               >
-                {[...Array(12)].map((_, i) => (
+                {[...Array(18)].map((_, i) => (
                   <motion.div
                     key={i}
-                    className="absolute w-3 h-3 bg-slate-600 rounded-sm"
+                    className={`absolute rounded-full ${i % 3 === 0 ? 'bg-red-700' : i % 3 === 1 ? 'bg-slate-500' : 'bg-gray-600'}`}
                     style={{ 
-                      left: `${Math.random() * 80 + 10}%`,
-                      top: `${Math.random() * 80 + 10}%`
+                      width: `${2 + Math.random() * 3}px`,
+                      height: `${2 + Math.random() * 3}px`,
+                      left: `${Math.random() * 100}%`,
+                      top: `${Math.random() * 100}%`
                     }}
-                    initial={{ scale: 0, rotate: 0 }}
+                    initial={{ scale: 1, opacity: 1 }}
                     animate={{ 
-                      scale: [0, 1, 0],
-                      rotate: [0, 180],
-                      y: [0, -20, -60],
-                      x: [(Math.random() - 0.5) * 40]
+                      scale: [1, 0.5, 0],
+                      opacity: [0.9, 0.5, 0],
+                      y: [0, 30, 80],
+                      x: [(Math.random() - 0.5) * 60],
+                      rotate: [0, 180 + Math.random() * 180]
                     }}
                     transition={{
-                      duration: 2,
-                      delay: 0.5 + i * 0.15
+                      duration: 2 + Math.random() * 0.8,
+                      delay: 0.3 + i * 0.12,
+                      ease: "easeOut"
                     }}
                   />
                 ))}
@@ -1131,43 +1155,81 @@ const FileAnimation = ({ onComplete, referenceNumber, formData }) => {
         animate={{ y: 0, opacity: 1 }}
         transition={{ delay: 0.3, type: "spring", damping: 20 }}
       >
-        <div className="w-72 h-48 bg-gradient-to-b from-amber-700 to-amber-900 rounded-lg shadow-2xl relative overflow-hidden">
-          <div className="absolute top-0 left-0 right-0 h-10 bg-amber-600 rounded-t-lg flex items-center justify-center">
-            <div className="w-20 h-3 bg-amber-400 rounded" />
+        {/* Filing Cabinet */}
+        <div className="w-72 h-56 bg-gradient-to-b from-amber-700 to-amber-900 rounded-lg shadow-2xl relative overflow-hidden border-2 border-amber-800">
+          {/* Cabinet Label */}
+          <div className="absolute top-0 left-0 right-0 h-12 bg-gradient-to-r from-amber-600 to-amber-700 rounded-t-lg flex items-center justify-center border-b-2 border-amber-800">
+            <div className="w-24 h-4 bg-amber-400 rounded opacity-80" />
           </div>
           
+          {/* Drawer 1 */}
           <motion.div
-            className="absolute top-10 left-2 right-2 h-32 bg-amber-800 rounded-b-lg origin-top"
-            initial={{ scaleY: 0 }}
-            animate={{ scaleY: phase >= 1 && !filed ? 1 : filed ? 0 : 0 }}
+            className="absolute top-14 left-3 right-3 h-14 bg-gradient-to-r from-amber-800 to-amber-900 rounded-lg shadow-md border-2 border-amber-700 origin-left"
+            animate={
+              phase >= 2 && filed 
+                ? { scaleX: 0.8, x: -40, opacity: 0.6 } 
+                : { scaleX: 1, x: 0, opacity: 1 }
+            }
             transition={{ duration: 0.5 }}
           >
-            <div className="absolute inset-2 border-2 border-amber-600/30 rounded" />
-            <p className="absolute bottom-2 left-0 right-0 text-center text-amber-400/60 font-mono text-xs">
-              PAST CONTRACTS
-            </p>
+            <div className="h-full flex items-center px-4">
+              <div className="w-12 h-3 bg-amber-600 rounded-full" />
+            </div>
+          </motion.div>
+
+          {/* Drawer 2 (Filing drawer - main one) */}
+          <motion.div
+            className="absolute top-32 left-3 right-3 h-14 bg-gradient-to-r from-amber-800 to-amber-900 rounded-lg shadow-lg border-2 border-amber-700 origin-left"
+            animate={
+              phase >= 2 && filed 
+                ? { scaleX: 0, x: -100, opacity: 0.3 }
+                : { scaleX: 1, x: 0, opacity: 1 }
+            }
+            transition={{ duration: 0.6, ease: "easeIn" }}
+          >
+            <div className="h-full flex items-center px-4 gap-2">
+              <div className="w-14 h-4 bg-amber-600 rounded-full" />
+              <div className="flex-1 h-2 bg-amber-700 rounded" />
+            </div>
+          </motion.div>
+
+          {/* Drawer 3 */}
+          <motion.div
+            className="absolute bottom-3 left-3 right-3 h-14 bg-gradient-to-r from-amber-800 to-amber-900 rounded-lg shadow-md border-2 border-amber-700 origin-left"
+            animate={
+              phase >= 2 && filed 
+                ? { scaleX: 0.8, x: -40, opacity: 0.6 }
+                : { scaleX: 1, x: 0, opacity: 1 }
+            }
+            transition={{ duration: 0.5 }}
+          >
+            <div className="h-full flex items-center px-4">
+              <div className="w-12 h-3 bg-amber-600 rounded-full" />
+            </div>
           </motion.div>
           
-          {phase >= 3 && (
+          {/* Wax seal on drawer when filed */}
+          {phase >= 3 && filed && (
             <motion.div
-              className="absolute top-12 left-1/2 -translate-x-1/2"
+              className="absolute top-32 left-1/2 -translate-x-1/2 z-10"
               initial={{ scale: 0, rotate: -180 }}
               animate={{ scale: 1, rotate: 0 }}
-              transition={{ type: "spring", stiffness: 200 }}
+              transition={{ type: "spring", stiffness: 300, damping: 20 }}
             >
-              <div className="w-20 h-20 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center flex-col shadow-xl">
-                <Stamp className="w-10 h-10 text-red-200" />
+              <div className="w-24 h-24 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center flex-col shadow-2xl border-2 border-red-500">
+                <Stamp className="w-12 h-12 text-red-100" />
+                <span className="text-red-100 text-[10px] font-bold mt-1">SEALED</span>
               </div>
             </motion.div>
           )}
         </div>
         
         <motion.p
-          className="text-amber-300/70 font-mono text-sm text-center mt-4"
+          className="text-amber-300/70 font-mono text-sm text-center mt-6 font-semibold"
           animate={{ opacity: phase >= 1 && !filed ? [0.5, 1, 0.5] : 0 }}
           transition={{ duration: 1.5, repeat: Infinity }}
         >
-          ↑ Drag your letter into the drawer ↑
+          ↑ Drag your letter into the filing cabinet ↑
         </motion.p>
       </motion.div>
 
@@ -1212,34 +1274,92 @@ const FileAnimation = ({ onComplete, referenceNumber, formData }) => {
       
       {phase >= 4 && (
         <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
+          initial={{ opacity: 0, scale: 0.5, y: 50 }}
+          animate={{ opacity: 1, scale: 1, y: 0 }}
           className="absolute inset-0 flex items-center justify-center"
         >
-          <div className="text-center">
+          <div className="text-center z-20">
+            {/* Large animated seal */}
             <motion.div
-              className="w-32 h-32 mx-auto mb-6 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-2xl"
+              className="w-40 h-40 mx-auto mb-8 bg-gradient-to-br from-red-600 via-red-700 to-red-900 rounded-full flex items-center justify-center shadow-2xl relative"
               animate={{ 
-                scale: [1, 1.1, 1],
-                rotate: [0, 5, -5, 0]
+                scale: [1, 1.15, 1],
+                rotate: [0, 8, -8, 0],
+                boxShadow: [
+                  '0 0 0 0 rgba(220, 38, 38, 0.4)',
+                  '0 0 0 20px rgba(220, 38, 38, 0.2)',
+                  '0 0 0 0 rgba(220, 38, 38, 0.4)'
+                ]
               }}
-              transition={{ duration: 2, repeat: Infinity }}
+              transition={{ duration: 2.5, repeat: Infinity }}
             >
               <div className="text-center">
-                <Stamp className="w-12 h-12 text-red-200 mx-auto" />
-                <span className="text-red-100 text-xs font-bold block mt-1">SEALED</span>
+                <Stamp className="w-16 h-16 text-red-100 mx-auto drop-shadow-lg" />
+                <span className="text-red-100 text-sm font-black block mt-2 tracking-widest">FILED</span>
               </div>
+              {/* Seal shine */}
+              <motion.div
+                className="absolute inset-0 bg-gradient-to-br from-white/40 to-transparent rounded-full"
+                animate={{ opacity: [0.2, 0.6, 0.2] }}
+                transition={{ duration: 1.5, repeat: Infinity }}
+              />
             </motion.div>
-            <h2 className="text-4xl font-bold text-white mb-3">CASE CLOSED</h2>
-            <p className="text-amber-200 font-mono text-sm mb-6">{referenceNumber}</p>
-            <motion.p
-              className="text-slate-400 text-sm max-w-xs mx-auto"
+
+            <motion.h2 
+              className="text-5xl font-black text-white mb-4 tracking-widest"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              style={{ textShadow: '0 0 30px rgba(220, 38, 38, 0.5)' }}
+            >
+              BOUNDARY SET
+            </motion.h2>
+            
+            <motion.p 
+              className="text-amber-300 font-mono text-base mb-6 font-bold tracking-wide"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ delay: 0.5 }}
+              transition={{ delay: 0.4 }}
             >
-              This resignation has been filed. If you find yourself slipping back, we'll remind you of your contract.
+              Reference: {referenceNumber}
             </motion.p>
+
+            <motion.div
+              className="max-w-sm mx-auto"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.6 }}
+            >
+              <p className="text-slate-300 text-sm leading-relaxed mb-6">
+                Your resignation is now on record. This boundary is permanent and non-negotiable.
+              </p>
+              <p className="text-amber-200/80 text-xs italic">
+                ✓ We'll remind you if you slip back into old patterns
+              </p>
+            </motion.div>
+
+            {/* Falling documents animation */}
+            {[...Array(6)].map((_, i) => (
+              <motion.div
+                key={i}
+                className="absolute w-16 h-20 bg-gradient-to-br from-amber-100 to-amber-50 rounded shadow-lg"
+                style={{
+                  left: `${20 + i * 13}%`,
+                  top: '-20px'
+                }}
+                initial={{ opacity: 0, y: -100 }}
+                animate={{ 
+                  opacity: [0, 1, 0],
+                  y: [0, 400],
+                  rotate: [0, 360]
+                }}
+                transition={{
+                  duration: 3 + i * 0.2,
+                  delay: 0.5,
+                  repeat: Infinity
+                }}
+              />
+            ))}
           </div>
         </motion.div>
       )}
