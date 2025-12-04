@@ -243,7 +243,7 @@ const CrashChart = ({ onComplete }) => {
       setProgress(p => {
         if (p >= 100) {
           clearInterval(interval);
-          setTimeout(onComplete, 500);
+          setTimeout(onComplete, 5000);
           return 100;
         }
         return p + 2;
