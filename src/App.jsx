@@ -14,8 +14,9 @@ import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializePerplexity } from '@/utils/perplexity.js';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature } from 'lucide-react';
 import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
+import ResignationProtocol from '@/components/ResignationProtocol';
 
 // Import advanced components (lazy loaded to prevent blocking)
 const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseReframerAdvanced'));
@@ -31,6 +32,7 @@ import featureYardage from '@/assets/images/feature-yardage.png';
 import featureHealth from '@/assets/images/feature-health.png';
 import featureKetamine from '@/assets/images/feature-ketamine.png';
 import featureAnxiety from '@/assets/images/feature-anxiety.png';
+import featureResignation from '@/assets/images/feature-resignation.png';
 
 // Sophisticated Mobile-First Tile Component with Large Character Images
 const DashboardTile = ({ title, description, icon, to, gradient, delay, image }) => (
@@ -177,6 +179,15 @@ const Dashboard = () => {
       gradient: "bg-gradient-to-br from-teal-500 to-cyan-600",
       image: featureAnxiety,
       delay: 0.45
+    },
+    {
+      title: "Resignation Protocol",
+      description: "Formally resign from unpaid emotional roles you never signed up for",
+      icon: <FileSignature className="w-6 h-6" />,
+      to: "/resignation",
+      gradient: "bg-gradient-to-br from-amber-600 to-orange-700",
+      image: featureResignation,
+      delay: 0.5
     }
   ];
   
@@ -476,6 +487,11 @@ const AnxietyTrackerWrapper = () => {
   return <AnxietyTrackerRedesigned onBack={() => navigate('/')} />;
 };
 
+const ResignationProtocolWrapper = () => {
+  const navigate = useNavigate();
+  return <ResignationProtocol onBack={() => navigate('/')} />;
+};
+
 const App = () => {
   useEffect(() => {
     const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
@@ -500,6 +516,7 @@ const App = () => {
           <Route path="/health" element={<HealthDashboardWrapper />} />
           <Route path="/ketamine" element={<KetamineJournalWrapper />} />
           <Route path="/anxiety" element={<AnxietyTrackerWrapper />} />
+          <Route path="/resignation" element={<ResignationProtocolWrapper />} />
         </Routes>
         <Toaster />
       </div>
