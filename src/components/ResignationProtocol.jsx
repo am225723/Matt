@@ -6,92 +6,90 @@ import { useToast } from '@/components/ui/use-toast';
 import { saveResignation, getResignations } from '@/lib/supabase';
 
 const ADDRESSEE_OPTIONS = [
-  "The Anxiety",
-  "The Inner Critic", 
-  "The Past Version of Me",
-  "The Committee",
-  "My Mother's Expectations",
-  "My Father's Expectations",
-  "Society's Standards",
-  "The Fear of Judgment",
-  "The Imposter Within",
-  "The Perfectionist"
+  "To Whom It Definitely Concerns",
+  "The Board of Self-Sabotage",
+  "The Department of Unrealistic Expectations",
+  "The Committee That Lives in My Head",
+  "The Management of My Own Worst Nightmare",
+  "Human Resources of Self-Destruction",
+  "The CEO of My Anxiety",
+  "The Shareholders of My Self-Doubt",
+  "The Inner Circle of Critics",
+  "Everyone I've Ever Disappointed (real or imagined)"
 ];
 
 const ROLE_OPTIONS = [
-  "General Manager of the Universe",
-  "Chief Fixer",
-  "The Emotional Sponge",
-  "The Peacekeeper",
-  "Director of People Pleasing",
-  "Chief Worrier",
-  "The Constant Apologizer",
-  "Guardian of Everyone's Feelings",
-  "The Mind Reader",
-  "CEO of Overthinking"
+  "My Own Representative",
+  "The Server at the Banquet Where I Eat Myself Alive",
+  "Chief Officer of Standing in My Own Way",
+  "Director of Trust Falls I Refuse to Catch Myself From",
+  "Manager of the Department of Lowered Standards",
+  "Head of Punching In (Literal Division)",
+  "Supervisor of Breaking Promises to Myself",
+  "General Manager of the Universe (Unpaid)",
+  "CEO of Everyone's Problems But My Own",
+  "President of the I'm Fine Foundation"
 ];
 
 const CONDITION_OPTIONS = [
-  "Unbearable",
-  "Soul-crushing",
-  "Unsustainable",
-  "Exhausting",
-  "Suffocating",
-  "Overwhelming",
-  "Toxic beyond measure"
+  "A limbo contest with a crumb (my standards won)",
+  "A staph infection of the soul",
+  "A trust fall with no one there to catch",
+  "A copay that costs my entire life",
+  "An open wound I keep picking",
+  "A break room where I only break promises",
+  "A retirement plan with no return"
 ];
 
 const PAID_IN_OPTIONS = [
-  "Panic attacks",
-  "Resentment",
-  "Fake smiles",
-  "Sleepless nights",
-  "Chronic tension",
-  "Self-doubt",
-  "Endless guilt",
-  "Burnout"
+  "Employee of the Month plaques for self-sabotage",
+  "Bacteria-level growth (the bad kind)",
+  "Standing ovations for standing in my own way",
+  "Trophies for winning fights against myself",
+  "Gold stars for apologizing for existing",
+  "Perfect attendance at my own pity party",
+  "Benefits with a copay of my sanity"
 ];
 
 const INSTEAD_OF_OPTIONS = [
-  "Authenticity",
-  "Rest",
-  "Joy",
-  "Peace",
-  "Self-respect",
-  "Freedom",
-  "Genuine connection",
-  "Inner calm"
+  "Actual rest (not break room trauma)",
+  "Dreams I stopped shattering",
+  "A trust fall where someone catches me",
+  "Sick days that include 'sick in the head'",
+  "A position where punching in isn't literal",
+  "Passions that unionize with my actions",
+  "A positive referral letter from myself"
 ];
 
 const KEYS_OPTIONS = [
-  "The Control Room",
-  "Tomorrow's Problems",
-  "Other People's Crises",
-  "The Worry Factory",
-  "The Approval Office",
-  "The Guilt Warehouse"
+  "The Photocopying Machine of My Regrets",
+  "The Filing Cabinet of Things I Should've Said",
+  "The Break Room of Broken Promises",
+  "The Conference Room of Catastrophizing",
+  "The Corner Office of Imposter Syndrome",
+  "The Parking Lot Where I Cry Before Work"
 ];
 
 const RESPONSIBILITIES_TO_STRIKE = [
-  "Predicting catastrophic futures",
-  "Managing emotions that aren't mine",
-  "Apologizing for taking up space",
-  "Fixing everyone else's problems",
-  "Being available 24/7",
-  "Making everyone comfortable at my expense",
-  "Reading minds and anticipating needs",
-  "Carrying generational trauma"
+  "Breaking the standing record for standing in my own way",
+  "Serving at the banquet where I eat myself alive",
+  "Training replacements in self-destruction",
+  "Attending mandatory meetings with my inner critic",
+  "Submitting weekly reports on everything wrong with me",
+  "Working overtime on everyone else's problems",
+  "Maintaining the staph infection of negative self-talk",
+  "Providing two weeks notice when I only have two minutes"
 ];
 
 const NEW_POSITION_OPTIONS = [
-  "The Protector of My Peace",
-  "The Architect of My Own Life",
-  "Just Matt",
-  "Chief Joy Officer",
-  "Guardian of My Boundaries",
-  "The One Who Rests",
-  "Director of Self-Compassion",
-  "CEO of My Own Happiness"
+  "Someone Who Catches Themselves in Trust Falls",
+  "Director of Actually Resting in Break Rooms",
+  "CEO of Not My Problem Anymore",
+  "Head of the 'Sincerely, Not Yours' Department",
+  "Chief Officer of 100 Copies of My Ass to Kiss",
+  "Manager of Dreams Worth Pursuing",
+  "President of Passions Unionized with Actions",
+  "Just Matt (No Title Required)"
 ];
 
 const FloatingParticle = ({ delay }) => (
@@ -369,24 +367,24 @@ const ResignationProtocol = ({ onBack }) => {
     },
     {
       id: 'role',
-      staticText: 'Please accept this letter as formal notification that I am resigning from my position as...',
+      staticText: "Please accept this letter as formal notification that I am resigning from my position as...\n\nI've appreciated the opportunity to lower my standards. They could win a limbo contest with a crumb.",
       field: 'role',
       options: ROLE_OPTIONS,
       allowCustom: true
     },
     {
       id: 'grievances',
-      staticText: 'I am stepping down because the working conditions have become...',
+      staticText: "In this role, I've grown continuously—like bacteria. I had no idea that holding myself back would be contagious.\n\nThe working conditions have become...",
       field: 'condition',
       options: CONDITION_OPTIONS,
       subFields: [
         { text: 'For too long, I have been paid in...', field: 'paidIn', options: PAID_IN_OPTIONS },
-        { text: '...instead of...', field: 'insteadOf', options: INSTEAD_OF_OPTIONS }
+        { text: '...when I deserved...', field: 'insteadOf', options: INSTEAD_OF_OPTIONS }
       ]
     },
     {
       id: 'surrender',
-      staticText: 'Effective immediately, I am returning the keys to...',
+      staticText: "I understand it's customary to give two weeks notice, but I've only got two minutes.\n\nEffective immediately, I am returning the keys to...",
       field: 'returningKeys',
       options: KEYS_OPTIONS,
       hasChecklist: true,
@@ -394,7 +392,7 @@ const ResignationProtocol = ({ onBack }) => {
     },
     {
       id: 'newPosition',
-      staticText: 'Moving forward, I will be accepting a new position as...',
+      staticText: "It is my suggestion that this job be eliminated altogether and that no future person take on the task.\n\nMoving forward, I will be pursuing opportunities in another field—one where break rooms are for resting. I will be accepting a new position as...",
       field: 'newPosition',
       options: NEW_POSITION_OPTIONS,
       allowCustom: true
