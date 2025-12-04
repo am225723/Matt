@@ -1,0 +1,25 @@
+3. The Signing Ritual (Somatic Engagement)
+This is the climax of the activity. It requires physical effort to make the commitment feel binding.
+ * Orientation Shift: The app pauses and gently pulses, displaying an icon instructing Matthew to rotate his phone to landscape.
+ * The Canvas: The screen becomes a wide signature line at the bottom of the document.
+ * The Action: Matthew must use his index finger to sign his name.
+ * Haptics:
+   * As his finger drags across the screen, the phone emits a friction-based vibration—grainy and continuous—simulating the drag of a fountain pen on heavy paper.
+   * If he lifts his finger, the vibration stops instantly.
+   * Visual: The signature appears in "wet ink" that glistens slightly before drying to matte.
+4. Post-Submission (The Release)
+Once the signature is complete, a "Seal of Approval" stamps onto the document. Matthew is then given two distinct paths for how to process this resignation.
+Option A: The Burn (Cathartic Release)
+ * Best for: Letting go of anger, trauma, or heavy burdens.
+ * Visual: The letter crumples into a ball in the center of the screen.
+ * Interaction: Matthew must "flick" the ball toward a fire pit animation at the top of the screen.
+ * Animation: The paper catches fire. It doesn't just disappear; it turns black, curls, and flakes into gray ash.
+ * Haptic: A low, rumbling vibration mimics the roar of a fire.
+ * Closing: The ash blows away, revealing the word "RELEASED" in clean, airy text.
+Option B: The File (Setting a Boundary)
+ * Best for: establishing new rules, changing habits, or stopping people-pleasing.
+ * Visual: The letter is neatly folded into thirds.
+ * Interaction: A "Past Contracts" file cabinet drawer slides up. Matthew drags the folded letter into the folder.
+ * Sound: A satisfying, heavy thump of a drawer slamming shut.
+ * Visual: A red wax seal stamps the folder: "CASE CLOSED."
+ * Utility: This letter is saved in his profile. If he finds himself people-pleasing again, the app can "remind" him: "You resigned from this position on [Date]. Do you need to view your contract?"

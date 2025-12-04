@@ -4,6 +4,7 @@ expertMode = true
 
 [nix]
 channel = "stable-25_05"
+packages = ["supabase-cli"]
 
 [workflows]
 runButton = "Project"
@@ -76,6 +77,10 @@ externalPort = 3003
 [[ports]]
 localPort = 38671
 externalPort = 6800
+
+[[ports]]
+localPort = 38985
+externalPort = 8081
 
 [[ports]]
 localPort = 39401

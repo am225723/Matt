@@ -1,9 +1,9 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Button } from '@/components/ui/button';
-import { ChevronLeft, ChevronRight, Check, Flame, FileText, X, Sparkles, Award, Stamp } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Check, Flame, FileText, X, Sparkles, Award, Stamp, Archive, Trash2, Eye, Calendar } from 'lucide-react';
 import { useToast } from '@/components/ui/use-toast';
-import { saveResignation, getResignations } from '@/lib/supabase';
+import { saveResignation, getResignations, deleteResignation } from '@/lib/supabase';
 
 const ADDRESSEE_OPTIONS = [
   "To Whom It Definitely Concerns",
@@ -19,46 +19,59 @@ const ADDRESSEE_OPTIONS = [
 ];
 
 const ROLE_OPTIONS = [
-  "My Own Representative",
-  "The Server at the Banquet Where I Eat Myself Alive",
-  "Chief Officer of Standing in My Own Way",
-  "Director of Trust Falls I Refuse to Catch Myself From",
-  "Manager of the Department of Lowered Standards",
-  "Head of Punching In (Literal Division)",
-  "Supervisor of Breaking Promises to Myself",
-  "General Manager of the Universe (Unpaid)",
+  "General Manager of the Universe",
+  "Chief Fixer of Everything",
+  "The Emotional Sponge",
+  "The Peacekeeper",
+  "Director of Other People's Happiness",
   "CEO of Everyone's Problems But My Own",
-  "President of the I'm Fine Foundation"
+  "Head of the Overthinking Department",
+  "Chief Worrier",
+  "President of the I'm Fine Foundation",
+  "The Family Therapist (unlicensed, unpaid)",
+  "Manager of Catastrophic Expectations",
+  "Supervisor of Walking on Eggshells"
+];
+
+const PAID_IN_OPTIONS = [
+  "Panic attacks",
+  "Resentment",
+  "Fake smiles",
+  "Sleepless nights",
+  "Chronic exhaustion",
+  "Stomach knots",
+  "Passive-aggressive emails",
+  "Guilt trips",
+  "Silent treatments",
+  "Unreturned favors",
+  "Broken promises",
+  "Toxic positivity"
+];
+
+const INSTEAD_OF_OPTIONS = [
+  "Authenticity",
+  "Rest",
+  "Joy",
+  "Genuine connection",
+  "Peaceful sleep",
+  "Reciprocity",
+  "Boundaries",
+  "Self-respect",
+  "Actual gratitude",
+  "Honest conversations",
+  "Time for myself",
+  "My own dreams"
 ];
 
 const CONDITION_OPTIONS = [
   "A limbo contest with a crumb (my standards won)",
   "A staph infection of the soul",
   "A trust fall with no one there to catch",
-  "A copay that costs my entire life",
+  "A copay that costs my entire sanity",
   "An open wound I keep picking",
-  "A break room where I only break promises",
-  "A retirement plan with no return"
-];
-
-const PAID_IN_OPTIONS = [
-  "Employee of the Month plaques for self-sabotage",
-  "Bacteria-level growth (the bad kind)",
-  "Standing ovations for standing in my own way",
-  "Trophies for winning fights against myself",
-  "Gold stars for apologizing for existing",
-  "Perfect attendance at my own pity party",
-  "Benefits with a copay of my sanity"
-];
-
-const INSTEAD_OF_OPTIONS = [
-  "Actual rest (not break room trauma)",
-  "Dreams I stopped shattering",
-  "A trust fall where someone catches me",
-  "Sick days that include 'sick in the head'",
-  "A position where punching in isn't literal",
-  "Passions that unionize with my actions",
-  "A positive referral letter from myself"
+  "A break room where I only break promises to myself",
+  "A retirement plan with no return on investment",
+  "A performance review that only counts mistakes"
 ];
 
 const KEYS_OPTIONS = [
@@ -67,30 +80,63 @@ const KEYS_OPTIONS = [
   "The Break Room of Broken Promises",
   "The Conference Room of Catastrophizing",
   "The Corner Office of Imposter Syndrome",
-  "The Parking Lot Where I Cry Before Work"
+  "The Parking Lot Where I Cry Before Work",
+  "The Inbox of Unsent Boundaries",
+  "The Desk Drawer of Suppressed Feelings"
 ];
 
 const RESPONSIBILITIES_TO_STRIKE = [
-  "Breaking the standing record for standing in my own way",
-  "Serving at the banquet where I eat myself alive",
-  "Training replacements in self-destruction",
-  "Attending mandatory meetings with my inner critic",
-  "Submitting weekly reports on everything wrong with me",
-  "Working overtime on everyone else's problems",
-  "Maintaining the staph infection of negative self-talk",
-  "Providing two weeks notice when I only have two minutes"
+  "Fixing everyone else's problems while ignoring my own",
+  "Being available 24/7 for emotional emergencies",
+  "Reading minds and anticipating needs before they're spoken",
+  "Apologizing for things that aren't my fault",
+  "Making everyone comfortable at my own expense",
+  "Keeping the peace at the cost of my sanity",
+  "Carrying secrets that aren't mine to hold",
+  "Managing other adults' emotions"
 ];
 
 const NEW_POSITION_OPTIONS = [
-  "Someone Who Catches Themselves in Trust Falls",
-  "Director of Actually Resting in Break Rooms",
+  "Someone Who Finally Puts Themselves First",
+  "Director of Actually Resting",
   "CEO of Not My Problem Anymore",
-  "Head of the 'Sincerely, Not Yours' Department",
-  "Chief Officer of 100 Copies of My Ass to Kiss",
-  "Manager of Dreams Worth Pursuing",
-  "President of Passions Unionized with Actions",
-  "Just Matt (No Title Required)"
+  "Head of Healthy Boundaries",
+  "Chief Officer of Self-Compassion",
+  "Manager of My Own Happiness",
+  "President of Saying No Without Guilt",
+  "Just Me (No Title Required)"
 ];
+
+const playThudSound = () => {
+  try {
+    const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+    
+    const oscillator = audioContext.createOscillator();
+    const gainNode = audioContext.createGain();
+    
+    oscillator.connect(gainNode);
+    gainNode.connect(audioContext.destination);
+    
+    oscillator.frequency.setValueAtTime(80, audioContext.currentTime);
+    oscillator.frequency.exponentialRampToValueAtTime(40, audioContext.currentTime + 0.15);
+    
+    oscillator.type = 'sine';
+    
+    gainNode.gain.setValueAtTime(0.6, audioContext.currentTime);
+    gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.2);
+    
+    oscillator.start(audioContext.currentTime);
+    oscillator.stop(audioContext.currentTime + 0.2);
+    
+    if (navigator.vibrate) {
+      navigator.vibrate([30, 20, 50]);
+    }
+  } catch (e) {
+    if (navigator.vibrate) {
+      navigator.vibrate([30, 20, 50]);
+    }
+  }
+};
 
 const FloatingParticle = ({ delay }) => (
   <motion.div
@@ -230,75 +276,69 @@ const BurnAnimation = ({ onComplete }) => {
   );
 };
 
-const FileAnimation = ({ referenceNumber, onComplete }) => {
+const FileAnimation = ({ onComplete, referenceNumber }) => {
   const [phase, setPhase] = useState(0);
   
   useEffect(() => {
     const timers = [
       setTimeout(() => setPhase(1), 500),
       setTimeout(() => setPhase(2), 1500),
-      setTimeout(() => onComplete(), 3500)
+      setTimeout(() => setPhase(3), 2500),
+      setTimeout(() => onComplete(), 4000)
     ];
     return () => timers.forEach(t => clearTimeout(t));
   }, [onComplete]);
 
   return (
-    <motion.div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/95">
+    <motion.div className="fixed inset-0 z-50 flex items-center justify-center bg-black/90">
       <div className="relative">
         <motion.div
-          className="w-72 h-96 bg-gradient-to-b from-slate-700 to-slate-800 rounded-lg shadow-2xl relative overflow-hidden"
-          initial={{ y: -100, opacity: 0 }}
-          animate={{ y: 0, opacity: 1 }}
-          transition={{ type: "spring", damping: 15 }}
-        >
-          <div className="absolute top-4 left-4 right-4 h-2 bg-slate-600 rounded" />
-          <div className="absolute top-10 left-4 right-4 h-2 bg-slate-600 rounded w-3/4" />
-          
-          {phase >= 1 && (
-            <motion.div
-              className="absolute inset-4 top-16 bg-cream-100 rounded shadow-inner"
-              initial={{ y: -50, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ type: "spring", damping: 20 }}
-            >
-              <div className="p-4 text-center">
-                <FileText className="w-12 h-12 text-amber-800 mx-auto mb-3" />
-                <p className="font-mono text-xs text-amber-900">OFFICIAL RECORD</p>
-              </div>
-            </motion.div>
-          )}
-          
-          {phase >= 2 && (
-            <motion.div
-              initial={{ scale: 0 }}
-              animate={{ scale: 1 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              className="absolute bottom-6 left-1/2 -translate-x-1/2"
-            >
-              <div className="bg-green-500 text-white px-4 py-2 rounded-full flex items-center gap-2 shadow-lg">
-                <Check className="w-4 h-4" />
-                <span className="font-mono text-sm">FILED</span>
-              </div>
-            </motion.div>
-          )}
-        </motion.div>
+          className="w-64 h-80 bg-cream-100 rounded-lg shadow-xl relative"
+          animate={phase >= 1 ? {
+            rotateX: [0, -10, 0],
+            y: [0, -20, 0],
+            scale: [1, 0.9, 0.8]
+          } : {}}
+          transition={{ duration: 1 }}
+        />
         
         {phase >= 2 && (
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="mt-8 text-center"
+            className="absolute top-1/2 left-1/2 -translate-x-1/2 w-72 h-48 bg-gradient-to-b from-amber-700 to-amber-900 rounded-lg shadow-2xl"
+            initial={{ y: 100, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
           >
-            <p className="text-slate-400 font-mono text-sm mb-2">Reference Number</p>
-            <motion.p 
-              className="text-2xl font-bold text-white font-mono"
-              animate={{ 
-                textShadow: ["0 0 10px rgba(251,191,36,0)", "0 0 20px rgba(251,191,36,0.5)", "0 0 10px rgba(251,191,36,0)"]
-              }}
-              transition={{ duration: 2, repeat: Infinity }}
+            <div className="absolute top-0 left-0 right-0 h-8 bg-amber-600 rounded-t-lg flex items-center justify-center">
+              <div className="w-16 h-2 bg-amber-400 rounded" />
+            </div>
+            <div className="absolute bottom-4 left-4 right-4 h-32 bg-amber-800/50 rounded" />
+          </motion.div>
+        )}
+        
+        {phase >= 3 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.5 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="absolute inset-0 flex items-center justify-center"
+          >
+            <motion.div
+              className="text-center"
+              initial={{ y: 20 }}
+              animate={{ y: 0 }}
             >
-              {referenceNumber}
-            </motion.p>
+              <motion.div
+                className="w-24 h-24 mx-auto mb-4 bg-gradient-to-br from-red-600 to-red-800 rounded-full flex items-center justify-center shadow-lg"
+                animate={{ 
+                  scale: [1, 1.1, 1],
+                  rotate: [0, 5, -5, 0]
+                }}
+                transition={{ duration: 2, repeat: Infinity }}
+              >
+                <Stamp className="w-12 h-12 text-red-200" />
+              </motion.div>
+              <h2 className="text-3xl font-bold text-white mb-2">CASE CLOSED</h2>
+              <p className="text-amber-200 font-mono text-sm">{referenceNumber}</p>
+            </motion.div>
           </motion.div>
         )}
       </div>
@@ -306,18 +346,226 @@ const FileAnimation = ({ referenceNumber, onComplete }) => {
   );
 };
 
-const ResignationProtocol = ({ onBack }) => {
+const PastLettersView = ({ resignations, onBack, onDelete, onView }) => {
+  const [deletingId, setDeletingId] = useState(null);
+  const [viewingLetter, setViewingLetter] = useState(null);
+  const { toast } = useToast();
+
+  const handleDelete = async (id) => {
+    setDeletingId(id);
+    try {
+      await onDelete(id);
+      toast({
+        title: "Letter deleted",
+        description: "The resignation has been removed from your records."
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Failed to delete letter. Please try again.",
+        variant: "destructive"
+      });
+    }
+    setDeletingId(null);
+  };
+
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
+  if (viewingLetter) {
+    return (
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        exit={{ opacity: 0 }}
+        className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-8"
+      >
+        <div className="max-w-2xl mx-auto">
+          <Button
+            onClick={() => setViewingLetter(null)}
+            variant="ghost"
+            className="text-slate-300 hover:bg-slate-700 mb-6"
+          >
+            <ChevronLeft className="w-4 h-4 mr-2" />
+            Back to Letters
+          </Button>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl"
+          >
+            <div className="text-center mb-6 pb-4 border-b-2 border-slate-200">
+              <h1 className="font-mono text-2xl text-slate-900 font-bold">LETTER OF RESIGNATION</h1>
+              <p className="font-mono text-sm text-slate-600 mt-1">{formatDate(viewingLetter.created_at)}</p>
+              {viewingLetter.reference_number && (
+                <p className="font-mono text-xs text-slate-500 mt-1">Ref: {viewingLetter.reference_number}</p>
+              )}
+            </div>
+
+            <div className="space-y-4 font-mono text-slate-800">
+              <p><span className="font-bold">TO:</span> <span className="font-caveat text-xl text-indigo-900">{viewingLetter.addressee}</span></p>
+              
+              <p className="mt-4">Please accept this letter as formal notification that I am resigning from my position as <span className="font-caveat text-xl text-indigo-900">{viewingLetter.role}</span>.</p>
+              
+              <p className="mt-4">The working conditions have become <span className="font-caveat text-xl text-indigo-900">{viewingLetter.condition}</span>.</p>
+              
+              <p className="mt-4">For too long, I have been paid in <span className="font-caveat text-xl text-indigo-900">{viewingLetter.paid_in}</span> when I deserved <span className="font-caveat text-xl text-indigo-900">{viewingLetter.instead_of}</span>.</p>
+              
+              <p className="mt-4">I am returning the keys to <span className="font-caveat text-xl text-indigo-900">{viewingLetter.returning_keys}</span>.</p>
+              
+              {viewingLetter.struck_responsibilities && viewingLetter.struck_responsibilities.length > 0 && (
+                <div className="mt-4">
+                  <p className="font-bold mb-2">I will no longer be responsible for:</p>
+                  <ul className="list-disc pl-6 space-y-1">
+                    {viewingLetter.struck_responsibilities.map((item, idx) => (
+                      <li key={idx} className="line-through text-red-600">{item}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              
+              <p className="mt-4">Moving forward, I will be accepting a new position as <span className="font-caveat text-xl text-indigo-900">{viewingLetter.new_position}</span>.</p>
+              
+              <div className="mt-8 pt-4 border-t border-slate-200">
+                <p className="text-sm text-slate-600">
+                  Released via: <span className={`font-bold ${viewingLetter.release_type === 'burn' ? 'text-orange-600' : 'text-amber-700'}`}>
+                    {viewingLetter.release_type === 'burn' ? 'The Burn (Cathartic Release)' : 'The File (Boundary Set)'}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      </motion.div>
+    );
+  }
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-8"
+    >
+      <div className="max-w-2xl mx-auto">
+        <Button
+          onClick={onBack}
+          variant="ghost"
+          className="text-slate-300 hover:bg-slate-700 mb-6"
+        >
+          <ChevronLeft className="w-4 h-4 mr-2" />
+          Back to New Letter
+        </Button>
+
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="bg-white rounded-3xl p-6 sm:p-8 shadow-2xl"
+        >
+          <div className="text-center mb-8">
+            <Archive className="w-12 h-12 text-amber-600 mx-auto mb-4" />
+            <h1 className="font-mono text-2xl text-slate-900 font-bold">Past Resignations</h1>
+            <p className="text-slate-600 mt-2">Your filed letters and released burdens</p>
+          </div>
+
+          {resignations.length === 0 ? (
+            <div className="text-center py-12">
+              <FileText className="w-16 h-16 text-slate-300 mx-auto mb-4" />
+              <p className="text-slate-500 font-mono">No resignations filed yet</p>
+              <p className="text-slate-400 text-sm mt-2">Your letters will appear here after you complete them</p>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {resignations.map((letter, idx) => (
+                <motion.div
+                  key={letter.id}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.1 }}
+                  className="bg-slate-50 rounded-xl p-4 border border-slate-200 hover:border-amber-300 transition-all"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center gap-2 mb-2">
+                        {letter.release_type === 'burn' ? (
+                          <Flame className="w-4 h-4 text-orange-500" />
+                        ) : (
+                          <FileText className="w-4 h-4 text-amber-600" />
+                        )}
+                        <span className="font-mono text-sm text-slate-500">
+                          {formatDate(letter.created_at)}
+                        </span>
+                      </div>
+                      <h3 className="font-bold text-slate-900">
+                        Resigned from: <span className="font-caveat text-xl text-indigo-900">{letter.role}</span>
+                      </h3>
+                      <p className="text-sm text-slate-600 mt-1">
+                        Now serving as: <span className="font-caveat text-lg text-emerald-700">{letter.new_position}</span>
+                      </p>
+                      {letter.reference_number && (
+                        <p className="font-mono text-xs text-slate-400 mt-2">
+                          Ref: {letter.reference_number}
+                        </p>
+                      )}
+                    </div>
+                    <div className="flex gap-2 ml-4">
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-slate-600 hover:text-indigo-600 hover:bg-indigo-50"
+                        onClick={() => setViewingLetter(letter)}
+                      >
+                        <Eye className="w-4 h-4" />
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="ghost"
+                        className="text-slate-600 hover:text-red-600 hover:bg-red-50"
+                        onClick={() => handleDelete(letter.id)}
+                        disabled={deletingId === letter.id}
+                      >
+                        {deletingId === letter.id ? (
+                          <motion.div
+                            animate={{ rotate: 360 }}
+                            transition={{ duration: 1, repeat: Infinity }}
+                            className="w-4 h-4 border-2 border-red-300 border-t-red-600 rounded-full"
+                          />
+                        ) : (
+                          <Trash2 className="w-4 h-4" />
+                        )}
+                      </Button>
+                    </div>
+                  </div>
+                </motion.div>
+              ))}
+            </div>
+          )}
+        </motion.div>
+      </div>
+    </motion.div>
+  );
+};
+
+export default function ResignationProtocol({ onBack }) {
   const { toast } = useToast();
   const [phase, setPhase] = useState(0);
-  const [isTyping, setIsTyping] = useState(false);
-  const [typedText, setTypedText] = useState('');
   const [showDropdown, setShowDropdown] = useState(false);
   const [activeDropdown, setActiveDropdown] = useState(null);
   const [customInput, setCustomInput] = useState('');
+  const [typedText, setTypedText] = useState('');
+  const [isTyping, setIsTyping] = useState(false);
   const [showBurnAnimation, setShowBurnAnimation] = useState(false);
   const [showFileAnimation, setShowFileAnimation] = useState(false);
-  const [fileReferenceNumber, setFileReferenceNumber] = useState('');
   const [isSaving, setIsSaving] = useState(false);
+  const [referenceNumber, setReferenceNumber] = useState('');
+  const [showPastLetters, setShowPastLetters] = useState(false);
+  const [lockedFields, setLockedFields] = useState({});
   
   const [formData, setFormData] = useState({
     addressee: '',
@@ -357,6 +605,17 @@ const ResignationProtocol = ({ onBack }) => {
     loadResignations();
   }, []);
 
+  const handleDeleteResignation = async (id) => {
+    try {
+      await deleteResignation(id);
+      setSavedResignations(prev => prev.filter(r => r.id !== id));
+    } catch (error) {
+      const updated = savedResignations.filter(r => r.id !== id);
+      setSavedResignations(updated);
+      localStorage.setItem('resignationProtocol_saved', JSON.stringify(updated));
+    }
+  };
+
   const phases = [
     {
       id: 'header',
@@ -367,20 +626,21 @@ const ResignationProtocol = ({ onBack }) => {
     },
     {
       id: 'role',
-      staticText: "Please accept this letter as formal notification that I am resigning from my position as...\n\nI've appreciated the opportunity to lower my standards. They could win a limbo contest with a crumb.",
+      staticText: "Please accept this letter as formal notification that I am resigning from my position as...",
       field: 'role',
       options: ROLE_OPTIONS,
-      allowCustom: true
+      allowCustom: true,
+      subFields: [
+        { text: 'For too long, I have been paid in...', field: 'paidIn', options: PAID_IN_OPTIONS },
+        { text: '...instead of...', field: 'insteadOf', options: INSTEAD_OF_OPTIONS }
+      ]
     },
     {
       id: 'grievances',
-      staticText: "In this role, I've grown continuously—like bacteria. I had no idea that holding myself back would be contagious.\n\nThe working conditions have become...",
+      staticText: "The working conditions have become...",
       field: 'condition',
       options: CONDITION_OPTIONS,
-      subFields: [
-        { text: 'For too long, I have been paid in...', field: 'paidIn', options: PAID_IN_OPTIONS },
-        { text: '...when I deserved...', field: 'insteadOf', options: INSTEAD_OF_OPTIONS }
-      ]
+      allowCustom: true
     },
     {
       id: 'surrender',
@@ -392,7 +652,7 @@ const ResignationProtocol = ({ onBack }) => {
     },
     {
       id: 'newPosition',
-      staticText: "It is my suggestion that this job be eliminated altogether and that no future person take on the task.\n\nMoving forward, I will be pursuing opportunities in another field—one where break rooms are for resting. I will be accepting a new position as...",
+      staticText: "It is my suggestion that this position be eliminated altogether.\n\nMoving forward, I will be accepting a new position as...",
       field: 'newPosition',
       options: NEW_POSITION_OPTIONS,
       allowCustom: true
@@ -433,7 +693,13 @@ const ResignationProtocol = ({ onBack }) => {
     setActiveDropdown(null);
     setCustomInput('');
     
-    if (navigator.vibrate) navigator.vibrate(10);
+    playThudSound();
+    
+    setLockedFields(prev => ({ ...prev, [field]: true }));
+    
+    setTimeout(() => {
+      setLockedFields(prev => ({ ...prev, [field]: false }));
+    }, 300);
   };
 
   const handleStrike = (item) => {
@@ -442,7 +708,7 @@ const ResignationProtocol = ({ onBack }) => {
       if (current.includes(item)) {
         return { ...prev, struckResponsibilities: current.filter(i => i !== item) };
       }
-      if (navigator.vibrate) navigator.vibrate([10, 50, 10]);
+      playThudSound();
       return { ...prev, struckResponsibilities: [...current, item] };
     });
   };
@@ -454,9 +720,9 @@ const ResignationProtocol = ({ onBack }) => {
       case 'header':
         return !!formData.addressee;
       case 'role':
-        return !!formData.role;
+        return !!formData.role && !!formData.paidIn && !!formData.insteadOf;
       case 'grievances':
-        return !!formData.condition && !!formData.paidIn && !!formData.insteadOf;
+        return !!formData.condition;
       case 'surrender':
         return !!formData.returningKeys && formData.struckResponsibilities.length > 0;
       case 'newPosition':
@@ -557,15 +823,28 @@ const ResignationProtocol = ({ onBack }) => {
   const handleBurn = async () => {
     setIsSaving(true);
     try {
-      const referenceNumber = `RES-${Date.now().toString(36).toUpperCase()}`;
-      await saveResignation({
+      const ref = `RES-${Date.now().toString(36).toUpperCase()}`;
+      setReferenceNumber(ref);
+      const savedData = await saveResignation({
         ...formData,
         signatureData,
         releaseType: 'burn',
-        referenceNumber
+        referenceNumber: ref
       });
+      setSavedResignations(prev => [savedData, ...prev]);
     } catch (error) {
       console.log('Saving locally as fallback');
+      const localData = {
+        id: Date.now(),
+        ...formData,
+        signatureData,
+        releaseType: 'burn',
+        referenceNumber: `RES-${Date.now().toString(36).toUpperCase()}`,
+        created_at: new Date().toISOString()
+      };
+      const updated = [localData, ...savedResignations];
+      localStorage.setItem('resignationProtocol_saved', JSON.stringify(updated));
+      setSavedResignations(updated);
     }
     
     setShowBurnAnimation(true);
@@ -573,29 +852,28 @@ const ResignationProtocol = ({ onBack }) => {
 
   const handleFile = async () => {
     setIsSaving(true);
-    const referenceNumber = `RES-${Date.now().toString(36).toUpperCase()}`;
-    setFileReferenceNumber(referenceNumber);
+    const ref = `RES-${Date.now().toString(36).toUpperCase()}`;
+    setReferenceNumber(ref);
     
     try {
-      await saveResignation({
+      const savedData = await saveResignation({
         ...formData,
         signatureData,
         releaseType: 'file',
-        referenceNumber
+        referenceNumber: ref
       });
-      
-      const data = await getResignations();
-      setSavedResignations(data);
+      setSavedResignations(prev => [savedData, ...prev]);
     } catch (error) {
       console.log('Saving locally as fallback');
-      const resignation = {
+      const localData = {
         id: Date.now(),
-        date: new Date().toISOString(),
         ...formData,
-        signature: signatureData,
-        referenceNumber
+        signatureData,
+        releaseType: 'file',
+        referenceNumber: ref,
+        created_at: new Date().toISOString()
       };
-      const updated = [...savedResignations, resignation];
+      const updated = [localData, ...savedResignations];
       localStorage.setItem('resignationProtocol_saved', JSON.stringify(updated));
       setSavedResignations(updated);
     }
@@ -603,231 +881,256 @@ const ResignationProtocol = ({ onBack }) => {
     setShowFileAnimation(true);
   };
 
-  const openDropdown = (field) => {
-    setActiveDropdown(field);
-    setShowDropdown(true);
+  const handleAnimationComplete = () => {
+    setShowBurnAnimation(false);
+    setShowFileAnimation(false);
+    setIsComplete(true);
+    toast({
+      title: "Resignation Complete",
+      description: "You have been released from your unpaid position.",
+    });
   };
 
-  const renderDropdown = (options, field, allowCustom = false) => (
-    <div className="relative mt-4">
-      <motion.div 
-        className="border-b-2 border-dashed border-slate-400 pb-2 cursor-pointer min-h-[40px] flex items-end group"
-        onClick={() => openDropdown(field)}
-        whileHover={{ borderColor: 'rgba(71, 85, 105, 0.8)' }}
-        whileTap={{ scale: 0.995 }}
-      >
-        {formData[field] ? (
-          <motion.span 
-            className="font-caveat text-2xl text-indigo-900 font-semibold"
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            {formData[field]}
-          </motion.span>
-        ) : (
-          <span className="text-slate-500 italic group-hover:text-slate-700 transition-colors font-medium">
-            tap to select...
-          </span>
-        )}
-        <motion.div
-          className="absolute right-0 bottom-2"
-          animate={{ y: [0, -3, 0] }}
-          transition={{ duration: 1.5, repeat: Infinity }}
-        >
-          <ChevronRight className="w-4 h-4 text-slate-500" />
-        </motion.div>
-      </motion.div>
-      
-      <AnimatePresence>
-        {showDropdown && activeDropdown === field && (
-          <motion.div
-            initial={{ opacity: 0, y: -10, scale: 0.95 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: -10, scale: 0.95 }}
-            className="absolute z-50 mt-2 w-full bg-white border border-slate-300 rounded-xl shadow-2xl max-h-72 overflow-y-auto"
-          >
-            {options.map((option, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: idx * 0.03 }}
-                className="px-4 py-3 hover:bg-amber-50 cursor-pointer font-caveat text-xl text-slate-800 border-b border-slate-200 last:border-b-0 transition-all hover:pl-6"
-                onClick={() => handleSelect(field, option)}
-              >
-                {option}
-              </motion.div>
-            ))}
-            {allowCustom && (
-              <motion.div 
-                className="p-3 border-t-2 border-slate-200 bg-slate-50"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.2 }}
-              >
-                <input
-                  type="text"
-                  placeholder="Or type your own..."
-                  value={customInput}
-                  onChange={(e) => setCustomInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter' && customInput.trim()) {
-                      handleSelect(field, customInput.trim());
-                    }
-                  }}
-                  className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-caveat text-xl text-slate-800 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
-                  autoFocus
-                />
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
+  const resetForm = () => {
+    setPhase(0);
+    setFormData({
+      addressee: '',
+      role: '',
+      condition: '',
+      paidIn: '',
+      insteadOf: '',
+      returningKeys: '',
+      struckResponsibilities: [],
+      newPosition: ''
+    });
+    setIsComplete(false);
+    setShowPostSubmission(false);
+    setSignatureData(null);
+    setLockedFields({});
+  };
 
-  const renderPhaseContent = () => {
-    if (!currentPhase) return null;
-
+  const renderDropdown = (options, field, allowCustom = false) => {
+    const value = formData[field];
+    const isLocked = lockedFields[field];
+    
     return (
-      <motion.div
-        key={phase}
-        initial={{ opacity: 0, x: 50 }}
-        animate={{ opacity: 1, x: 0 }}
-        exit={{ opacity: 0, x: -50 }}
-        className="space-y-6"
-      >
-        <p className="font-mono text-xl text-slate-800 leading-relaxed whitespace-pre-wrap font-medium">
-          {typedText}
-          {isTyping && (
-            <motion.span 
-              className="inline-block w-0.5 h-5 bg-slate-700 ml-0.5"
-              animate={{ opacity: [1, 0] }}
-              transition={{ duration: 0.5, repeat: Infinity }}
-            />
+      <div className="relative mt-4">
+        <motion.div
+          className={`border-b-2 border-dashed cursor-pointer py-2 transition-all ${
+            value 
+              ? 'border-slate-400' 
+              : 'border-slate-300 hover:border-amber-400'
+          } ${isLocked ? 'transform scale-[1.02]' : ''}`}
+          onClick={() => {
+            if (!value) {
+              setShowDropdown(!showDropdown);
+              setActiveDropdown(field);
+            }
+          }}
+          animate={isLocked ? { 
+            scale: [1, 1.03, 1],
+            y: [0, -2, 0]
+          } : {}}
+          transition={{ duration: 0.2 }}
+        >
+          {value ? (
+            <motion.div 
+              className="flex items-center justify-between"
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+            >
+              <span className="font-caveat text-2xl text-indigo-900">{value}</span>
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ type: "spring", stiffness: 500, damping: 25 }}
+              >
+                <Check className="w-5 h-5 text-emerald-600" />
+              </motion.div>
+            </motion.div>
+          ) : (
+            <span className="text-amber-600 font-mono flex items-center justify-between">
+              tap to select...
+              <ChevronRight className="w-4 h-4" />
+            </span>
           )}
-        </p>
+        </motion.div>
         
-        {!isTyping && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.2 }}
-          >
-            {renderDropdown(currentPhase.options, currentPhase.field, currentPhase.allowCustom)}
-            
-            {currentPhase.subFields && currentPhase.subFields.map((sub, idx) => (
-              <motion.div 
-                key={idx} 
-                className="mt-6"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 + idx * 0.1 }}
-              >
-                <p className="font-mono text-xl text-slate-800 font-medium">{sub.text}</p>
-                {renderDropdown(sub.options, sub.field)}
-              </motion.div>
-            ))}
-            
-            {currentPhase.hasChecklist && formData.returningKeys && (
-              <motion.div 
-                className="mt-8 space-y-3"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.4 }}
-              >
-                <p className="font-mono text-xl text-slate-800 mb-4 font-medium">
-                  And I will no longer be responsible for:
-                </p>
-                <p className="text-sm text-slate-600 mb-4 italic font-medium">
-                  (Tap to strike through - you must release at least one)
-                </p>
-                {currentPhase.checklistItems.map((item, idx) => (
-                  <motion.div
-                    key={idx}
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.5 + idx * 0.05 }}
-                    whileHover={{ scale: 1.01 }}
-                    whileTap={{ scale: 0.98 }}
-                    onClick={() => handleStrike(item)}
-                    className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
-                      formData.struckResponsibilities.includes(item)
-                        ? 'bg-gradient-to-r from-red-50 to-red-100 border-red-300 shadow-inner'
-                        : 'bg-white border-slate-300 hover:bg-amber-50 hover:border-amber-400/50 shadow-sm'
-                    }`}
-                  >
-                    <span className={`font-mono text-base flex items-center font-medium ${
-                      formData.struckResponsibilities.includes(item)
-                        ? 'line-through text-red-600 decoration-red-500 decoration-[3px]'
-                        : 'text-slate-800'
-                    }`}>
-                      {formData.struckResponsibilities.includes(item) && (
-                        <motion.span
-                          initial={{ scale: 0, rotate: -180 }}
-                          animate={{ scale: 1, rotate: 0 }}
-                          className="mr-3"
-                        >
-                          <X className="w-5 h-5 text-red-500" />
-                        </motion.span>
-                      )}
-                      {item}
-                    </span>
-                  </motion.div>
-                ))}
-              </motion.div>
-            )}
-          </motion.div>
-        )}
-      </motion.div>
+        <AnimatePresence>
+          {showDropdown && activeDropdown === field && (
+            <motion.div
+              initial={{ opacity: 0, y: -10, scale: 0.95 }}
+              animate={{ opacity: 1, y: 0, scale: 1 }}
+              exit={{ opacity: 0, y: -10, scale: 0.95 }}
+              className="absolute z-50 mt-2 w-full bg-white border border-slate-300 rounded-xl shadow-2xl max-h-72 overflow-y-auto"
+            >
+              {options.map((option, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: idx * 0.03 }}
+                  className="px-4 py-3 hover:bg-amber-50 cursor-pointer font-caveat text-xl text-slate-800 border-b border-slate-200 last:border-b-0 transition-all hover:pl-6"
+                  onClick={() => handleSelect(field, option)}
+                >
+                  {option}
+                </motion.div>
+              ))}
+              {allowCustom && (
+                <motion.div 
+                  className="p-3 border-t-2 border-slate-200 bg-slate-50"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.2 }}
+                >
+                  <input
+                    type="text"
+                    placeholder="Or type your own..."
+                    value={customInput}
+                    onChange={(e) => setCustomInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' && customInput.trim()) {
+                        handleSelect(field, customInput.trim());
+                      }
+                    }}
+                    className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-caveat text-xl text-slate-800 focus:ring-2 focus:ring-amber-400 focus:border-amber-400 transition-all"
+                    autoFocus
+                  />
+                </motion.div>
+              )}
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     );
   };
+
+  const renderPhaseContent = () => (
+    <motion.div
+      key={phase}
+      initial={{ opacity: 0, x: 50 }}
+      animate={{ opacity: 1, x: 0 }}
+      exit={{ opacity: 0, x: -50 }}
+      className="space-y-6"
+    >
+      <p className="font-mono text-xl text-slate-800 leading-relaxed whitespace-pre-wrap font-medium">
+        {typedText}
+        {isTyping && (
+          <motion.span 
+            className="inline-block w-0.5 h-5 bg-slate-700 ml-0.5"
+            animate={{ opacity: [1, 0] }}
+            transition={{ duration: 0.5, repeat: Infinity }}
+          />
+        )}
+      </p>
+      
+      {!isTyping && (
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          {renderDropdown(currentPhase.options, currentPhase.field, currentPhase.allowCustom)}
+          
+          {currentPhase.subFields && currentPhase.subFields.map((sub, idx) => (
+            <motion.div 
+              key={idx} 
+              className="mt-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.3 + idx * 0.1 }}
+            >
+              <p className="font-mono text-xl text-slate-800 font-medium">{sub.text}</p>
+              {renderDropdown(sub.options, sub.field)}
+            </motion.div>
+          ))}
+          
+          {currentPhase.hasChecklist && formData.returningKeys && (
+            <motion.div 
+              className="mt-8 space-y-3"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.4 }}
+            >
+              <p className="font-mono text-xl text-slate-800 mb-4 font-medium">
+                And I will no longer be responsible for:
+              </p>
+              <p className="text-sm text-slate-600 mb-4 italic font-medium">
+                (Tap to strike through - you must release at least one)
+              </p>
+              {currentPhase.checklistItems.map((item, idx) => (
+                <motion.div
+                  key={idx}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.5 + idx * 0.05 }}
+                  whileHover={{ scale: 1.01 }}
+                  whileTap={{ scale: 0.98 }}
+                  onClick={() => handleStrike(item)}
+                  className={`p-4 rounded-xl border-2 cursor-pointer transition-all ${
+                    formData.struckResponsibilities.includes(item)
+                      ? 'bg-gradient-to-r from-red-50 to-red-100 border-red-300 shadow-inner'
+                      : 'bg-white border-slate-300 hover:bg-amber-50 hover:border-amber-400/50 shadow-sm'
+                  }`}
+                >
+                  <span className={`font-mono text-base flex items-center font-medium ${
+                    formData.struckResponsibilities.includes(item)
+                      ? 'line-through text-red-600 decoration-red-500 decoration-[3px]'
+                      : 'text-slate-800'
+                  }`}>
+                    {formData.struckResponsibilities.includes(item) && (
+                      <motion.span
+                        initial={{ scale: 0, rotate: -180 }}
+                        animate={{ scale: 1, rotate: 0 }}
+                        className="mr-2"
+                      >
+                        <X className="w-5 h-5 text-red-500" />
+                      </motion.span>
+                    )}
+                    {item}
+                  </span>
+                </motion.div>
+              ))}
+            </motion.div>
+          )}
+        </motion.div>
+      )}
+    </motion.div>
+  );
 
   const renderSigningMode = () => (
     <motion.div
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
-      className="flex flex-col items-center justify-center min-h-[60vh] space-y-6"
+      className="flex flex-col items-center gap-6"
     >
       <motion.div 
-        className="text-center space-y-4 mb-6"
-        initial={{ y: -20 }}
-        animate={{ y: 0 }}
+        className="text-center space-y-2"
+        animate={{ 
+          scale: [1, 1.02, 1],
+          opacity: [0.9, 1, 0.9]
+        }}
+        transition={{ duration: 2, repeat: Infinity }}
       >
-        <motion.div
-          animate={{ 
-            rotate: [0, -5, 5, 0],
-            scale: [1, 1.1, 1]
-          }}
-          transition={{ duration: 2, repeat: Infinity }}
-        >
-          <Award className="w-16 h-16 text-amber-600 mx-auto mb-4" />
-        </motion.div>
-        <h2 className="font-mono text-2xl text-slate-900 font-bold">Sign Your Resignation</h2>
-        <p className="text-slate-600 max-w-md font-medium">
-          Use your finger to sign below. This makes your commitment binding.
-        </p>
+        <Award className="w-16 h-16 text-amber-600 mx-auto mb-4" />
       </motion.div>
+      <h2 className="font-mono text-2xl text-slate-900 font-bold">Sign Your Resignation</h2>
+      <p className="text-slate-600 max-w-md font-medium">
+        Use your finger to sign below. This makes your commitment binding.
+      </p>
       
       <motion.div 
         className="relative w-full max-w-lg"
-        initial={{ scale: 0.9 }}
-        animate={{ scale: 1 }}
-        transition={{ type: "spring" }}
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.3 }}
       >
-        <motion.div
-          className="absolute -inset-1 bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 rounded-xl opacity-50 blur"
-          animate={{
-            backgroundPosition: ['0% 50%', '100% 50%', '0% 50%']
-          }}
-          transition={{ duration: 3, repeat: Infinity }}
-        />
+        <div className="absolute inset-0 bg-gradient-to-r from-amber-400/20 via-transparent to-amber-400/20 rounded-2xl blur-xl" />
         <canvas
           ref={canvasRef}
           width={500}
           height={200}
-          className="relative w-full border-2 border-amber-800/30 rounded-xl shadow-inner touch-none"
-          style={{ backgroundColor: '#faf8f5' }}
+          className="w-full h-48 bg-cream-100 rounded-2xl border-2 border-slate-300 shadow-inner cursor-crosshair touch-none relative z-10"
           onMouseDown={startDrawing}
           onMouseMove={draw}
           onMouseUp={stopDrawing}
@@ -836,23 +1139,22 @@ const ResignationProtocol = ({ onBack }) => {
           onTouchMove={draw}
           onTouchEnd={stopDrawing}
         />
-        <div className="absolute bottom-4 left-4 right-4 border-b border-amber-800/40" />
-        <p className="absolute bottom-1 left-4 text-xs text-amber-800/50 font-mono">SIGNATURE</p>
+        <div className="absolute bottom-4 left-4 right-4 border-b-2 border-slate-400 z-20 pointer-events-none" />
+        <span className="absolute bottom-6 left-4 text-xs text-slate-500 font-mono z-20">Sign here</span>
       </motion.div>
       
       <div className="flex gap-4">
         <Button
-          variant="outline"
           onClick={clearSignature}
-          className="border-amber-800/30 hover:bg-amber-100"
+          variant="outline"
+          className="border-slate-300 text-slate-700"
         >
           Clear
         </Button>
         <Button
           onClick={confirmSignature}
-          className="bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-white shadow-lg"
+          className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
         >
-          <Check className="w-4 h-4 mr-2" />
           Confirm Signature
         </Button>
       </div>
@@ -861,28 +1163,24 @@ const ResignationProtocol = ({ onBack }) => {
 
   const renderPostSubmission = () => (
     <motion.div
-      initial={{ opacity: 0, scale: 0.95 }}
-      animate={{ opacity: 1, scale: 1 }}
-      className="relative flex flex-col items-center justify-center min-h-[70vh] space-y-8"
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex flex-col items-center gap-8 py-8"
     >
       <motion.div
+        className="w-32 h-32 relative"
         initial={{ scale: 0, rotate: -180 }}
         animate={{ scale: 1, rotate: 0 }}
-        transition={{ type: "spring", delay: 0.3, stiffness: 200 }}
-        className="relative"
+        transition={{ type: "spring", stiffness: 200, damping: 15 }}
       >
-        <motion.div
-          className="absolute -inset-4 bg-gradient-to-r from-green-400 to-emerald-400 rounded-full blur-lg opacity-50"
-          animate={{ scale: [1, 1.2, 1], opacity: [0.5, 0.3, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}
-        />
-        <div className="relative w-24 h-24 rounded-full bg-gradient-to-br from-green-400 to-emerald-500 flex items-center justify-center shadow-xl">
-          <Check className="w-12 h-12 text-white" />
+        <div className="absolute inset-0 bg-gradient-to-br from-red-600 to-red-800 rounded-full shadow-xl" />
+        <div className="absolute inset-3 bg-gradient-to-br from-red-500 to-red-700 rounded-full flex items-center justify-center">
+          <Stamp className="w-12 h-12 text-red-200" />
         </div>
       </motion.div>
       
       <motion.div 
-        className="text-center space-y-4"
+        className="text-center space-y-2"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
@@ -909,101 +1207,137 @@ const ResignationProtocol = ({ onBack }) => {
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.9 }}
       >
-        <motion.div
-          whileHover={{ scale: 1.03, y: -4 }}
-          whileTap={{ scale: 0.97 }}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleBurn}
-          className="flex-1 p-6 rounded-2xl bg-gradient-to-br from-orange-100 via-red-100 to-orange-100 border-2 border-orange-200 cursor-pointer text-center space-y-3 shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden group"
+          disabled={isSaving}
+          className="flex-1 p-6 bg-gradient-to-br from-orange-500 to-red-600 rounded-2xl text-white shadow-lg hover:shadow-xl transition-all"
         >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-t from-orange-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-          />
-          <motion.div
-            animate={{ 
-              y: [0, -5, 0],
-              rotate: [-5, 5, -5]
-            }}
-            transition={{ duration: 2, repeat: Infinity }}
-          >
-            <Flame className="w-14 h-14 text-orange-500 mx-auto" />
-          </motion.div>
-          <h3 className="font-mono text-xl text-orange-900 font-bold">The Burn</h3>
-          <p className="text-sm text-orange-700">
-            Release anger, trauma, or heavy burdens. Watch it turn to ash.
-          </p>
-        </motion.div>
+          <Flame className="w-10 h-10 mx-auto mb-3" />
+          <h3 className="font-bold text-lg">The Burn</h3>
+          <p className="text-sm text-orange-100 mt-2">Cathartic Release</p>
+          <p className="text-xs text-orange-200 mt-1">Let go of anger & trauma</p>
+        </motion.button>
         
-        <motion.div
-          whileHover={{ scale: 1.03, y: -4 }}
-          whileTap={{ scale: 0.97 }}
+        <motion.button
+          whileHover={{ scale: 1.02 }}
+          whileTap={{ scale: 0.98 }}
           onClick={handleFile}
-          className="flex-1 p-6 rounded-2xl bg-gradient-to-br from-blue-100 via-indigo-100 to-blue-100 border-2 border-blue-200 cursor-pointer text-center space-y-3 shadow-lg hover:shadow-xl transition-shadow relative overflow-hidden group"
+          disabled={isSaving}
+          className="flex-1 p-6 bg-gradient-to-br from-amber-600 to-amber-800 rounded-2xl text-white shadow-lg hover:shadow-xl transition-all"
         >
-          <motion.div
-            className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"
-          />
-          <motion.div
-            animate={{ 
-              y: [0, -3, 0],
-              scale: [1, 1.05, 1]
-            }}
-            transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-          >
-            <FileText className="w-14 h-14 text-blue-500 mx-auto" />
-          </motion.div>
-          <h3 className="font-mono text-xl text-blue-900 font-bold">The File</h3>
-          <p className="text-sm text-blue-700">
-            Set a boundary. Save it for future reference when old habits return.
-          </p>
-        </motion.div>
+          <FileText className="w-10 h-10 mx-auto mb-3" />
+          <h3 className="font-bold text-lg">The File</h3>
+          <p className="text-sm text-amber-100 mt-2">Set a Boundary</p>
+          <p className="text-xs text-amber-200 mt-1">Save for future reference</p>
+        </motion.button>
+      </motion.div>
+    </motion.div>
+  );
+
+  const renderComplete = () => (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      className="flex flex-col items-center gap-8 py-8 text-center"
+    >
+      <motion.div
+        animate={{ 
+          scale: [1, 1.1, 1],
+          rotate: [0, 5, -5, 0]
+        }}
+        transition={{ duration: 3, repeat: Infinity }}
+      >
+        <Sparkles className="w-20 h-20 text-amber-500" />
       </motion.div>
       
-      <WaxSeal signed={true} />
+      <h2 className="font-mono text-3xl text-slate-900 font-bold">You Are Free</h2>
+      <p className="text-slate-600 max-w-md font-medium">
+        You have successfully resigned from <strong className="text-indigo-900 font-caveat text-xl">{formData.role}</strong> and accepted your new position as <strong className="text-emerald-700 font-caveat text-xl">{formData.newPosition}</strong>.
+      </p>
+      
+      {referenceNumber && (
+        <p className="font-mono text-sm text-slate-500">
+          Reference: {referenceNumber}
+        </p>
+      )}
+      
+      <div className="flex flex-col sm:flex-row gap-4 mt-4">
+        <Button
+          onClick={resetForm}
+          className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white"
+        >
+          Write Another Resignation
+        </Button>
+        <Button
+          onClick={() => setShowPastLetters(true)}
+          variant="outline"
+          className="border-slate-300 text-slate-700"
+        >
+          <Archive className="w-4 h-4 mr-2" />
+          View Past Letters
+        </Button>
+        <Button
+          onClick={onBack}
+          variant="outline"
+          className="border-slate-300 text-slate-700"
+        >
+          Return to Dashboard
+        </Button>
+      </div>
     </motion.div>
   );
 
   if (showBurnAnimation) {
-    return <BurnAnimation onComplete={() => onBack()} />;
+    return <BurnAnimation onComplete={handleAnimationComplete} />;
   }
 
   if (showFileAnimation) {
-    return <FileAnimation referenceNumber={fileReferenceNumber} onComplete={() => onBack()} />;
+    return <FileAnimation onComplete={handleAnimationComplete} referenceNumber={referenceNumber} />;
+  }
+
+  if (showPastLetters) {
+    return (
+      <PastLettersView
+        resignations={savedResignations}
+        onBack={() => setShowPastLetters(false)}
+        onDelete={handleDeleteResignation}
+      />
+    );
   }
 
   return (
-    <div 
-      className="min-h-screen relative overflow-hidden"
-      style={{
-        background: 'linear-gradient(180deg, #faf8f5 0%, #f5f0e6 100%)',
-        backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 400 400' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")`,
-        backgroundBlendMode: 'soft-light'
-      }}
-    >
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Courier+Prime:wght@400;700&family=Caveat:wght@400;500;600;700&display=swap');
-        .font-mono { font-family: 'Courier Prime', 'Courier New', monospace; }
-        .font-caveat { font-family: 'Caveat', cursive; }
-        .bg-cream-100 { background-color: #faf8f5; }
-      `}</style>
-      
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-4 sm:p-8 relative overflow-hidden">
       {[...Array(15)].map((_, i) => (
         <FloatingParticle key={i} delay={i * 0.3} />
       ))}
       
-      <div className="container mx-auto px-4 py-6 max-w-2xl relative z-10">
+      <div className="max-w-2xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="mb-8"
+          className="mb-8 flex items-center justify-between"
         >
           <Button
             onClick={onBack}
             variant="ghost"
-            className="text-slate-700 hover:bg-slate-100 transition-all hover:pl-4"
+            className="text-slate-300 hover:bg-slate-700 transition-all hover:pl-4"
           >
             <ChevronLeft className="w-4 h-4 mr-2" />
             Return to Dashboard
           </Button>
+          
+          {savedResignations.length > 0 && !isComplete && (
+            <Button
+              onClick={() => setShowPastLetters(true)}
+              variant="ghost"
+              className="text-slate-300 hover:bg-slate-700"
+            >
+              <Archive className="w-4 h-4 mr-2" />
+              Past Letters ({savedResignations.length})
+            </Button>
+          )}
         </motion.div>
         
         <motion.div
@@ -1039,18 +1373,42 @@ const ResignationProtocol = ({ onBack }) => {
               })}
             </motion.p>
           </div>
-          
+
+          {!isSigningMode && !showPostSubmission && !isComplete && (
+            <div className="flex justify-center gap-2 mb-8">
+              {phases.map((_, idx) => (
+                <motion.div
+                  key={idx}
+                  className={`w-3 h-3 rounded-full transition-all ${
+                    idx === phase 
+                      ? 'bg-amber-500 scale-125' 
+                      : idx < phase 
+                        ? 'bg-emerald-500' 
+                        : 'bg-slate-300'
+                  }`}
+                  animate={idx === phase ? { 
+                    scale: [1.25, 1.4, 1.25],
+                    boxShadow: ['0 0 0 0 rgba(245, 158, 11, 0.4)', '0 0 0 8px rgba(245, 158, 11, 0)', '0 0 0 0 rgba(245, 158, 11, 0.4)']
+                  } : {}}
+                  transition={{ duration: 1.5, repeat: Infinity }}
+                />
+              ))}
+            </div>
+          )}
+
           <AnimatePresence mode="wait">
-            {isSigningMode ? (
-              renderSigningMode()
+            {isComplete ? (
+              renderComplete()
             ) : showPostSubmission ? (
               renderPostSubmission()
+            ) : isSigningMode ? (
+              renderSigningMode()
             ) : (
               renderPhaseContent()
             )}
           </AnimatePresence>
           
-          {!isSigningMode && !showPostSubmission && !isTyping && (
+          {!isSigningMode && !showPostSubmission && !isTyping && !isComplete && (
             <motion.div 
               className="flex justify-between mt-10 pt-6 border-t-2 border-slate-200"
               initial={{ opacity: 0 }}
@@ -1067,58 +1425,18 @@ const ResignationProtocol = ({ onBack }) => {
                 Previous
               </Button>
               
-              <div className="flex items-center gap-2">
-                {phases.map((_, idx) => (
-                  <motion.div
-                    key={idx}
-                    className={`w-2 h-2 rounded-full transition-all ${
-                      idx === phase 
-                        ? 'bg-amber-600 w-4' 
-                        : idx < phase 
-                          ? 'bg-amber-400' 
-                          : 'bg-amber-200'
-                    }`}
-                    animate={idx === phase ? { scale: [1, 1.2, 1] } : {}}
-                    transition={{ duration: 1, repeat: Infinity }}
-                  />
-                ))}
-              </div>
-              
               <Button
                 onClick={handleNext}
                 disabled={!canProceed()}
-                className="bg-gradient-to-r from-amber-700 to-amber-800 hover:from-amber-800 hover:to-amber-900 text-white shadow-lg disabled:opacity-40 disabled:cursor-not-allowed"
+                className="bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white disabled:opacity-40 disabled:cursor-not-allowed"
               >
-                {phase === phases.length - 1 ? 'Sign' : 'Next'}
+                {phase === phases.length - 1 ? 'Sign Letter' : 'Next'}
                 <ChevronRight className="w-4 h-4 ml-2" />
               </Button>
             </motion.div>
           )}
         </motion.div>
-        
-        {savedResignations.length > 0 && !isSigningMode && !showPostSubmission && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.8 }}
-            className="mt-6 p-4 bg-gradient-to-r from-amber-50/80 to-orange-50/80 backdrop-blur-sm rounded-2xl border border-amber-800/10 shadow-lg"
-          >
-            <div className="flex items-center gap-3">
-              <motion.div
-                animate={{ rotate: [0, 10, -10, 0] }}
-                transition={{ duration: 2, repeat: Infinity }}
-              >
-                <FileText className="w-5 h-5 text-amber-700" />
-              </motion.div>
-              <p className="font-mono text-sm text-amber-800">
-                You have <strong>{savedResignations.length}</strong> filed resignation{savedResignations.length > 1 ? 's' : ''} on record.
-              </p>
-            </div>
-          </motion.div>
-        )}
       </div>
     </div>
   );
-};
-
-export default ResignationProtocol;
+}
