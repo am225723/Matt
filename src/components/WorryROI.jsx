@@ -235,7 +235,7 @@ const VolatilitySlider = ({ value, onChange }) => {
   );
 };
 
-const CrashChart = ({ onComplete }) => {
+const CrashChart = () => {
   const [progress, setProgress] = useState(0);
   
   useEffect(() => {
@@ -243,14 +243,13 @@ const CrashChart = ({ onComplete }) => {
       setProgress(p => {
         if (p >= 100) {
           clearInterval(interval);
-          setTimeout(onComplete, 5000);
           return 100;
         }
         return p + 2;
       });
     }, 40);
     return () => clearInterval(interval);
-  }, [onComplete]);
+  }, []);
 
   const points = [];
   for (let i = 0; i <= progress; i += 2) {
@@ -967,8 +966,16 @@ const WorryROI = ({ onBack }) => {
                     <p className="text-slate-400">Visualizing your loss...</p>
                   </div>
 
-                  <CrashChart onComplete={handleCrashComplete} />
+                  <CrashChart />
                   <BalanceSheet timeInvested={timeInvested} volatility={volatility} />
+                  
+                  <Button
+                    onClick={handleCrashComplete}
+                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white py-6 text-lg font-bold"
+                  >
+                    <AlertTriangle className="w-5 h-5 mr-2" />
+                    Verify Verdict
+                  </Button>
                 </motion.div>
               )}
 
