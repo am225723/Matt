@@ -1577,10 +1577,14 @@ export default function ResignationProtocol({ onBack }) {
       const ctx = canvas.getContext('2d');
       ctx.fillStyle = '#faf8f5';
       ctx.fillRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = '#1e3a5f';
-      ctx.lineWidth = 3;
+      ctx.strokeStyle = '#1a2a3a';
+      ctx.lineWidth = 2.5;
       ctx.lineCap = 'round';
       ctx.lineJoin = 'round';
+      ctx.shadowColor = 'rgba(26, 42, 58, 0.3)';
+      ctx.shadowBlur = 2;
+      ctx.shadowOffsetX = 0.5;
+      ctx.shadowOffsetY = 0.5;
     }
   };
 
@@ -1615,10 +1619,33 @@ export default function ResignationProtocol({ onBack }) {
     const ctx = canvas.getContext('2d');
     const currentPoint = getPos(e);
     
+    // Calculate distance for pressure-sensitive line width (wet ink effect)
+    const distance = Math.sqrt(
+      Math.pow(currentPoint.x - lastPoint.current.x, 2) + 
+      Math.pow(currentPoint.y - lastPoint.current.y, 2)
+    );
+    
+    // Velocity-based line width (faster = thinner, slower = thicker)
+    const velocity = Math.min(distance, 8);
+    const lineWidth = 5.5 - (velocity * 0.4);
+    ctx.lineWidth = Math.max(1.5, lineWidth);
+    
+    // Draw main stroke
     ctx.beginPath();
     ctx.moveTo(lastPoint.current.x, lastPoint.current.y);
     ctx.lineTo(currentPoint.x, currentPoint.y);
     ctx.stroke();
+    
+    // Add secondary lighter stroke for wet ink bleed effect
+    ctx.globalAlpha = 0.2;
+    ctx.strokeStyle = 'rgba(26, 42, 58, 0.5)';
+    ctx.lineWidth = ctx.lineWidth + 1;
+    ctx.beginPath();
+    ctx.moveTo(lastPoint.current.x, lastPoint.current.y);
+    ctx.lineTo(currentPoint.x, currentPoint.y);
+    ctx.stroke();
+    ctx.globalAlpha = 1;
+    ctx.strokeStyle = '#1a2a3a';
     
     lastPoint.current = currentPoint;
     
@@ -1959,9 +1986,9 @@ export default function ResignationProtocol({ onBack }) {
       >
         <Award className="w-16 h-16 text-amber-600 mx-auto mb-4" />
       </motion.div>
-      <h2 className="font-mono text-2xl text-slate-900 font-bold">Sign Your Resignation</h2>
-      <p className="text-slate-600 max-w-md font-medium">
-        Use your finger to sign below. This makes your commitment binding.
+      <h2 style={{ fontFamily: "'Great Vibes', cursive" }} className="text-5xl text-slate-900 font-bold">Sign Your Resignation</h2>
+      <p className="text-slate-600 max-w-md font-medium text-lg">
+        Use your finger or mouse to sign below. Draw in your most authentic style.
       </p>
       
       <motion.div 
