@@ -1060,16 +1060,31 @@ Remember: Most worries never materialize, and even when challenges arise, you've
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="space-y-8"
+                  className="grid md:grid-cols-2 gap-8 items-center"
                 >
-                  <div className="text-center mb-8">
-                    <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-2">
-                      INITIAL PUBLIC OFFERING
-                    </h2>
-                    <p className="text-slate-400">Define the asset for analysis</p>
-                  </div>
+                  {/* Hero Image */}
+                  <motion.div
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: 0.2 }}
+                    className="hidden md:flex items-center justify-center"
+                  >
+                    <img 
+                      src="/worry-roi-trader.png" 
+                      alt="Financial Analyst" 
+                      className="max-w-full h-auto rounded-2xl shadow-2xl border border-slate-700"
+                    />
+                  </motion.div>
 
-                  <div className="space-y-6">
+                  <div className="space-y-8">
+                    <div className="text-center md:text-left mb-8">
+                      <h2 className="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-orange-400 to-red-500 mb-2">
+                        INITIAL PUBLIC OFFERING
+                      </h2>
+                      <p className="text-slate-400">Define the asset for analysis</p>
+                    </div>
+
+                    <div className="space-y-6">
                     <div>
                       <label className="block text-slate-400 text-sm font-mono uppercase tracking-wider mb-3">
                         Select Ticker for Analysis
@@ -1121,6 +1136,7 @@ Remember: Most worries never materialize, and even when challenges arise, you've
                       <Target className="w-5 h-5 mr-2" />
                       Calculate Investment Cost
                     </Button>
+                    </div>
                   </div>
                 </motion.div>
               )}
