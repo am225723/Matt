@@ -1073,14 +1073,14 @@ Remember: Most worries never materialize, and even when challenges arise, you've
                   initial={{ opacity: 0, x: 20 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -20 }}
-                  className="grid md:grid-cols-2 gap-8 items-center"
+                  className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center"
                 >
                   {/* Hero Image */}
                   <motion.div
                     initial={{ opacity: 0, x: -20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: 0.2 }}
-                    className="hidden md:flex items-center justify-center"
+                    className="flex items-center justify-center"
                   >
                     <img 
                       src="/worry-roi-trader.png" 
