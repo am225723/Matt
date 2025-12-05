@@ -779,20 +779,31 @@ const FactsAnalysis = ({ ticker, context, factsFor, factsAgainst, onFactsForChan
         </div>
       </div>
 
-      {/* AI Analysis Section */}
+      {/* Market Report Section */}
       {aiAnalysis && (
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="bg-gradient-to-br from-cyan-950/40 to-slate-900 rounded-2xl p-6 border border-cyan-900/30"
+          className="space-y-4"
         >
-          <div className="flex items-center gap-2 mb-4">
-            <Sparkles className="w-5 h-5 text-cyan-400" />
-            <h3 className="text-lg font-bold text-cyan-400">AI Analysis</h3>
+          <div className="flex items-center gap-2 mb-2">
+            <BarChart3 className="w-5 h-5 text-cyan-400" />
+            <h3 className="text-lg font-bold text-cyan-400">Market Report</h3>
           </div>
-          <div className="prose prose-invert prose-sm max-w-none">
-            <p className="text-slate-300 whitespace-pre-wrap leading-relaxed">{aiAnalysis}</p>
-          </div>
+          
+          {aiAnalysis.split('\n\n').filter((p) => p.trim()).map((paragraph, idx) => (
+            <motion.div
+              key={idx}
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              className="bg-gradient-to-br from-cyan-950/30 to-slate-900/30 rounded-xl p-5 border border-cyan-900/40 backdrop-blur-sm"
+            >
+              <p className="text-slate-200 leading-relaxed text-sm">
+                {paragraph.replace(/\[\d+\]\s*/g, '').replace(/^\d+\.\s+/, '')}
+              </p>
+            </motion.div>
+          ))}
         </motion.div>
       )}
 
@@ -808,12 +819,12 @@ const FactsAnalysis = ({ ticker, context, factsFor, factsAgainst, onFactsForChan
               {isAnalyzing ? (
                 <>
                   <Loader2 className="w-5 h-5 mr-2 animate-spin" />
-                  Analyzing Evidence...
+                  Generating Market Report...
                 </>
               ) : (
                 <>
-                  <Brain className="w-5 h-5 mr-2" />
-                  Analyze with AI
+                  <BarChart3 className="w-5 h-5 mr-2" />
+                  Request Market Analysis
                 </>
               )}
             </Button>
@@ -912,24 +923,26 @@ const WorryROI = ({ onBack }) => {
         throw new Error('Supabase not configured');
       }
 
-      const systemContext = `You are a cognitive behavioral therapy assistant helping users analyze their worries objectively. 
-Your role is to provide balanced, compassionate analysis of the evidence they've gathered about their worry.
-Keep responses concise (3-4 paragraphs max), warm but professional, and focus on helping them see their situation more clearly.
-Use the fin-tech metaphor: treat worries as "investments" and help them see if this worry is worth their "emotional capital".`;
+      const systemContext = `You are a market analyst providing evidence-based investment assessment for emotional capital allocation.
+Analyze the provided evidence objectively and help the user make informed decisions about their worry investment.
+Format your response as distinct, focused insights without markdown or numbered bullets.
+Treat each insight as a separate market analysis point. Use professional market terminology and metaphors.
+Keep tone warm, analytical, and actionable - never preachy.`;
 
-      const userPrompt = `The user is worried about: "${ticker}" - ${context}
+      const userPrompt = `ASSET TICKER: ${ticker}
+MARKET CONTEXT: ${context}
 
-Evidence they've gathered SUPPORTING the worry (reasons to be concerned):
-${factsFor.length > 0 ? factsFor.map((f, i) => `${i + 1}. ${f}`).join('\n') : 'None provided'}
+BULLISH SIGNALS (Evidence supporting concern):
+${factsFor.length > 0 ? factsFor.join('\n') : '- None provided'}
 
-Evidence they've gathered AGAINST the worry (reasons not to be concerned):
-${factsAgainst.length > 0 ? factsAgainst.map((f, i) => `${i + 1}. ${f}`).join('\n') : 'None provided'}
+BEARISH SIGNALS (Evidence against concern):
+${factsAgainst.length > 0 ? factsAgainst.join('\n') : '- None provided'}
 
-Please analyze this evidence and help them:
-1. Objectively weigh the evidence on both sides
-2. Identify any cognitive distortions or biases in their thinking
-3. Suggest a more balanced perspective
-4. Give a brief "investment recommendation" - is this worry worth their emotional capital?`;
+Provide a professional market analysis covering:
+- The current evidence balance between bullish and bearish signals
+- Any cognitive biases or market distortions in this analysis
+- A realistic market perspective on this asset
+- An investment recommendation for emotional capital allocation`;
 
       const response = await fetch(`${supabaseUrl}/functions/v1/perplexity-ai`, {
         method: 'POST',
