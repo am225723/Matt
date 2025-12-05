@@ -18,6 +18,7 @@ import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, 
 import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
 import ResignationProtocol from '@/components/ResignationProtocol';
 import WorryROI from '@/components/WorryROI';
+import InstallPrompt from '@/components/InstallPrompt';
 
 // Import advanced components (lazy loaded to prevent blocking)
 const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseReframerAdvanced'));
@@ -536,6 +537,7 @@ const App = () => {
           <Route path="/worry-roi" element={<WorryROIWrapper />} />
         </Routes>
         <Toaster />
+        <InstallPrompt />
       </div>
     </Router>
   );
