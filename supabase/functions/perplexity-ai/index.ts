@@ -34,7 +34,7 @@ Deno.serve(async (req: Request) => {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        model: 'llama-3.1-sonar-small-128k-chat',
+        model: 'sonar-pro',
         messages: [
           { role: 'system', content: systemContext },
           { role: 'user', content: userPrompt }
