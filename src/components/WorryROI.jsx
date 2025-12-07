@@ -1083,7 +1083,7 @@ Remember: Most worries never materialize, and even when challenges arise, you've
                     className="flex items-center justify-center"
                   >
                     <img 
-                      src="/worry-roi-trader.png?v=3" 
+                      src="/worry-roi-trader.png?v=4" 
                       alt="Financial Analyst" 
                       className="max-w-full h-auto rounded-2xl shadow-2xl border border-slate-700"
                     />
