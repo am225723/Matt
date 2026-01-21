@@ -113,13 +113,22 @@ const Dashboard = () => {
 
   const features = [
     {
+      title: "North Star Goals",
+      description: "Define your vision and get AI-powered SMART goal roadmaps",
+      icon: <Compass className="w-6 h-6" />,
+      to: "/north-star",
+      gradient: "bg-gradient-to-br from-indigo-600 to-purple-700",
+      image: featurePlaybook,
+      delay: 0.1
+    },
+    {
       title: "Resilience Playbook",
       description: "Build step-by-step strategies for challenging situations",
       icon: <BookOpen className="w-6 h-6" />,
       to: "/playbook",
       gradient: "bg-gradient-to-br from-blue-500 to-blue-600",
       image: featurePlaybook,
-      delay: 0.1
+      delay: 0.15
     },
     {
       title: "Playbook Library",
@@ -200,15 +209,6 @@ const Dashboard = () => {
       to: "/worry-roi",
       gradient: "bg-gradient-to-br from-slate-700 to-slate-900",
       image: featureWorryROI,
-      delay: 0.55
-    },
-    {
-      title: "North Star Goals",
-      description: "Define your vision and get AI-powered SMART goal roadmaps",
-      icon: <Compass className="w-6 h-6" />,
-      to: "/north-star",
-      gradient: "bg-gradient-to-br from-indigo-600 to-purple-700",
-      image: featurePlaybook,
       delay: 0.6
     }
   ];
