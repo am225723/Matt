@@ -347,8 +347,8 @@ const Dashboard = () => {
                       Matthew's Playbook
                     </span>
                     
-                    {/* Main calligraphy text */}
-                    <span className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-wide" style={{ fontFamily: "'Great Vibes', cursive" }}>
+                    {/* Main title text */}
+                    <span className="relative text-4xl sm:text-5xl md:text-6xl lg:text-7xl tracking-wide font-bold">
                       <span className="bg-gradient-to-r from-amber-100 via-rose-100 to-purple-100 bg-clip-text text-transparent drop-shadow-[0_2px_20px_rgba(251,191,36,0.4)]">
                         Matthew's Playbook
                       </span>
@@ -385,13 +385,12 @@ const Dashboard = () => {
                   <span className="text-amber-400/40 text-sm">◆</span>
                 </motion.div>
                 
-                {/* Subtitle with elegant serif font */}
+                {/* Subtitle */}
                 <motion.p
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.75, duration: 0.8 }}
                   className="text-sm sm:text-base md:text-lg lg:text-xl text-white/90 tracking-wide leading-relaxed"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                   <span className="inline-block italic">Your Personal Journey to</span>{' '}
                   <span className="font-bold bg-gradient-to-r from-amber-200 via-rose-200 to-purple-200 bg-clip-text text-transparent">
@@ -405,7 +404,6 @@ const Dashboard = () => {
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.9, duration: 0.6 }}
                   className="flex items-center gap-2 text-xs sm:text-sm text-amber-200/60 italic justify-center"
-                  style={{ fontFamily: "'Playfair Display', serif" }}
                 >
                   <span className="text-amber-400/40">✧</span>
                   <span>Choose your path below</span>
