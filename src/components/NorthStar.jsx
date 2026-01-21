@@ -86,17 +86,38 @@ const NorthStar = ({ onBack }) => {
 
       const refinedData = await response.json();
 
-      const savedGoal = await saveNorthStarGoal({
+      if (refinedData.error) {
+        throw new Error(refinedData.error);
+      }
+
+      const goalData = {
+        id: crypto.randomUUID(),
         timeframe: selectedTimeframe,
         raw_goal: rawGoal,
         smart_goal: refinedData.smart_goal,
-        milestones: refinedData.milestones,
+        milestones: refinedData.milestones || [],
         reality_check: refinedData.reality_check,
-        status: 'in-progress'
-      });
+        status: 'in-progress',
+        created_at: new Date().toISOString()
+      };
 
-      setCurrentGoal(savedGoal);
-      setGoals(prev => [...prev.filter(g => g.id !== savedGoal.id), savedGoal]);
+      try {
+        const savedGoal = await saveNorthStarGoal({
+          timeframe: selectedTimeframe,
+          raw_goal: rawGoal,
+          smart_goal: refinedData.smart_goal,
+          milestones: refinedData.milestones,
+          reality_check: refinedData.reality_check,
+          status: 'in-progress'
+        });
+        setCurrentGoal(savedGoal);
+        setGoals(prev => [...prev.filter(g => g.id !== savedGoal.id), savedGoal]);
+      } catch (dbError) {
+        console.warn('Could not save to database, using local state:', dbError);
+        setCurrentGoal(goalData);
+        setGoals(prev => [...prev, goalData]);
+      }
+
       setRawGoal('');
       setShowInput(false);
 
