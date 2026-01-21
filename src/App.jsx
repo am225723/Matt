@@ -14,10 +14,11 @@ import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializePerplexity } from '@/utils/perplexity.js';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature, TrendingDown } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature, TrendingDown, Compass } from 'lucide-react';
 import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
 import ResignationProtocol from '@/components/ResignationProtocol';
 import WorryROI from '@/components/WorryROI';
+import NorthStar from '@/components/NorthStar';
 import InstallPrompt from '@/components/InstallPrompt';
 
 // Import advanced components (lazy loaded to prevent blocking)
@@ -200,6 +201,15 @@ const Dashboard = () => {
       gradient: "bg-gradient-to-br from-slate-700 to-slate-900",
       image: featureWorryROI,
       delay: 0.55
+    },
+    {
+      title: "North Star Goals",
+      description: "Define your vision and get AI-powered SMART goal roadmaps",
+      icon: <Compass className="w-6 h-6" />,
+      to: "/north-star",
+      gradient: "bg-gradient-to-br from-indigo-600 to-purple-700",
+      image: featurePlaybook,
+      delay: 0.6
     }
   ];
   
@@ -509,6 +519,11 @@ const WorryROIWrapper = () => {
   return <WorryROI onBack={() => navigate('/')} />;
 };
 
+const NorthStarWrapper = () => {
+  const navigate = useNavigate();
+  return <NorthStar onBack={() => navigate('/')} />;
+};
+
 const App = () => {
   useEffect(() => {
     const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
@@ -535,6 +550,7 @@ const App = () => {
           <Route path="/anxiety" element={<AnxietyTrackerWrapper />} />
           <Route path="/resignation" element={<ResignationProtocolWrapper />} />
           <Route path="/worry-roi" element={<WorryROIWrapper />} />
+          <Route path="/north-star" element={<NorthStarWrapper />} />
         </Routes>
         <Toaster />
         <InstallPrompt />

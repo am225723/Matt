@@ -66,3 +66,69 @@ export const deleteResignation = async (id) => {
   
   return true;
 };
+
+export const saveNorthStarGoal = async (goalData) => {
+  const { data, error } = await supabase
+    .from('north_star_goals')
+    .insert([{
+      timeframe: goalData.timeframe,
+      raw_goal: goalData.raw_goal,
+      smart_goal: goalData.smart_goal,
+      milestones: goalData.milestones,
+      reality_check: goalData.reality_check,
+      status: goalData.status || 'in-progress'
+    }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error saving North Star goal:', error);
+    throw error;
+  }
+  
+  return data;
+};
+
+export const getNorthStarGoals = async () => {
+  const { data, error } = await supabase
+    .from('north_star_goals')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching North Star goals:', error);
+    throw error;
+  }
+  
+  return data || [];
+};
+
+export const updateNorthStarGoal = async (id, updates) => {
+  const { data, error } = await supabase
+    .from('north_star_goals')
+    .update(updates)
+    .eq('id', id)
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error updating North Star goal:', error);
+    throw error;
+  }
+  
+  return data;
+};
+
+export const deleteNorthStarGoal = async (id) => {
+  const { error } = await supabase
+    .from('north_star_goals')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting North Star goal:', error);
+    throw error;
+  }
+  
+  return true;
+};

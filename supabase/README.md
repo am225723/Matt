@@ -106,4 +106,36 @@ CREATE TABLE resignations (
 
 ALTER TABLE resignations ENABLE ROW LEVEL SECURITY;
 CREATE POLICY "Allow all operations" ON resignations FOR ALL USING (true) WITH CHECK (true);
+
+-- North Star Goals table
+CREATE TABLE north_star_goals (
+  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
+  timeframe TEXT NOT NULL CHECK (timeframe IN ('3-month', '6-month', '1-year', '3-year')),
+  raw_goal TEXT NOT NULL,
+  smart_goal TEXT,
+  milestones JSONB DEFAULT '[]',
+  reality_check TEXT,
+  status TEXT NOT NULL DEFAULT 'in-progress' CHECK (status IN ('in-progress', 'completed'))
+);
+
+ALTER TABLE north_star_goals ENABLE ROW LEVEL SECURITY;
+
+-- RLS policies for North Star Goals (users can only access their own data)
+CREATE POLICY "Users can view own goals" ON north_star_goals 
+  FOR SELECT USING (auth.uid() = user_id OR user_id IS NULL);
+
+CREATE POLICY "Users can insert own goals" ON north_star_goals 
+  FOR INSERT WITH CHECK (auth.uid() = user_id OR user_id IS NULL);
+
+CREATE POLICY "Users can update own goals" ON north_star_goals 
+  FOR UPDATE USING (auth.uid() = user_id OR user_id IS NULL);
+
+CREATE POLICY "Users can delete own goals" ON north_star_goals 
+  FOR DELETE USING (auth.uid() = user_id OR user_id IS NULL);
+
+-- Allow anonymous access for demo purposes (remove in production with auth)
+CREATE POLICY "Allow anonymous operations" ON north_star_goals 
+  FOR ALL USING (true) WITH CHECK (true);
 ```
