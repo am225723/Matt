@@ -14,7 +14,7 @@ import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializePerplexity } from '@/utils/perplexity.js';
 import { motion } from 'framer-motion';
-import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature, TrendingDown, Compass } from 'lucide-react';
+import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature, TrendingDown, Compass, Leaf } from 'lucide-react';
 import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
 import ResignationProtocol from '@/components/ResignationProtocol';
 import WorryROI from '@/components/WorryROI';
@@ -37,10 +37,15 @@ import featureKetamine from '@/assets/images/feature-ketamine.png';
 import featureAnxiety from '@/assets/images/feature-anxiety.png';
 import featureResignation from '@/assets/images/feature-resignation.png';
 import featureWorryROI from '@/assets/images/feature-worry-roi.png';
+import featureIFS from '@/assets/images/feature-ifs.png';
 
 // Sophisticated Mobile-First Tile Component with Large Character Images
-const DashboardTile = ({ title, description, icon, to, gradient, delay, image }) => (
-  <Link to={to} className="block w-full">
+const DashboardTile = ({ title, description, icon, to, href, gradient, delay, image }) => {
+  const LinkComponent = href ? 'a' : Link;
+  const linkProps = href ? { href, target: '_blank', rel: 'noopener noreferrer' } : { to };
+  
+  return (
+    <LinkComponent {...linkProps} className="block w-full">
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
@@ -101,7 +106,7 @@ const DashboardTile = ({ title, description, icon, to, gradient, delay, image })
       {/* Bottom border highlight */}
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
     </motion.div>
-  </Link>
+  </LinkComponent>
 );
 
 const Dashboard = () => {
@@ -210,6 +215,15 @@ const Dashboard = () => {
       gradient: "bg-gradient-to-br from-slate-700 to-slate-900",
       image: featureWorryROI,
       delay: 0.6
+    },
+    {
+      title: "IFS Healing",
+      description: "Internal Family Systems therapy for healing and self-discovery",
+      icon: <Leaf className="w-6 h-6" />,
+      href: "https://ifs.aleix.help",
+      gradient: "bg-gradient-to-br from-emerald-500 to-teal-600",
+      image: featureIFS,
+      delay: 0.65
     }
   ];
   
