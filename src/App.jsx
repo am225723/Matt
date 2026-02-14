@@ -13,6 +13,7 @@ import { updateStreak } from '@/utils/gamificationStorage';
 import { Helmet } from 'react-helmet';
 import { Toaster } from "@/components/ui/toaster";
 import { initializePerplexity } from '@/utils/perplexity.js';
+import { redirectToTargetSite, getCurrentUserInfo } from '@/utils/sso.js';
 import { motion } from 'framer-motion';
 import { BookOpen, MessageSquare as MessageSquareQuote, Gavel as Golf, Library, Trophy, Heart, BrainCircuit, Activity, FileSignature, TrendingDown, Compass, Leaf } from 'lucide-react';
 import KetamineTherapyRedesigned from '@/components/KetamineTherapyRedesigned';
@@ -221,7 +222,7 @@ const Dashboard = () => {
       title: "IFS Healing",
       description: "Internal Family Systems therapy for healing and self-discovery",
       icon: <Leaf className="w-6 h-6" />,
-      href: "https://ifs.aleix.help",
+      to: "/ifs-sso",
       gradient: "bg-gradient-to-br from-emerald-500 to-teal-600",
       image: featureIFS,
       delay: 0.65
@@ -537,6 +538,38 @@ const NorthStarWrapper = () => {
   return <NorthStar onBack={() => navigate('/')} />;
 };
 
+const IFSSSOWrapper = () => {
+  useEffect(() => {
+    // Redirect to IFS dashboard with SSO
+    const userInfo = getCurrentUserInfo();
+    redirectToTargetSite(userInfo);
+  }, []);
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.9 }}
+        animate={{ opacity: 1, scale: 1 }}
+        className="text-center space-y-6"
+      >
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+          className="inline-block"
+        >
+          <Leaf className="w-16 h-16 text-emerald-400" />
+        </motion.div>
+        <h2 className="text-2xl font-bold text-white">
+          Connecting to IFS Healing...
+        </h2>
+        <p className="text-white/70">
+          Please wait while we securely log you in
+        </p>
+      </motion.div>
+    </div>
+  );
+};
+
 const App = () => {
   useEffect(() => {
     const apiKey = import.meta.env.VITE_PERPLEXITY_API_KEY;
@@ -564,6 +597,7 @@ const App = () => {
           <Route path="/resignation" element={<ResignationProtocolWrapper />} />
           <Route path="/worry-roi" element={<WorryROIWrapper />} />
           <Route path="/north-star" element={<NorthStarWrapper />} />
+          <Route path="/ifs-sso" element={<IFSSSOWrapper />} />
         </Routes>
         <Toaster />
         <InstallPrompt />
