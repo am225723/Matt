@@ -107,7 +107,8 @@ const DashboardTile = ({ title, description, icon, to, href, gradient, delay, im
       <div className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-white/50 to-transparent" />
     </motion.div>
   </LinkComponent>
-);
+  );
+};
 
 const Dashboard = () => {
   const navigate = useNavigate();
