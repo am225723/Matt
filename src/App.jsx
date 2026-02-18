@@ -540,9 +540,8 @@ const NorthStarWrapper = () => {
 
 const IFSSSOWrapper = () => {
   useEffect(() => {
-    // Redirect to IFS dashboard with SSO
     const userInfo = getCurrentUserInfo();
-    redirectToTargetSite(userInfo);
+    redirectToTargetSite(userInfo).catch(console.error);
   }, []);
 
   return (

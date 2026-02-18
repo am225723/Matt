@@ -53,17 +53,14 @@ const SSOButton: React.FC<SSOButtonProps> = ({
   onClick
 }) => {
   
-  const handleClick = () => {
-    // Get user info (either custom or default)
+  const handleClick = async () => {
     const finalUserInfo = userInfo || getCurrentUserInfo();
     
-    // Call custom onClick if provided
     if (onClick) {
       onClick();
     }
     
-    // Redirect with SSO
-    redirectToTargetSite(finalUserInfo, additionalData);
+    await redirectToTargetSite(finalUserInfo, additionalData);
   };
 
   return (
