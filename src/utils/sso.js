@@ -1,4 +1,4 @@
-const TARGET_URL = import.meta.env.VITE_TARGET_URL || 'https://ifs.aleix.help/sso/callback';
+const TARGET_URL = import.meta.env.VITE_TARGET_URL || 'https://ifs.aleix.help';
 
 function base64UrlEncode(str) {
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
@@ -45,7 +45,7 @@ export async function generateSSOToken(userInfo, additionalData = {}) {
 export async function redirectToTargetSite(userInfo, additionalData = {}) {
   try {
     const token = await generateSSOToken(userInfo, additionalData);
-    const ssoUrl = `${TARGET_URL}/sso/callback?sso_token=${encodeURIComponent(token)}`;
+    const ssoUrl = `${TARGET_URL}/sso/callback#sso_token=${encodeURIComponent(token)}`;
     window.location.href = ssoUrl;
   } catch (error) {
     console.error('SSO redirect failed:', error);
