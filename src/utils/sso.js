@@ -45,7 +45,7 @@ export async function generateSSOToken(userInfo, additionalData = {}) {
 export async function redirectToTargetSite(userInfo, additionalData = {}) {
   try {
     const token = await generateSSOToken(userInfo, additionalData);
-    const ssoUrl = `${TARGET_URL}/sso/callback?token=${encodeURIComponent(token)}`;
+    const ssoUrl = `${TARGET_URL}/sso/callback?sso_token=${encodeURIComponent(token)}`;
     window.location.href = ssoUrl;
   } catch (error) {
     console.error('SSO redirect failed:', error);

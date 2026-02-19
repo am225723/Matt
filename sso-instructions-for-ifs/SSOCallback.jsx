@@ -45,7 +45,7 @@ export default function SSOCallback({ onLogin }) {
 
   useEffect(() => {
     const handleSSO = async () => {
-      const token = searchParams.get('token');
+      const token = searchParams.get('sso_token');
       if (!token) {
         setError('No SSO token provided');
         return;
