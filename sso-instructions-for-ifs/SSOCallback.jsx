@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 function base64UrlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -38,9 +38,8 @@ async function verifyJWT(token, secret) {
   return payload;
 }
 
-export default function SSOCallback() {
+export default function SSOCallback({ onLogin }) {
   const [searchParams] = useSearchParams();
-  const navigate = useNavigate();
   const [status, setStatus] = useState('Verifying your login...');
   const [error, setError] = useState(null);
 
@@ -62,20 +61,11 @@ export default function SSOCallback() {
 
         setStatus('Login verified! Redirecting...');
 
-        localStorage.setItem('isAuthenticated', 'true');
-        localStorage.setItem('userPin', '051189');
-        localStorage.setItem('ssoUser', JSON.stringify({
-          id: payload.sub,
-          email: payload.email,
-          name: payload.name,
-          loginMethod: 'sso',
-          loginTime: new Date().toISOString()
-        }));
-
-        setTimeout(() => {
-          navigate('/', { replace: true });
-          window.location.reload();
-        }, 500);
+        if (onLogin) {
+          await onLogin('051189');
+        } else {
+          window.location.href = '/';
+        }
       } catch (err) {
         console.error('SSO verification failed:', err);
         setError(err.message || 'SSO verification failed');
@@ -83,65 +73,32 @@ export default function SSOCallback() {
     };
 
     handleSSO();
-  }, [searchParams, navigate]);
+  }, [searchParams, onLogin]);
 
   if (error) {
     return (
-      <div style={{
-        minHeight: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-        color: 'white',
-        fontFamily: 'system-ui, sans-serif'
-      }}>
-        <div style={{ textAlign: 'center', padding: '2rem' }}>
-          <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>⚠️</div>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>Login Failed</h2>
-          <p style={{ color: 'rgba(255,255,255,0.7)', marginBottom: '1.5rem' }}>{error}</p>
-          <button
-            onClick={() => navigate('/login', { replace: true })}
-            style={{
-              padding: '0.75rem 2rem',
-              background: '#3b82f6',
-              color: 'white',
-              border: 'none',
-              borderRadius: '0.5rem',
-              cursor: 'pointer',
-              fontSize: '1rem'
-            }}
+      <div className="min-h-screen bg-gradient-to-br from-slate-100 via-purple-100/60 to-indigo-100/50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+          <div className="text-5xl mb-4">&#9888;&#65039;</div>
+          <h2 className="text-2xl font-bold text-gray-800 mb-2">Login Failed</h2>
+          <p className="text-gray-500 mb-6">{error}</p>
+          <a
+            href="/"
+            className="inline-block py-3 px-8 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold rounded-xl hover:from-purple-700 hover:to-pink-700 transition-all duration-300"
           >
             Go to Login
-          </button>
+          </a>
         </div>
       </div>
     );
   }
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'linear-gradient(135deg, #1e293b 0%, #0f172a 100%)',
-      color: 'white',
-      fontFamily: 'system-ui, sans-serif'
-    }}>
-      <div style={{ textAlign: 'center' }}>
-        <div style={{
-          width: '3rem',
-          height: '3rem',
-          border: '3px solid rgba(255,255,255,0.3)',
-          borderTopColor: '#10b981',
-          borderRadius: '50%',
-          animation: 'spin 1s linear infinite',
-          margin: '0 auto 1.5rem'
-        }} />
-        <h2 style={{ fontSize: '1.5rem', marginBottom: '0.5rem' }}>{status}</h2>
-        <p style={{ color: 'rgba(255,255,255,0.6)' }}>Please wait...</p>
-        <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+    <div className="min-h-screen bg-gradient-to-br from-slate-100 via-purple-100/60 to-indigo-100/50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl shadow-2xl p-8 max-w-md w-full text-center">
+        <div className="w-12 h-12 border-4 border-gray-200 border-t-purple-600 rounded-full animate-spin mx-auto mb-6"></div>
+        <h2 className="text-2xl font-bold text-gray-800 mb-2">{status}</h2>
+        <p className="text-gray-500">Please wait...</p>
       </div>
     </div>
   );
