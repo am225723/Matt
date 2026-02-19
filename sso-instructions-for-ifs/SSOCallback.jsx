@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 
 function base64UrlDecode(str) {
   str = str.replace(/-/g, '+').replace(/_/g, '/');
@@ -37,20 +38,14 @@ async function verifyJWT(token, secret) {
   return payload;
 }
 
-function getTokenFromHash() {
-  const hash = window.location.hash;
-  if (!hash) return null;
-  const params = new URLSearchParams(hash.substring(1));
-  return params.get('sso_token');
-}
-
 export default function SSOCallback({ onLogin }) {
+  const [searchParams] = useSearchParams();
   const [status, setStatus] = useState('Verifying your login...');
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const handleSSO = async () => {
-      const token = getTokenFromHash();
+      const token = searchParams.get('sso_token');
       if (!token) {
         setError('No SSO token provided');
         return;
@@ -66,8 +61,6 @@ export default function SSOCallback({ onLogin }) {
 
         setStatus('Login verified! Redirecting...');
 
-        window.location.hash = '';
-
         if (onLogin) {
           const success = await onLogin('051189');
           if (!success) {
@@ -81,7 +74,7 @@ export default function SSOCallback({ onLogin }) {
     };
 
     handleSSO();
-  }, [onLogin]);
+  }, [searchParams, onLogin]);
 
   if (error) {
     return (
