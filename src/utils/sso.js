@@ -1,4 +1,4 @@
-const TARGET_URL = import.meta.env.VITE_TARGET_URL || 'https://ifs.aleix.help';
+const TARGET_URL = import.meta.env.VITE_TARGET_URL || 'https://ifs.aleix.help/sso/callback';
 
 function base64UrlEncode(str) {
   return btoa(str).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
