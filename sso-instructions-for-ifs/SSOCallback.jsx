@@ -54,17 +54,18 @@ export default function SSOCallback({ onLogin }) {
       try {
         const secret = import.meta.env.VITE_JWT_SECRET;
         if (!secret) {
-          throw new Error('JWT secret not configured on this site');
+          throw new Error('JWT secret not configured');
         }
 
-        const payload = await verifyJWT(token, secret);
+        await verifyJWT(token, secret);
 
         setStatus('Login verified! Redirecting...');
 
         if (onLogin) {
-          await onLogin('051189');
-        } else {
-          window.location.href = '/';
+          const success = await onLogin('051189');
+          if (!success) {
+            setError('Auto-login failed. Please use your PIN instead.');
+          }
         }
       } catch (err) {
         console.error('SSO verification failed:', err);
