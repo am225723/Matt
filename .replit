@@ -69,3 +69,4 @@ publicDir = "dist"
 [userenv.shared]
 VITE_SUPABASE_URL = "https://efgtznvrnzqcxmfmjuue.supabase.co"
 VITE_SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVmZ3R6bnZybnpxY3htZm1qdXVlIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTI5OTAxMzIsImV4cCI6MjA2ODU2NjEzMn0.rSgmNYLj-hGuW4YeP0xNsjF8T1OYrUzdCS6cOvJAjx4"
+VITE_JWT_SECRET = "9698089f8ceb66b04367a86a60804d564e2a60fa40379ae500f6ceab6ce903f3"

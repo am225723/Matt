@@ -24,7 +24,10 @@ async function signJWT(payload, secret) {
 }
 
 export async function generateSSOToken(userInfo, additionalData = {}) {
-  const secret = import.meta.env.VITE_JWT_SECRET || 'change-this-in-production-use-32-char-min';
+  const secret = import.meta.env.VITE_JWT_SECRET;
+  if (!secret) {
+    throw new Error('VITE_JWT_SECRET environment variable is not set');
+  }
   const payload = {
     sub: userInfo.id || 'matthew',
     email: userInfo.email || 'matthew@integrativepsychiatry.xyz',
