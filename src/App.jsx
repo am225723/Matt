@@ -21,6 +21,8 @@ import ResignationProtocol from '@/components/ResignationProtocol';
 import WorryROI from '@/components/WorryROI';
 import NorthStar from '@/components/NorthStar';
 import InstallPrompt from '@/components/InstallPrompt';
+import TheSpinDown from '@/components/TheSpinDown';
+import SpinDownTile from '@/components/SpinDownTile';
 
 // Import advanced components (lazy loaded to prevent blocking)
 const ExcuseReframerAdvanced = React.lazy(() => import('@/components/ExcuseReframerAdvanced'));
@@ -228,6 +230,8 @@ const Dashboard = () => {
       delay: 0.65
     }
   ];
+
+  // SpinDown tile rendered separately below tiles grid
   
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
@@ -446,6 +450,13 @@ const Dashboard = () => {
           ))}
         </div>
 
+        {/* The Spin Down — Full-width featured nighttime tile */}
+        <div className="mt-3 sm:mt-4">
+          <Link to="/spin-down" className="block w-full">
+            <SpinDownTile />
+          </Link>
+        </div>
+
         {/* Footer hint */}
         <motion.div
           initial={{ opacity: 0 }}
@@ -597,6 +608,7 @@ const App = () => {
           <Route path="/worry-roi" element={<WorryROIWrapper />} />
           <Route path="/north-star" element={<NorthStarWrapper />} />
           <Route path="/ifs-sso" element={<IFSSSOWrapper />} />
+          <Route path="/spin-down" element={<TheSpinDown />} />
         </Routes>
         <Toaster />
         <InstallPrompt />

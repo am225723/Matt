@@ -132,3 +132,53 @@ export const deleteNorthStarGoal = async (id) => {
   
   return true;
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TheSpinDown — anxiety_records helpers
+// ─────────────────────────────────────────────────────────────────────────────
+
+export const saveAnxietyRecord = async ({ userId, lyrics }) => {
+  const { data, error } = await supabase
+    .from('anxiety_records')
+    .insert([{
+      user_id: userId ?? null,
+      lyrics,
+    }])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('Error saving anxiety record:', error);
+    throw error;
+  }
+
+  return data;
+};
+
+export const getAnxietyRecords = async () => {
+  const { data, error } = await supabase
+    .from('anxiety_records')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('Error fetching anxiety records:', error);
+    throw error;
+  }
+
+  return data || [];
+};
+
+export const deleteAnxietyRecord = async (id) => {
+  const { error } = await supabase
+    .from('anxiety_records')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('Error deleting anxiety record:', error);
+    throw error;
+  }
+
+  return true;
+};
